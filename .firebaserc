@@ -1,0 +1,7 @@
+{
+  "projects": {
+    "default": "demo-throttlehub",
+    "cloud": "throttlehub-9d6b9",
+    "emulator": "demo-throttlehub"
+  }
+}

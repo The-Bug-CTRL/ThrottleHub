@@ -1,0 +1,15 @@
+# Member reputation, categories and location
+
+The category rail uses keyboard-accessible dropdowns with nested links from the existing taxonomy. Escape, clicking outside and moving focus outside close a dropdown. CategoryIcon now uses only the 11 user-supplied PNGs in public/catagories_icons, served through Next Image. The Motorcycles dropdown uses the motocross artwork. Pit bikes and Kids bikes are active motorcycle categories. Vintage listing groupings have been retired; old routes and saved filters resolve to their normal parent category, older adverts remain readable, and edits/marking sold normalize their category fields without changing model year. All other category branches, including existing youth subcategories, remain available.
+
+Homepage and marketplace search expose all nine provinces. Marketplace search also exposes the existing exact town/city filter. Province constraints apply in the Firestore query before bounded refinements. Optional profile provinces remain compatible with older profiles.
+
+Reviews live at profiles/{subjectId}/reviews/{authorId}. Each member can leave one review of another member and update it later. A buyer or seller must have a listing conversation with a message from each participant. Firestore Rules enforce this evidence, author identity, integer ratings from 1 to 5, minimum feedback length, immutable authorship and timestamps, and no self-reviews. Suspended members cannot publish or edit feedback. The subject can reply without changing the rating. Neither member can delete feedback or override moderation.
+
+The public review API returns 20 published reviews per page, a cursor, and an aggregate score/count with a five-star histogram. It excludes hidden feedback and omits message and conversation references from API responses. Firestore Rules keep conversation/message contents private; references stored on published review documents are not secret. No completed-purchase verification is claimed. Rating badges appear on profiles, listing seller panels, and the account page. Inbox names link to the member profile and reviews.
+
+Review reports go to the reviewFlags queue in Community Moderation. Moderators can resolve a report or hide the review and record an audit action. Hiding removes the review from public lists and aggregate scores. Hidden reviews cannot be edited back into public view by their author.
+
+Before using these changes against a hosted Firebase project, deploy firestore.rules and firestore.indexes.json through the normal release process. scripts/indexes.mjs includes the new review, interaction lookup and province indexes so regeneration preserves them. No cloud deployment was performed by this change.
+
+Validation: isolated Firebase rules/workflow tests, review schema/summary tests, type checking, production build, and HTTP probes for pagination, hidden-review exclusion, API evidence omission and location/profile rendering. The HTTP probe creates temporary data only in the local demo emulator and removes it afterwards. Browser visual QA was unavailable in this session.

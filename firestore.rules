@@ -1,0 +1,594 @@
+rules_version = '2';
+service cloud.firestore {
+ match /databases/{database}/documents {
+  function signed(){return request.auth != null;}
+  function admin(){return signed() && request.auth.token.get('admin', false) == true;}
+  function moderator(){return admin() || (signed() && request.auth.token.get('moderator', false) == true);}
+  function active(){return signed() && (!exists(/databases/$(database)/documents/restrictions/$(request.auth.uid)) || get(/databases/$(database)/documents/restrictions/$(request.auth.uid)).data.suspended == false);}
+  function cooled(){return active() && getAfter(/databases/$(database)/documents/postingLimits/$(request.auth.uid)).data.lastPostAt == request.time && (!exists(/databases/$(database)/documents/postingLimits/$(request.auth.uid)) || request.time >= get(/databases/$(database)/documents/postingLimits/$(request.auth.uid)).data.lastPostAt + duration.value(15,'s'));}
+  function owner(uid){return signed() && request.auth.uid == uid;}
+  function participant(cid){return signed() && request.auth.uid in get(/databases/$(database)/documents/conversations/$(cid)).data.participants;}
+  function shortText(value, max){return value is string && value.size() <= max;}
+  function validDetails(d){let x=d.details;return x is map && x.keys().hasOnly(['engineType','displacement','hours','yearFrom','yearTo','fuelSystem','origin','partNumber','brand','size','sizeSystem','sellerType','vintage']) && x.engineType in ['','two-stroke','four-stroke'] && x.displacement is number && x.displacement >= 0 && x.displacement <= 2000 && x.hours is number && x.hours >= 0 && x.hours <= 100000 && x.yearFrom is int && x.yearTo is int && (x.yearFrom == 0 || (x.yearFrom >= 1950 && x.yearFrom <= 2028)) && (x.yearTo == 0 || (x.yearTo >= 1950 && x.yearTo <= 2028)) && (x.yearFrom == 0 || x.yearTo == 0 || x.yearTo >= x.yearFrom) && x.fuelSystem in ['','carburettor','fuel-injection'] && x.origin in ['','OEM','aftermarket'] && shortText(x.partNumber,100) && shortText(x.brand,80) && shortText(x.size,40) && x.sizeSystem in ['','UK','US','EU','alpha','cm'] && x.sellerType in ['private','dealer'] && x.vintage is bool && (d.primaryCategoryId in ['motorcycles','parts'] || (d.make == '' && d.model == '' && d.year == 0 && x.engineType == '' && x.displacement == 0 && x.hours == 0 && x.yearFrom == 0 && x.yearTo == 0 && x.origin == '' && x.partNumber == '' && x.fuelSystem == ''));}
+  // BEGIN GENERATED MARKETPLACE CATEGORIES — run node scripts/marketplace-rules.mjs
+  function categoryBucket0(id){return 
+   id == 'motorcycles' ? ['Motorcycles','Motorcycles',[],{'l0':'motorcycles'},[]] : 
+   id == 'parts' ? ['Parts & Spares','Parts & Spares',[],{'l0':'parts'},[]] : 
+   id == 'riding-gear' ? ['Riding Gear & Apparel','Riding Gear & Apparel',[],{'l0':'riding-gear'},[]] : 
+   id == 'electronics' ? ['Electronics & Technology','Electronics & Technology',[],{'l0':'electronics'},[]] : 
+   id == 'accessories' ? ['Accessories & Equipment','Accessories & Equipment',[],{'l0':'accessories'},[]] : 
+   id == 'tools' ? ['Tools & Workshop','Tools & Workshop',[],{'l0':'tools'},[]] :  [];}
+  function categoryBucket1(id){return 
+   id == 'motorcycles/motocross' ? ['Motorcycles','Motocross',['motorcycles'],{'l0':'motorcycles','l1':'motorcycles/motocross'},[]] : 
+   id == 'motorcycles/enduro' ? ['Motorcycles','Enduro',['motorcycles'],{'l0':'motorcycles','l1':'motorcycles/enduro'},[]] : 
+   id == 'motorcycles/trials' ? ['Motorcycles','Trials',['motorcycles'],{'l0':'motorcycles','l1':'motorcycles/trials'},[]] : 
+   id == 'motorcycles/trail' ? ['Motorcycles','Trail & Recreational',['motorcycles'],{'l0':'motorcycles','l1':'motorcycles/trail'},[]] : 
+   id == 'motorcycles/pit-bikes' ? ['Motorcycles','Pit bikes',['motorcycles'],{'l0':'motorcycles','l1':'motorcycles/pit-bikes'},[]] : 
+   id == 'motorcycles/kids-bikes' ? ['Motorcycles','Kids bikes',['motorcycles'],{'l0':'motorcycles','l1':'motorcycles/kids-bikes'},[]] :  [];}
+  function categoryBucket2(id){return 
+   id == 'motorcycles/motocross/two-stroke-motocross' ? ['Motorcycles','Two-Stroke Motocross',['motorcycles','motorcycles/motocross'],{'l0':'motorcycles','l1':'motorcycles/motocross','l2':'motorcycles/motocross/two-stroke-motocross'},['two-stroke']] : 
+   id == 'motorcycles/motocross/four-stroke-motocross' ? ['Motorcycles','Four-Stroke Motocross',['motorcycles','motorcycles/motocross'],{'l0':'motorcycles','l1':'motorcycles/motocross','l2':'motorcycles/motocross/four-stroke-motocross'},['four-stroke']] : 
+   id == 'motorcycles/motocross/youth-motocross' ? ['Motorcycles','Youth Motocross',['motorcycles','motorcycles/motocross'],{'l0':'motorcycles','l1':'motorcycles/motocross','l2':'motorcycles/motocross/youth-motocross'},[]] :  [];}
+  function categoryBucket3(id){return 
+   id == 'motorcycles/enduro/hard-enduro' ? ['Motorcycles','Hard Enduro',['motorcycles','motorcycles/enduro'],{'l0':'motorcycles','l1':'motorcycles/enduro','l2':'motorcycles/enduro/hard-enduro'},[]] : 
+   id == 'motorcycles/enduro/cross-country-enduro' ? ['Motorcycles','Cross-Country / Enduro',['motorcycles','motorcycles/enduro'],{'l0':'motorcycles','l1':'motorcycles/enduro','l2':'motorcycles/enduro/cross-country-enduro'},[]] : 
+   id == 'motorcycles/enduro/trail-enduro' ? ['Motorcycles','Trail Enduro',['motorcycles','motorcycles/enduro'],{'l0':'motorcycles','l1':'motorcycles/enduro','l2':'motorcycles/enduro/trail-enduro'},[]] : 
+   id == 'motorcycles/enduro/road-legal-enduro' ? ['Motorcycles','Road-Legal Enduro',['motorcycles','motorcycles/enduro'],{'l0':'motorcycles','l1':'motorcycles/enduro','l2':'motorcycles/enduro/road-legal-enduro'},[]] :  [];}
+  function categoryBucket4(id){return 
+   id == 'motorcycles/trials/modern-trials' ? ['Motorcycles','Modern Trials',['motorcycles','motorcycles/trials'],{'l0':'motorcycles','l1':'motorcycles/trials','l2':'motorcycles/trials/modern-trials'},[]] : 
+   id == 'motorcycles/trials/youth-trials' ? ['Motorcycles','Youth Trials',['motorcycles','motorcycles/trials'],{'l0':'motorcycles','l1':'motorcycles/trials','l2':'motorcycles/trials/youth-trials'},[]] :  [];}
+  function categoryBucket5(id){return 
+   id == 'motorcycles/trail/trail-bikes' ? ['Motorcycles','Trail Bikes',['motorcycles','motorcycles/trail'],{'l0':'motorcycles','l1':'motorcycles/trail','l2':'motorcycles/trail/trail-bikes'},[]] : 
+   id == 'motorcycles/trail/recreational-off-road-bikes' ? ['Motorcycles','Recreational Off-Road Bikes',['motorcycles','motorcycles/trail'],{'l0':'motorcycles','l1':'motorcycles/trail','l2':'motorcycles/trail/recreational-off-road-bikes'},[]] : 
+   id == 'motorcycles/trail/youth-mini-bikes' ? ['Motorcycles','Youth / Mini Bikes',['motorcycles','motorcycles/trail'],{'l0':'motorcycles','l1':'motorcycles/trail','l2':'motorcycles/trail/youth-mini-bikes'},[]] :  [];}
+  function categoryBucket6(id){return 
+   id == 'parts/complete-engines' ? ['Parts & Spares','Complete Engines & Assemblies',['parts'],{'l0':'parts','l1':'parts/complete-engines'},[]] : 
+   id == 'parts/engine' ? ['Parts & Spares','Engine',['parts'],{'l0':'parts','l1':'parts/engine'},[]] : 
+   id == 'parts/transmission' ? ['Parts & Spares','Transmission & Gearbox',['parts'],{'l0':'parts','l1':'parts/transmission'},[]] : 
+   id == 'parts/clutch' ? ['Parts & Spares','Clutch',['parts'],{'l0':'parts','l1':'parts/clutch'},[]] : 
+   id == 'parts/fuel-intake' ? ['Parts & Spares','Fuel & Intake',['parts'],{'l0':'parts','l1':'parts/fuel-intake'},[]] : 
+   id == 'parts/exhaust' ? ['Parts & Spares','Exhaust Systems',['parts'],{'l0':'parts','l1':'parts/exhaust'},[]] : 
+   id == 'parts/cooling' ? ['Parts & Spares','Cooling',['parts'],{'l0':'parts','l1':'parts/cooling'},[]] : 
+   id == 'parts/electrical' ? ['Parts & Spares','Electrical & Ignition',['parts'],{'l0':'parts','l1':'parts/electrical'},[]] : 
+   id == 'parts/suspension' ? ['Parts & Spares','Suspension',['parts'],{'l0':'parts','l1':'parts/suspension'},[]] : 
+   id == 'parts/brakes' ? ['Parts & Spares','Brakes',['parts'],{'l0':'parts','l1':'parts/brakes'},[]] : 
+   id == 'parts/wheels-tyres' ? ['Parts & Spares','Wheels & Tyres',['parts'],{'l0':'parts','l1':'parts/wheels-tyres'},[]] : 
+   id == 'parts/drivetrain' ? ['Parts & Spares','Drivetrain',['parts'],{'l0':'parts','l1':'parts/drivetrain'},[]] : 
+   id == 'parts/frame-controls' ? ['Parts & Spares','Frame, Chassis & Controls',['parts'],{'l0':'parts','l1':'parts/frame-controls'},[]] : 
+   id == 'parts/bodywork' ? ['Parts & Spares','Bodywork & Plastics',['parts'],{'l0':'parts','l1':'parts/bodywork'},[]] : 
+   id == 'parts/guards' ? ['Parts & Spares','Protection & Guards',['parts'],{'l0':'parts','l1':'parts/guards'},[]] : 
+   id == 'parts/service' ? ['Parts & Spares','Consumables & Service Parts',['parts'],{'l0':'parts','l1':'parts/service'},[]] : 
+   id == 'parts/breaking' ? ['Parts & Spares','Parts for Breaking / Donor Bikes',['parts'],{'l0':'parts','l1':'parts/breaking'},[]] : 
+   id == 'parts/other' ? ['Parts & Spares','Other Parts',['parts'],{'l0':'parts','l1':'parts/other'},[]] :  [];}
+  function categoryBucket7(id){return 
+   id == 'parts/complete-engines/complete-engines' ? ['Parts & Spares','Complete Engines',['parts','parts/complete-engines'],{'l0':'parts','l1':'parts/complete-engines','l2':'parts/complete-engines/complete-engines'},[]] : 
+   id == 'parts/complete-engines/engine-cases-assemblies' ? ['Parts & Spares','Engine Cases / Assemblies',['parts','parts/complete-engines'],{'l0':'parts','l1':'parts/complete-engines','l2':'parts/complete-engines/engine-cases-assemblies'},[]] : 
+   id == 'parts/complete-engines/engine-packages' ? ['Parts & Spares','Engine Packages',['parts','parts/complete-engines'],{'l0':'parts','l1':'parts/complete-engines','l2':'parts/complete-engines/engine-packages'},[]] : 
+   id == 'parts/complete-engines/engines-for-parts' ? ['Parts & Spares','Engines for Parts',['parts','parts/complete-engines'],{'l0':'parts','l1':'parts/complete-engines','l2':'parts/complete-engines/engines-for-parts'},[]] :  [];}
+  function categoryBucket8(id){return 
+   id == 'parts/engine/top-end' ? ['Parts & Spares','Top End',['parts','parts/engine'],{'l0':'parts','l1':'parts/engine','l2':'parts/engine/top-end'},[]] : 
+   id == 'parts/engine/bottom-end' ? ['Parts & Spares','Bottom End',['parts','parts/engine'],{'l0':'parts','l1':'parts/engine','l2':'parts/engine/bottom-end'},[]] :  [];}
+  function categoryBucket9(id){return 
+   id == 'parts/engine/top-end/cylinder-heads' ? ['Parts & Spares','Cylinder Heads',['parts','parts/engine','parts/engine/top-end'],{'l0':'parts','l1':'parts/engine','l2':'parts/engine/top-end','l3':'parts/engine/top-end/cylinder-heads'},[]] : 
+   id == 'parts/engine/top-end/cylinders-barrels' ? ['Parts & Spares','Cylinders / Barrels',['parts','parts/engine','parts/engine/top-end'],{'l0':'parts','l1':'parts/engine','l2':'parts/engine/top-end','l3':'parts/engine/top-end/cylinders-barrels'},[]] : 
+   id == 'parts/engine/top-end/pistons' ? ['Parts & Spares','Pistons',['parts','parts/engine','parts/engine/top-end'],{'l0':'parts','l1':'parts/engine','l2':'parts/engine/top-end','l3':'parts/engine/top-end/pistons'},[]] : 
+   id == 'parts/engine/top-end/piston-rings' ? ['Parts & Spares','Piston Rings',['parts','parts/engine','parts/engine/top-end'],{'l0':'parts','l1':'parts/engine','l2':'parts/engine/top-end','l3':'parts/engine/top-end/piston-rings'},[]] : 
+   id == 'parts/engine/top-end/piston-kits' ? ['Parts & Spares','Piston Kits',['parts','parts/engine','parts/engine/top-end'],{'l0':'parts','l1':'parts/engine','l2':'parts/engine/top-end','l3':'parts/engine/top-end/piston-kits'},[]] : 
+   id == 'parts/engine/top-end/wrist-gudgeon-pins' ? ['Parts & Spares','Wrist / Gudgeon Pins',['parts','parts/engine','parts/engine/top-end'],{'l0':'parts','l1':'parts/engine','l2':'parts/engine/top-end','l3':'parts/engine/top-end/wrist-gudgeon-pins'},[]] : 
+   id == 'parts/engine/top-end/cylinder-head-gaskets' ? ['Parts & Spares','Cylinder Head Gaskets',['parts','parts/engine','parts/engine/top-end'],{'l0':'parts','l1':'parts/engine','l2':'parts/engine/top-end','l3':'parts/engine/top-end/cylinder-head-gaskets'},[]] : 
+   id == 'parts/engine/top-end/base-gaskets' ? ['Parts & Spares','Base Gaskets',['parts','parts/engine','parts/engine/top-end'],{'l0':'parts','l1':'parts/engine','l2':'parts/engine/top-end','l3':'parts/engine/top-end/base-gaskets'},[]] : 
+   id == 'parts/engine/top-end/top-end-gasket-kits' ? ['Parts & Spares','Top-End Gasket Kits',['parts','parts/engine','parts/engine/top-end'],{'l0':'parts','l1':'parts/engine','l2':'parts/engine/top-end','l3':'parts/engine/top-end/top-end-gasket-kits'},[]] : 
+   id == 'parts/engine/top-end/power-valves-power-valve-components' ? ['Parts & Spares','Power Valves / Power Valve Components',['parts','parts/engine','parts/engine/top-end'],{'l0':'parts','l1':'parts/engine','l2':'parts/engine/top-end','l3':'parts/engine/top-end/power-valves-power-valve-components'},['two-stroke']] : 
+   id == 'parts/engine/top-end/camshafts' ? ['Parts & Spares','Camshafts',['parts','parts/engine','parts/engine/top-end'],{'l0':'parts','l1':'parts/engine','l2':'parts/engine/top-end','l3':'parts/engine/top-end/camshafts'},['four-stroke']] : 
+   id == 'parts/engine/top-end/intake-valves' ? ['Parts & Spares','Intake Valves',['parts','parts/engine','parts/engine/top-end'],{'l0':'parts','l1':'parts/engine','l2':'parts/engine/top-end','l3':'parts/engine/top-end/intake-valves'},['four-stroke']] : 
+   id == 'parts/engine/top-end/exhaust-valves' ? ['Parts & Spares','Exhaust Valves',['parts','parts/engine','parts/engine/top-end'],{'l0':'parts','l1':'parts/engine','l2':'parts/engine/top-end','l3':'parts/engine/top-end/exhaust-valves'},['four-stroke']] : 
+   id == 'parts/engine/top-end/valve-springs' ? ['Parts & Spares','Valve Springs',['parts','parts/engine','parts/engine/top-end'],{'l0':'parts','l1':'parts/engine','l2':'parts/engine/top-end','l3':'parts/engine/top-end/valve-springs'},['four-stroke']] : 
+   id == 'parts/engine/top-end/valve-guides' ? ['Parts & Spares','Valve Guides',['parts','parts/engine','parts/engine/top-end'],{'l0':'parts','l1':'parts/engine','l2':'parts/engine/top-end','l3':'parts/engine/top-end/valve-guides'},['four-stroke']] : 
+   id == 'parts/engine/top-end/rocker-arms-followers' ? ['Parts & Spares','Rocker Arms / Followers',['parts','parts/engine','parts/engine/top-end'],{'l0':'parts','l1':'parts/engine','l2':'parts/engine/top-end','l3':'parts/engine/top-end/rocker-arms-followers'},['four-stroke']] : 
+   id == 'parts/engine/top-end/timing-chains' ? ['Parts & Spares','Timing Chains',['parts','parts/engine','parts/engine/top-end'],{'l0':'parts','l1':'parts/engine','l2':'parts/engine/top-end','l3':'parts/engine/top-end/timing-chains'},['four-stroke']] : 
+   id == 'parts/engine/top-end/timing-chain-tensioners' ? ['Parts & Spares','Timing Chain Tensioners',['parts','parts/engine','parts/engine/top-end'],{'l0':'parts','l1':'parts/engine','l2':'parts/engine/top-end','l3':'parts/engine/top-end/timing-chain-tensioners'},['four-stroke']] : 
+   id == 'parts/engine/top-end/other-top-end-components' ? ['Parts & Spares','Other Top-End Components',['parts','parts/engine','parts/engine/top-end'],{'l0':'parts','l1':'parts/engine','l2':'parts/engine/top-end','l3':'parts/engine/top-end/other-top-end-components'},[]] :  [];}
+  function categoryBucket10(id){return 
+   id == 'parts/engine/bottom-end/crankshafts' ? ['Parts & Spares','Crankshafts',['parts','parts/engine','parts/engine/bottom-end'],{'l0':'parts','l1':'parts/engine','l2':'parts/engine/bottom-end','l3':'parts/engine/bottom-end/crankshafts'},[]] : 
+   id == 'parts/engine/bottom-end/connecting-rods' ? ['Parts & Spares','Connecting Rods',['parts','parts/engine','parts/engine/bottom-end'],{'l0':'parts','l1':'parts/engine','l2':'parts/engine/bottom-end','l3':'parts/engine/bottom-end/connecting-rods'},[]] : 
+   id == 'parts/engine/bottom-end/crank-bearings' ? ['Parts & Spares','Crank Bearings',['parts','parts/engine','parts/engine/bottom-end'],{'l0':'parts','l1':'parts/engine','l2':'parts/engine/bottom-end','l3':'parts/engine/bottom-end/crank-bearings'},[]] : 
+   id == 'parts/engine/bottom-end/main-bearings' ? ['Parts & Spares','Main Bearings',['parts','parts/engine','parts/engine/bottom-end'],{'l0':'parts','l1':'parts/engine','l2':'parts/engine/bottom-end','l3':'parts/engine/bottom-end/main-bearings'},[]] : 
+   id == 'parts/engine/bottom-end/crank-seals' ? ['Parts & Spares','Crank Seals',['parts','parts/engine','parts/engine/bottom-end'],{'l0':'parts','l1':'parts/engine','l2':'parts/engine/bottom-end','l3':'parts/engine/bottom-end/crank-seals'},[]] : 
+   id == 'parts/engine/bottom-end/crankcases' ? ['Parts & Spares','Crankcases',['parts','parts/engine','parts/engine/bottom-end'],{'l0':'parts','l1':'parts/engine','l2':'parts/engine/bottom-end','l3':'parts/engine/bottom-end/crankcases'},[]] : 
+   id == 'parts/engine/bottom-end/crankcase-covers' ? ['Parts & Spares','Crankcase Covers',['parts','parts/engine','parts/engine/bottom-end'],{'l0':'parts','l1':'parts/engine','l2':'parts/engine/bottom-end','l3':'parts/engine/bottom-end/crankcase-covers'},[]] : 
+   id == 'parts/engine/bottom-end/bottom-end-gasket-kits' ? ['Parts & Spares','Bottom-End Gasket Kits',['parts','parts/engine','parts/engine/bottom-end'],{'l0':'parts','l1':'parts/engine','l2':'parts/engine/bottom-end','l3':'parts/engine/bottom-end/bottom-end-gasket-kits'},[]] : 
+   id == 'parts/engine/bottom-end/complete-bottom-end-assemblies' ? ['Parts & Spares','Complete Bottom-End Assemblies',['parts','parts/engine','parts/engine/bottom-end'],{'l0':'parts','l1':'parts/engine','l2':'parts/engine/bottom-end','l3':'parts/engine/bottom-end/complete-bottom-end-assemblies'},[]] : 
+   id == 'parts/engine/bottom-end/other-bottom-end-components' ? ['Parts & Spares','Other Bottom-End Components',['parts','parts/engine','parts/engine/bottom-end'],{'l0':'parts','l1':'parts/engine','l2':'parts/engine/bottom-end','l3':'parts/engine/bottom-end/other-bottom-end-components'},[]] :  [];}
+  function categoryBucket11(id){return 
+   id == 'parts/transmission/complete-gearboxes' ? ['Parts & Spares','Complete Gearboxes',['parts','parts/transmission'],{'l0':'parts','l1':'parts/transmission','l2':'parts/transmission/complete-gearboxes'},[]] : 
+   id == 'parts/transmission/gear-sets' ? ['Parts & Spares','Gear Sets',['parts','parts/transmission'],{'l0':'parts','l1':'parts/transmission','l2':'parts/transmission/gear-sets'},[]] : 
+   id == 'parts/transmission/transmission-shafts' ? ['Parts & Spares','Transmission Shafts',['parts','parts/transmission'],{'l0':'parts','l1':'parts/transmission','l2':'parts/transmission/transmission-shafts'},[]] : 
+   id == 'parts/transmission/shift-forks' ? ['Parts & Spares','Shift Forks',['parts','parts/transmission'],{'l0':'parts','l1':'parts/transmission','l2':'parts/transmission/shift-forks'},[]] : 
+   id == 'parts/transmission/shift-drums' ? ['Parts & Spares','Shift Drums',['parts','parts/transmission'],{'l0':'parts','l1':'parts/transmission','l2':'parts/transmission/shift-drums'},[]] : 
+   id == 'parts/transmission/gear-selector-mechanisms' ? ['Parts & Spares','Gear Selector Mechanisms',['parts','parts/transmission'],{'l0':'parts','l1':'parts/transmission','l2':'parts/transmission/gear-selector-mechanisms'},[]] : 
+   id == 'parts/transmission/bearings-and-seals' ? ['Parts & Spares','Bearings & Seals',['parts','parts/transmission'],{'l0':'parts','l1':'parts/transmission','l2':'parts/transmission/bearings-and-seals'},[]] : 
+   id == 'parts/transmission/other-gearbox-components' ? ['Parts & Spares','Other Gearbox Components',['parts','parts/transmission'],{'l0':'parts','l1':'parts/transmission','l2':'parts/transmission/other-gearbox-components'},[]] :  [];}
+  function categoryBucket12(id){return 
+   id == 'parts/clutch/clutch-baskets' ? ['Parts & Spares','Clutch Baskets',['parts','parts/clutch'],{'l0':'parts','l1':'parts/clutch','l2':'parts/clutch/clutch-baskets'},[]] : 
+   id == 'parts/clutch/inner-hubs' ? ['Parts & Spares','Inner Hubs',['parts','parts/clutch'],{'l0':'parts','l1':'parts/clutch','l2':'parts/clutch/inner-hubs'},[]] : 
+   id == 'parts/clutch/pressure-plates' ? ['Parts & Spares','Pressure Plates',['parts','parts/clutch'],{'l0':'parts','l1':'parts/clutch','l2':'parts/clutch/pressure-plates'},[]] : 
+   id == 'parts/clutch/clutch-plates' ? ['Parts & Spares','Clutch Plates',['parts','parts/clutch'],{'l0':'parts','l1':'parts/clutch','l2':'parts/clutch/clutch-plates'},[]] : 
+   id == 'parts/clutch/friction-plates' ? ['Parts & Spares','Friction Plates',['parts','parts/clutch'],{'l0':'parts','l1':'parts/clutch','l2':'parts/clutch/friction-plates'},[]] : 
+   id == 'parts/clutch/clutch-springs' ? ['Parts & Spares','Clutch Springs',['parts','parts/clutch'],{'l0':'parts','l1':'parts/clutch','l2':'parts/clutch/clutch-springs'},[]] : 
+   id == 'parts/clutch/clutch-covers' ? ['Parts & Spares','Clutch Covers',['parts','parts/clutch'],{'l0':'parts','l1':'parts/clutch','l2':'parts/clutch/clutch-covers'},[]] : 
+   id == 'parts/clutch/clutch-cables' ? ['Parts & Spares','Clutch Cables',['parts','parts/clutch'],{'l0':'parts','l1':'parts/clutch','l2':'parts/clutch/clutch-cables'},[]] : 
+   id == 'parts/clutch/hydraulic-clutch-components' ? ['Parts & Spares','Hydraulic Clutch Components',['parts','parts/clutch'],{'l0':'parts','l1':'parts/clutch','l2':'parts/clutch/hydraulic-clutch-components'},[]] : 
+   id == 'parts/clutch/complete-clutch-assemblies' ? ['Parts & Spares','Complete Clutch Assemblies',['parts','parts/clutch'],{'l0':'parts','l1':'parts/clutch','l2':'parts/clutch/complete-clutch-assemblies'},[]] :  [];}
+  function categoryBucket13(id){return 
+   id == 'parts/fuel-intake/complete-carburettors' ? ['Parts & Spares','Complete Carburettors',['parts','parts/fuel-intake'],{'l0':'parts','l1':'parts/fuel-intake','l2':'parts/fuel-intake/complete-carburettors'},[]] : 
+   id == 'parts/fuel-intake/carburettor-bodies' ? ['Parts & Spares','Carburettor Bodies',['parts','parts/fuel-intake'],{'l0':'parts','l1':'parts/fuel-intake','l2':'parts/fuel-intake/carburettor-bodies'},[]] : 
+   id == 'parts/fuel-intake/carburettor-jets' ? ['Parts & Spares','Carburettor Jets',['parts','parts/fuel-intake'],{'l0':'parts','l1':'parts/fuel-intake','l2':'parts/fuel-intake/carburettor-jets'},[]] : 
+   id == 'parts/fuel-intake/carburettor-needles' ? ['Parts & Spares','Carburettor Needles',['parts','parts/fuel-intake'],{'l0':'parts','l1':'parts/fuel-intake','l2':'parts/fuel-intake/carburettor-needles'},[]] : 
+   id == 'parts/fuel-intake/carburettor-rebuild-kits' ? ['Parts & Spares','Carburettor Rebuild Kits',['parts','parts/fuel-intake'],{'l0':'parts','l1':'parts/fuel-intake','l2':'parts/fuel-intake/carburettor-rebuild-kits'},[]] : 
+   id == 'parts/fuel-intake/intake-manifolds' ? ['Parts & Spares','Intake Manifolds',['parts','parts/fuel-intake'],{'l0':'parts','l1':'parts/fuel-intake','l2':'parts/fuel-intake/intake-manifolds'},[]] : 
+   id == 'parts/fuel-intake/reed-valves' ? ['Parts & Spares','Reed Valves',['parts','parts/fuel-intake'],{'l0':'parts','l1':'parts/fuel-intake','l2':'parts/fuel-intake/reed-valves'},['two-stroke']] : 
+   id == 'parts/fuel-intake/reed-blocks-cages' ? ['Parts & Spares','Reed Blocks / Cages',['parts','parts/fuel-intake'],{'l0':'parts','l1':'parts/fuel-intake','l2':'parts/fuel-intake/reed-blocks-cages'},['two-stroke']] : 
+   id == 'parts/fuel-intake/fuel-injectors' ? ['Parts & Spares','Fuel Injectors',['parts','parts/fuel-intake'],{'l0':'parts','l1':'parts/fuel-intake','l2':'parts/fuel-intake/fuel-injectors'},[]] : 
+   id == 'parts/fuel-intake/throttle-bodies' ? ['Parts & Spares','Throttle Bodies',['parts','parts/fuel-intake'],{'l0':'parts','l1':'parts/fuel-intake','l2':'parts/fuel-intake/throttle-bodies'},[]] : 
+   id == 'parts/fuel-intake/fuel-pumps' ? ['Parts & Spares','Fuel Pumps',['parts','parts/fuel-intake'],{'l0':'parts','l1':'parts/fuel-intake','l2':'parts/fuel-intake/fuel-pumps'},[]] : 
+   id == 'parts/fuel-intake/fuel-tanks' ? ['Parts & Spares','Fuel Tanks',['parts','parts/fuel-intake'],{'l0':'parts','l1':'parts/fuel-intake','l2':'parts/fuel-intake/fuel-tanks'},[]] : 
+   id == 'parts/fuel-intake/fuel-taps-petcocks' ? ['Parts & Spares','Fuel Taps / Petcocks',['parts','parts/fuel-intake'],{'l0':'parts','l1':'parts/fuel-intake','l2':'parts/fuel-intake/fuel-taps-petcocks'},[]] : 
+   id == 'parts/fuel-intake/fuel-lines-and-filters' ? ['Parts & Spares','Fuel Lines & Filters',['parts','parts/fuel-intake'],{'l0':'parts','l1':'parts/fuel-intake','l2':'parts/fuel-intake/fuel-lines-and-filters'},[]] : 
+   id == 'parts/fuel-intake/airboxes' ? ['Parts & Spares','Airboxes',['parts','parts/fuel-intake'],{'l0':'parts','l1':'parts/fuel-intake','l2':'parts/fuel-intake/airboxes'},[]] : 
+   id == 'parts/fuel-intake/air-filters' ? ['Parts & Spares','Air Filters',['parts','parts/fuel-intake'],{'l0':'parts','l1':'parts/fuel-intake','l2':'parts/fuel-intake/air-filters'},[]] : 
+   id == 'parts/fuel-intake/other-intake-components' ? ['Parts & Spares','Other Intake Components',['parts','parts/fuel-intake'],{'l0':'parts','l1':'parts/fuel-intake','l2':'parts/fuel-intake/other-intake-components'},[]] :  [];}
+  function categoryBucket14(id){return 
+   id == 'parts/exhaust/two-stroke-expansion-chambers' ? ['Parts & Spares','Two-Stroke Expansion Chambers',['parts','parts/exhaust'],{'l0':'parts','l1':'parts/exhaust','l2':'parts/exhaust/two-stroke-expansion-chambers'},['two-stroke']] : 
+   id == 'parts/exhaust/two-stroke-silencers' ? ['Parts & Spares','Two-Stroke Silencers',['parts','parts/exhaust'],{'l0':'parts','l1':'parts/exhaust','l2':'parts/exhaust/two-stroke-silencers'},['two-stroke']] : 
+   id == 'parts/exhaust/four-stroke-header-pipes' ? ['Parts & Spares','Four-Stroke Header Pipes',['parts','parts/exhaust'],{'l0':'parts','l1':'parts/exhaust','l2':'parts/exhaust/four-stroke-header-pipes'},['four-stroke']] : 
+   id == 'parts/exhaust/four-stroke-mufflers' ? ['Parts & Spares','Four-Stroke Mufflers',['parts','parts/exhaust'],{'l0':'parts','l1':'parts/exhaust','l2':'parts/exhaust/four-stroke-mufflers'},['four-stroke']] : 
+   id == 'parts/exhaust/complete-exhaust-systems' ? ['Parts & Spares','Complete Exhaust Systems',['parts','parts/exhaust'],{'l0':'parts','l1':'parts/exhaust','l2':'parts/exhaust/complete-exhaust-systems'},[]] : 
+   id == 'parts/exhaust/exhaust-guards' ? ['Parts & Spares','Exhaust Guards',['parts','parts/exhaust'],{'l0':'parts','l1':'parts/exhaust','l2':'parts/exhaust/exhaust-guards'},[]] : 
+   id == 'parts/exhaust/exhaust-mounts-and-brackets' ? ['Parts & Spares','Exhaust Mounts & Brackets',['parts','parts/exhaust'],{'l0':'parts','l1':'parts/exhaust','l2':'parts/exhaust/exhaust-mounts-and-brackets'},[]] : 
+   id == 'parts/exhaust/exhaust-packing' ? ['Parts & Spares','Exhaust Packing',['parts','parts/exhaust'],{'l0':'parts','l1':'parts/exhaust','l2':'parts/exhaust/exhaust-packing'},[]] : 
+   id == 'parts/exhaust/exhaust-springs' ? ['Parts & Spares','Exhaust Springs',['parts','parts/exhaust'],{'l0':'parts','l1':'parts/exhaust','l2':'parts/exhaust/exhaust-springs'},[]] : 
+   id == 'parts/exhaust/other-exhaust-parts' ? ['Parts & Spares','Other Exhaust Parts',['parts','parts/exhaust'],{'l0':'parts','l1':'parts/exhaust','l2':'parts/exhaust/other-exhaust-parts'},[]] :  [];}
+  function categoryBucket15(id){return 
+   id == 'parts/cooling/radiators' ? ['Parts & Spares','Radiators',['parts','parts/cooling'],{'l0':'parts','l1':'parts/cooling','l2':'parts/cooling/radiators'},[]] : 
+   id == 'parts/cooling/radiator-hoses' ? ['Parts & Spares','Radiator Hoses',['parts','parts/cooling'],{'l0':'parts','l1':'parts/cooling','l2':'parts/cooling/radiator-hoses'},[]] : 
+   id == 'parts/cooling/water-pumps' ? ['Parts & Spares','Water Pumps',['parts','parts/cooling'],{'l0':'parts','l1':'parts/cooling','l2':'parts/cooling/water-pumps'},[]] : 
+   id == 'parts/cooling/water-pump-impellers' ? ['Parts & Spares','Water Pump Impellers',['parts','parts/cooling'],{'l0':'parts','l1':'parts/cooling','l2':'parts/cooling/water-pump-impellers'},[]] : 
+   id == 'parts/cooling/radiator-caps' ? ['Parts & Spares','Radiator Caps',['parts','parts/cooling'],{'l0':'parts','l1':'parts/cooling','l2':'parts/cooling/radiator-caps'},[]] : 
+   id == 'parts/cooling/cooling-fans' ? ['Parts & Spares','Cooling Fans',['parts','parts/cooling'],{'l0':'parts','l1':'parts/cooling','l2':'parts/cooling/cooling-fans'},[]] : 
+   id == 'parts/cooling/overflow-tanks' ? ['Parts & Spares','Overflow Tanks',['parts','parts/cooling'],{'l0':'parts','l1':'parts/cooling','l2':'parts/cooling/overflow-tanks'},[]] : 
+   id == 'parts/cooling/cooling-system-accessories' ? ['Parts & Spares','Cooling System Accessories',['parts','parts/cooling'],{'l0':'parts','l1':'parts/cooling','l2':'parts/cooling/cooling-system-accessories'},[]] :  [];}
+  function categoryBucket16(id){return 
+   id == 'parts/electrical/stators' ? ['Parts & Spares','Stators',['parts','parts/electrical'],{'l0':'parts','l1':'parts/electrical','l2':'parts/electrical/stators'},[]] : 
+   id == 'parts/electrical/flywheels' ? ['Parts & Spares','Flywheels',['parts','parts/electrical'],{'l0':'parts','l1':'parts/electrical','l2':'parts/electrical/flywheels'},[]] : 
+   id == 'parts/electrical/ignition-coils' ? ['Parts & Spares','Ignition Coils',['parts','parts/electrical'],{'l0':'parts','l1':'parts/electrical','l2':'parts/electrical/ignition-coils'},[]] : 
+   id == 'parts/electrical/cdi-units' ? ['Parts & Spares','CDI Units',['parts','parts/electrical'],{'l0':'parts','l1':'parts/electrical','l2':'parts/electrical/cdi-units'},[]] : 
+   id == 'parts/electrical/ecus' ? ['Parts & Spares','ECUs',['parts','parts/electrical'],{'l0':'parts','l1':'parts/electrical','l2':'parts/electrical/ecus'},[]] : 
+   id == 'parts/electrical/wiring-harnesses' ? ['Parts & Spares','Wiring Harnesses',['parts','parts/electrical'],{'l0':'parts','l1':'parts/electrical','l2':'parts/electrical/wiring-harnesses'},[]] : 
+   id == 'parts/electrical/sensors' ? ['Parts & Spares','Sensors',['parts','parts/electrical'],{'l0':'parts','l1':'parts/electrical','l2':'parts/electrical/sensors'},[]] : 
+   id == 'parts/electrical/spark-plugs-and-caps' ? ['Parts & Spares','Spark Plugs & Caps',['parts','parts/electrical'],{'l0':'parts','l1':'parts/electrical','l2':'parts/electrical/spark-plugs-and-caps'},[]] : 
+   id == 'parts/electrical/voltage-regulators' ? ['Parts & Spares','Voltage Regulators',['parts','parts/electrical'],{'l0':'parts','l1':'parts/electrical','l2':'parts/electrical/voltage-regulators'},[]] : 
+   id == 'parts/electrical/rectifiers' ? ['Parts & Spares','Rectifiers',['parts','parts/electrical'],{'l0':'parts','l1':'parts/electrical','l2':'parts/electrical/rectifiers'},[]] : 
+   id == 'parts/electrical/batteries' ? ['Parts & Spares','Batteries',['parts','parts/electrical'],{'l0':'parts','l1':'parts/electrical','l2':'parts/electrical/batteries'},[]] : 
+   id == 'parts/electrical/electric-starters-starter-motors' ? ['Parts & Spares','Electric Starters / Starter Motors',['parts','parts/electrical'],{'l0':'parts','l1':'parts/electrical','l2':'parts/electrical/electric-starters-starter-motors'},[]] : 
+   id == 'parts/electrical/other-electrical-components' ? ['Parts & Spares','Other Electrical Components',['parts','parts/electrical'],{'l0':'parts','l1':'parts/electrical','l2':'parts/electrical/other-electrical-components'},[]] :  [];}
+  function categoryBucket17(id){return 
+   id == 'parts/suspension/front-forks' ? ['Parts & Spares','Front Forks',['parts','parts/suspension'],{'l0':'parts','l1':'parts/suspension','l2':'parts/suspension/front-forks'},[]] : 
+   id == 'parts/suspension/fork-tubes' ? ['Parts & Spares','Fork Tubes',['parts','parts/suspension'],{'l0':'parts','l1':'parts/suspension','l2':'parts/suspension/fork-tubes'},[]] : 
+   id == 'parts/suspension/fork-seals' ? ['Parts & Spares','Fork Seals',['parts','parts/suspension'],{'l0':'parts','l1':'parts/suspension','l2':'parts/suspension/fork-seals'},[]] : 
+   id == 'parts/suspension/fork-springs' ? ['Parts & Spares','Fork Springs',['parts','parts/suspension'],{'l0':'parts','l1':'parts/suspension','l2':'parts/suspension/fork-springs'},[]] : 
+   id == 'parts/suspension/fork-internals' ? ['Parts & Spares','Fork Internals',['parts','parts/suspension'],{'l0':'parts','l1':'parts/suspension','l2':'parts/suspension/fork-internals'},[]] : 
+   id == 'parts/suspension/rear-shocks' ? ['Parts & Spares','Rear Shocks',['parts','parts/suspension'],{'l0':'parts','l1':'parts/suspension','l2':'parts/suspension/rear-shocks'},[]] : 
+   id == 'parts/suspension/shock-springs' ? ['Parts & Spares','Shock Springs',['parts','parts/suspension'],{'l0':'parts','l1':'parts/suspension','l2':'parts/suspension/shock-springs'},[]] : 
+   id == 'parts/suspension/suspension-linkages' ? ['Parts & Spares','Suspension Linkages',['parts','parts/suspension'],{'l0':'parts','l1':'parts/suspension','l2':'parts/suspension/suspension-linkages'},[]] : 
+   id == 'parts/suspension/suspension-bearings' ? ['Parts & Spares','Suspension Bearings',['parts','parts/suspension'],{'l0':'parts','l1':'parts/suspension','l2':'parts/suspension/suspension-bearings'},[]] : 
+   id == 'parts/suspension/triple-clamps' ? ['Parts & Spares','Triple Clamps',['parts','parts/suspension'],{'l0':'parts','l1':'parts/suspension','l2':'parts/suspension/triple-clamps'},[]] : 
+   id == 'parts/suspension/suspension-protection' ? ['Parts & Spares','Suspension Protection',['parts','parts/suspension'],{'l0':'parts','l1':'parts/suspension','l2':'parts/suspension/suspension-protection'},[]] :  [];}
+  function categoryBucket18(id){return 
+   id == 'parts/brakes/brake-calipers' ? ['Parts & Spares','Brake Calipers',['parts','parts/brakes'],{'l0':'parts','l1':'parts/brakes','l2':'parts/brakes/brake-calipers'},[]] : 
+   id == 'parts/brakes/brake-discs-rotors' ? ['Parts & Spares','Brake Discs / Rotors',['parts','parts/brakes'],{'l0':'parts','l1':'parts/brakes','l2':'parts/brakes/brake-discs-rotors'},[]] : 
+   id == 'parts/brakes/brake-pads' ? ['Parts & Spares','Brake Pads',['parts','parts/brakes'],{'l0':'parts','l1':'parts/brakes','l2':'parts/brakes/brake-pads'},[]] : 
+   id == 'parts/brakes/master-cylinders' ? ['Parts & Spares','Master Cylinders',['parts','parts/brakes'],{'l0':'parts','l1':'parts/brakes','l2':'parts/brakes/master-cylinders'},[]] : 
+   id == 'parts/brakes/brake-lines' ? ['Parts & Spares','Brake Lines',['parts','parts/brakes'],{'l0':'parts','l1':'parts/brakes','l2':'parts/brakes/brake-lines'},[]] : 
+   id == 'parts/brakes/brake-levers' ? ['Parts & Spares','Brake Levers',['parts','parts/brakes'],{'l0':'parts','l1':'parts/brakes','l2':'parts/brakes/brake-levers'},[]] : 
+   id == 'parts/brakes/brake-rebuild-kits' ? ['Parts & Spares','Brake Rebuild Kits',['parts','parts/brakes'],{'l0':'parts','l1':'parts/brakes','l2':'parts/brakes/brake-rebuild-kits'},[]] : 
+   id == 'parts/brakes/other-brake-components' ? ['Parts & Spares','Other Brake Components',['parts','parts/brakes'],{'l0':'parts','l1':'parts/brakes','l2':'parts/brakes/other-brake-components'},[]] :  [];}
+  function categoryBucket19(id){return 
+   id == 'parts/wheels-tyres/complete-front-wheels' ? ['Parts & Spares','Complete Front Wheels',['parts','parts/wheels-tyres'],{'l0':'parts','l1':'parts/wheels-tyres','l2':'parts/wheels-tyres/complete-front-wheels'},[]] : 
+   id == 'parts/wheels-tyres/complete-rear-wheels' ? ['Parts & Spares','Complete Rear Wheels',['parts','parts/wheels-tyres'],{'l0':'parts','l1':'parts/wheels-tyres','l2':'parts/wheels-tyres/complete-rear-wheels'},[]] : 
+   id == 'parts/wheels-tyres/rims' ? ['Parts & Spares','Rims',['parts','parts/wheels-tyres'],{'l0':'parts','l1':'parts/wheels-tyres','l2':'parts/wheels-tyres/rims'},[]] : 
+   id == 'parts/wheels-tyres/hubs' ? ['Parts & Spares','Hubs',['parts','parts/wheels-tyres'],{'l0':'parts','l1':'parts/wheels-tyres','l2':'parts/wheels-tyres/hubs'},[]] : 
+   id == 'parts/wheels-tyres/spokes' ? ['Parts & Spares','Spokes',['parts','parts/wheels-tyres'],{'l0':'parts','l1':'parts/wheels-tyres','l2':'parts/wheels-tyres/spokes'},[]] : 
+   id == 'parts/wheels-tyres/axles' ? ['Parts & Spares','Axles',['parts','parts/wheels-tyres'],{'l0':'parts','l1':'parts/wheels-tyres','l2':'parts/wheels-tyres/axles'},[]] : 
+   id == 'parts/wheels-tyres/wheel-bearings' ? ['Parts & Spares','Wheel Bearings',['parts','parts/wheels-tyres'],{'l0':'parts','l1':'parts/wheels-tyres','l2':'parts/wheels-tyres/wheel-bearings'},[]] : 
+   id == 'parts/wheels-tyres/motocross-tyres' ? ['Parts & Spares','Motocross Tyres',['parts','parts/wheels-tyres'],{'l0':'parts','l1':'parts/wheels-tyres','l2':'parts/wheels-tyres/motocross-tyres'},[]] : 
+   id == 'parts/wheels-tyres/enduro-tyres' ? ['Parts & Spares','Enduro Tyres',['parts','parts/wheels-tyres'],{'l0':'parts','l1':'parts/wheels-tyres','l2':'parts/wheels-tyres/enduro-tyres'},[]] : 
+   id == 'parts/wheels-tyres/trials-tyres' ? ['Parts & Spares','Trials Tyres',['parts','parts/wheels-tyres'],{'l0':'parts','l1':'parts/wheels-tyres','l2':'parts/wheels-tyres/trials-tyres'},[]] : 
+   id == 'parts/wheels-tyres/tubes' ? ['Parts & Spares','Tubes',['parts','parts/wheels-tyres'],{'l0':'parts','l1':'parts/wheels-tyres','l2':'parts/wheels-tyres/tubes'},[]] : 
+   id == 'parts/wheels-tyres/mousses' ? ['Parts & Spares','Mousses',['parts','parts/wheels-tyres'],{'l0':'parts','l1':'parts/wheels-tyres','l2':'parts/wheels-tyres/mousses'},[]] : 
+   id == 'parts/wheels-tyres/rim-locks' ? ['Parts & Spares','Rim Locks',['parts','parts/wheels-tyres'],{'l0':'parts','l1':'parts/wheels-tyres','l2':'parts/wheels-tyres/rim-locks'},[]] : 
+   id == 'parts/wheels-tyres/tyre-accessories' ? ['Parts & Spares','Tyre Accessories',['parts','parts/wheels-tyres'],{'l0':'parts','l1':'parts/wheels-tyres','l2':'parts/wheels-tyres/tyre-accessories'},[]] :  [];}
+  function categoryBucket20(id){return 
+   id == 'parts/drivetrain/front-sprockets' ? ['Parts & Spares','Front Sprockets',['parts','parts/drivetrain'],{'l0':'parts','l1':'parts/drivetrain','l2':'parts/drivetrain/front-sprockets'},[]] : 
+   id == 'parts/drivetrain/rear-sprockets' ? ['Parts & Spares','Rear Sprockets',['parts','parts/drivetrain'],{'l0':'parts','l1':'parts/drivetrain','l2':'parts/drivetrain/rear-sprockets'},[]] : 
+   id == 'parts/drivetrain/chains' ? ['Parts & Spares','Chains',['parts','parts/drivetrain'],{'l0':'parts','l1':'parts/drivetrain','l2':'parts/drivetrain/chains'},[]] : 
+   id == 'parts/drivetrain/chain-guides' ? ['Parts & Spares','Chain Guides',['parts','parts/drivetrain'],{'l0':'parts','l1':'parts/drivetrain','l2':'parts/drivetrain/chain-guides'},[]] : 
+   id == 'parts/drivetrain/chain-sliders' ? ['Parts & Spares','Chain Sliders',['parts','parts/drivetrain'],{'l0':'parts','l1':'parts/drivetrain','l2':'parts/drivetrain/chain-sliders'},[]] : 
+   id == 'parts/drivetrain/chain-tensioners' ? ['Parts & Spares','Chain Tensioners',['parts','parts/drivetrain'],{'l0':'parts','l1':'parts/drivetrain','l2':'parts/drivetrain/chain-tensioners'},[]] : 
+   id == 'parts/drivetrain/chain-and-sprocket-kits' ? ['Parts & Spares','Chain & Sprocket Kits',['parts','parts/drivetrain'],{'l0':'parts','l1':'parts/drivetrain','l2':'parts/drivetrain/chain-and-sprocket-kits'},[]] :  [];}
+  function categoryBucket21(id){return 
+   id == 'parts/frame-controls/frames' ? ['Parts & Spares','Frames',['parts','parts/frame-controls'],{'l0':'parts','l1':'parts/frame-controls','l2':'parts/frame-controls/frames'},[]] : 
+   id == 'parts/frame-controls/subframes' ? ['Parts & Spares','Subframes',['parts','parts/frame-controls'],{'l0':'parts','l1':'parts/frame-controls','l2':'parts/frame-controls/subframes'},[]] : 
+   id == 'parts/frame-controls/swingarms' ? ['Parts & Spares','Swingarms',['parts','parts/frame-controls'],{'l0':'parts','l1':'parts/frame-controls','l2':'parts/frame-controls/swingarms'},[]] : 
+   id == 'parts/frame-controls/footpegs' ? ['Parts & Spares','Footpegs',['parts','parts/frame-controls'],{'l0':'parts','l1':'parts/frame-controls','l2':'parts/frame-controls/footpegs'},[]] : 
+   id == 'parts/frame-controls/handlebars' ? ['Parts & Spares','Handlebars',['parts','parts/frame-controls'],{'l0':'parts','l1':'parts/frame-controls','l2':'parts/frame-controls/handlebars'},[]] : 
+   id == 'parts/frame-controls/handlebar-mounts' ? ['Parts & Spares','Handlebar Mounts',['parts','parts/frame-controls'],{'l0':'parts','l1':'parts/frame-controls','l2':'parts/frame-controls/handlebar-mounts'},[]] : 
+   id == 'parts/frame-controls/grips' ? ['Parts & Spares','Grips',['parts','parts/frame-controls'],{'l0':'parts','l1':'parts/frame-controls','l2':'parts/frame-controls/grips'},[]] : 
+   id == 'parts/frame-controls/throttles' ? ['Parts & Spares','Throttles',['parts','parts/frame-controls'],{'l0':'parts','l1':'parts/frame-controls','l2':'parts/frame-controls/throttles'},[]] : 
+   id == 'parts/frame-controls/throttle-cables' ? ['Parts & Spares','Throttle Cables',['parts','parts/frame-controls'],{'l0':'parts','l1':'parts/frame-controls','l2':'parts/frame-controls/throttle-cables'},[]] : 
+   id == 'parts/frame-controls/clutch-levers' ? ['Parts & Spares','Clutch Levers',['parts','parts/frame-controls'],{'l0':'parts','l1':'parts/frame-controls','l2':'parts/frame-controls/clutch-levers'},[]] : 
+   id == 'parts/frame-controls/gear-shifters' ? ['Parts & Spares','Gear Shifters',['parts','parts/frame-controls'],{'l0':'parts','l1':'parts/frame-controls','l2':'parts/frame-controls/gear-shifters'},[]] : 
+   id == 'parts/frame-controls/rear-brake-pedals' ? ['Parts & Spares','Rear Brake Pedals',['parts','parts/frame-controls'],{'l0':'parts','l1':'parts/frame-controls','l2':'parts/frame-controls/rear-brake-pedals'},[]] : 
+   id == 'parts/frame-controls/kickstarters' ? ['Parts & Spares','Kickstarters',['parts','parts/frame-controls'],{'l0':'parts','l1':'parts/frame-controls','l2':'parts/frame-controls/kickstarters'},[]] : 
+   id == 'parts/frame-controls/steering-bearings' ? ['Parts & Spares','Steering Bearings',['parts','parts/frame-controls'],{'l0':'parts','l1':'parts/frame-controls','l2':'parts/frame-controls/steering-bearings'},[]] : 
+   id == 'parts/frame-controls/engine-mounts' ? ['Parts & Spares','Engine Mounts',['parts','parts/frame-controls'],{'l0':'parts','l1':'parts/frame-controls','l2':'parts/frame-controls/engine-mounts'},[]] :  [];}
+  function categoryBucket22(id){return 
+   id == 'parts/bodywork/complete-plastic-kits' ? ['Parts & Spares','Complete Plastic Kits',['parts','parts/bodywork'],{'l0':'parts','l1':'parts/bodywork','l2':'parts/bodywork/complete-plastic-kits'},[]] : 
+   id == 'parts/bodywork/front-fenders' ? ['Parts & Spares','Front Fenders',['parts','parts/bodywork'],{'l0':'parts','l1':'parts/bodywork','l2':'parts/bodywork/front-fenders'},[]] : 
+   id == 'parts/bodywork/rear-fenders' ? ['Parts & Spares','Rear Fenders',['parts','parts/bodywork'],{'l0':'parts','l1':'parts/bodywork','l2':'parts/bodywork/rear-fenders'},[]] : 
+   id == 'parts/bodywork/side-panels' ? ['Parts & Spares','Side Panels',['parts','parts/bodywork'],{'l0':'parts','l1':'parts/bodywork','l2':'parts/bodywork/side-panels'},[]] : 
+   id == 'parts/bodywork/radiator-shrouds' ? ['Parts & Spares','Radiator Shrouds',['parts','parts/bodywork'],{'l0':'parts','l1':'parts/bodywork','l2':'parts/bodywork/radiator-shrouds'},[]] : 
+   id == 'parts/bodywork/number-plates' ? ['Parts & Spares','Number Plates',['parts','parts/bodywork'],{'l0':'parts','l1':'parts/bodywork','l2':'parts/bodywork/number-plates'},[]] : 
+   id == 'parts/bodywork/seats' ? ['Parts & Spares','Seats',['parts','parts/bodywork'],{'l0':'parts','l1':'parts/bodywork','l2':'parts/bodywork/seats'},[]] : 
+   id == 'parts/bodywork/seat-covers' ? ['Parts & Spares','Seat Covers',['parts','parts/bodywork'],{'l0':'parts','l1':'parts/bodywork','l2':'parts/bodywork/seat-covers'},[]] : 
+   id == 'parts/bodywork/graphics-kits' ? ['Parts & Spares','Graphics Kits',['parts','parts/bodywork'],{'l0':'parts','l1':'parts/bodywork','l2':'parts/bodywork/graphics-kits'},[]] : 
+   id == 'parts/bodywork/fuel-tank-covers' ? ['Parts & Spares','Fuel Tank Covers',['parts','parts/bodywork'],{'l0':'parts','l1':'parts/bodywork','l2':'parts/bodywork/fuel-tank-covers'},[]] : 
+   id == 'parts/bodywork/other-plastics' ? ['Parts & Spares','Other Plastics',['parts','parts/bodywork'],{'l0':'parts','l1':'parts/bodywork','l2':'parts/bodywork/other-plastics'},[]] :  [];}
+  function categoryBucket23(id){return 
+   id == 'parts/guards/skid-plates' ? ['Parts & Spares','Skid Plates',['parts','parts/guards'],{'l0':'parts','l1':'parts/guards','l2':'parts/guards/skid-plates'},[]] : 
+   id == 'parts/guards/handguards' ? ['Parts & Spares','Handguards',['parts','parts/guards'],{'l0':'parts','l1':'parts/guards','l2':'parts/guards/handguards'},[]] : 
+   id == 'parts/guards/radiator-guards' ? ['Parts & Spares','Radiator Guards',['parts','parts/guards'],{'l0':'parts','l1':'parts/guards','l2':'parts/guards/radiator-guards'},[]] : 
+   id == 'parts/guards/disc-guards' ? ['Parts & Spares','Disc Guards',['parts','parts/guards'],{'l0':'parts','l1':'parts/guards','l2':'parts/guards/disc-guards'},[]] : 
+   id == 'parts/guards/engine-case-guards' ? ['Parts & Spares','Engine Case Guards',['parts','parts/guards'],{'l0':'parts','l1':'parts/guards','l2':'parts/guards/engine-case-guards'},[]] : 
+   id == 'parts/guards/frame-guards' ? ['Parts & Spares','Frame Guards',['parts','parts/guards'],{'l0':'parts','l1':'parts/guards','l2':'parts/guards/frame-guards'},[]] : 
+   id == 'parts/guards/fork-guards' ? ['Parts & Spares','Fork Guards',['parts','parts/guards'],{'l0':'parts','l1':'parts/guards','l2':'parts/guards/fork-guards'},[]] :  [];}
+  function categoryBucket24(id){return 
+   id == 'parts/service/oil-filters' ? ['Parts & Spares','Oil Filters',['parts','parts/service'],{'l0':'parts','l1':'parts/service','l2':'parts/service/oil-filters'},[]] : 
+   id == 'parts/service/gaskets' ? ['Parts & Spares','Gaskets',['parts','parts/service'],{'l0':'parts','l1':'parts/service','l2':'parts/service/gaskets'},[]] : 
+   id == 'parts/service/bearings' ? ['Parts & Spares','Bearings',['parts','parts/service'],{'l0':'parts','l1':'parts/service','l2':'parts/service/bearings'},[]] : 
+   id == 'parts/service/seals' ? ['Parts & Spares','Seals',['parts','parts/service'],{'l0':'parts','l1':'parts/service','l2':'parts/service/seals'},[]] : 
+   id == 'parts/service/fastener-kits' ? ['Parts & Spares','Fastener Kits',['parts','parts/service'],{'l0':'parts','l1':'parts/service','l2':'parts/service/fastener-kits'},[]] : 
+   id == 'parts/service/maintenance-kits' ? ['Parts & Spares','Maintenance Kits',['parts','parts/service'],{'l0':'parts','l1':'parts/service','l2':'parts/service/maintenance-kits'},[]] : 
+   id == 'parts/service/service-components' ? ['Parts & Spares','Service Components',['parts','parts/service'],{'l0':'parts','l1':'parts/service','l2':'parts/service/service-components'},[]] :  [];}
+  function categoryBucket25(id){return 
+   id == 'parts/breaking/complete-bikes-for-breaking' ? ['Parts & Spares','Complete Bikes for Breaking',['parts','parts/breaking'],{'l0':'parts','l1':'parts/breaking','l2':'parts/breaking/complete-bikes-for-breaking'},[]] : 
+   id == 'parts/breaking/parts-lots' ? ['Parts & Spares','Parts Lots',['parts','parts/breaking'],{'l0':'parts','l1':'parts/breaking','l2':'parts/breaking/parts-lots'},[]] : 
+   id == 'parts/breaking/mixed-spare-parts' ? ['Parts & Spares','Mixed Spare Parts',['parts','parts/breaking'],{'l0':'parts','l1':'parts/breaking','l2':'parts/breaking/mixed-spare-parts'},[]] :  [];}
+  function categoryBucket26(id){return 
+   id == 'riding-gear/helmets' ? ['Riding Gear & Apparel','Helmets',['riding-gear'],{'l0':'riding-gear','l1':'riding-gear/helmets'},[]] : 
+   id == 'riding-gear/boots' ? ['Riding Gear & Apparel','Boots',['riding-gear'],{'l0':'riding-gear','l1':'riding-gear/boots'},[]] : 
+   id == 'riding-gear/clothing' ? ['Riding Gear & Apparel','Clothing',['riding-gear'],{'l0':'riding-gear','l1':'riding-gear/clothing'},[]] : 
+   id == 'riding-gear/protection' ? ['Riding Gear & Apparel','Protection',['riding-gear'],{'l0':'riding-gear','l1':'riding-gear/protection'},[]] : 
+   id == 'riding-gear/gloves-goggles' ? ['Riding Gear & Apparel','Gloves & Goggles',['riding-gear'],{'l0':'riding-gear','l1':'riding-gear/gloves-goggles'},[]] : 
+   id == 'riding-gear/bags-hydration' ? ['Riding Gear & Apparel','Riding Bags & Hydration',['riding-gear'],{'l0':'riding-gear','l1':'riding-gear/bags-hydration'},[]] : 
+   id == 'riding-gear/other-riding-gear' ? ['Riding Gear & Apparel','Other riding gear',['riding-gear'],{'l0':'riding-gear','l1':'riding-gear/other-riding-gear'},[]] :  [];}
+  function categoryBucket27(id){return 
+   id == 'riding-gear/helmets/motocross-helmets' ? ['Riding Gear & Apparel','Motocross Helmets',['riding-gear','riding-gear/helmets'],{'l0':'riding-gear','l1':'riding-gear/helmets','l2':'riding-gear/helmets/motocross-helmets'},[]] : 
+   id == 'riding-gear/helmets/enduro-helmets' ? ['Riding Gear & Apparel','Enduro Helmets',['riding-gear','riding-gear/helmets'],{'l0':'riding-gear','l1':'riding-gear/helmets','l2':'riding-gear/helmets/enduro-helmets'},[]] : 
+   id == 'riding-gear/helmets/trials-helmets' ? ['Riding Gear & Apparel','Trials Helmets',['riding-gear','riding-gear/helmets'],{'l0':'riding-gear','l1':'riding-gear/helmets','l2':'riding-gear/helmets/trials-helmets'},[]] : 
+   id == 'riding-gear/helmets/helmet-accessories' ? ['Riding Gear & Apparel','Helmet Accessories',['riding-gear','riding-gear/helmets'],{'l0':'riding-gear','l1':'riding-gear/helmets','l2':'riding-gear/helmets/helmet-accessories'},[]] :  [];}
+  function categoryBucket28(id){return 
+   id == 'riding-gear/boots/motocross-boots' ? ['Riding Gear & Apparel','Motocross Boots',['riding-gear','riding-gear/boots'],{'l0':'riding-gear','l1':'riding-gear/boots','l2':'riding-gear/boots/motocross-boots'},[]] : 
+   id == 'riding-gear/boots/enduro-boots' ? ['Riding Gear & Apparel','Enduro Boots',['riding-gear','riding-gear/boots'],{'l0':'riding-gear','l1':'riding-gear/boots','l2':'riding-gear/boots/enduro-boots'},[]] : 
+   id == 'riding-gear/boots/trials-boots' ? ['Riding Gear & Apparel','Trials Boots',['riding-gear','riding-gear/boots'],{'l0':'riding-gear','l1':'riding-gear/boots','l2':'riding-gear/boots/trials-boots'},[]] : 
+   id == 'riding-gear/boots/boot-accessories-and-replacement-parts' ? ['Riding Gear & Apparel','Boot Accessories & Replacement Parts',['riding-gear','riding-gear/boots'],{'l0':'riding-gear','l1':'riding-gear/boots','l2':'riding-gear/boots/boot-accessories-and-replacement-parts'},[]] :  [];}
+  function categoryBucket29(id){return 
+   id == 'riding-gear/clothing/jerseys' ? ['Riding Gear & Apparel','Jerseys',['riding-gear','riding-gear/clothing'],{'l0':'riding-gear','l1':'riding-gear/clothing','l2':'riding-gear/clothing/jerseys'},[]] : 
+   id == 'riding-gear/clothing/riding-pants' ? ['Riding Gear & Apparel','Riding Pants',['riding-gear','riding-gear/clothing'],{'l0':'riding-gear','l1':'riding-gear/clothing','l2':'riding-gear/clothing/riding-pants'},[]] : 
+   id == 'riding-gear/clothing/jackets' ? ['Riding Gear & Apparel','Jackets',['riding-gear','riding-gear/clothing'],{'l0':'riding-gear','l1':'riding-gear/clothing','l2':'riding-gear/clothing/jackets'},[]] : 
+   id == 'riding-gear/clothing/base-layers' ? ['Riding Gear & Apparel','Base Layers',['riding-gear','riding-gear/clothing'],{'l0':'riding-gear','l1':'riding-gear/clothing','l2':'riding-gear/clothing/base-layers'},[]] : 
+   id == 'riding-gear/clothing/waterproof-riding-gear' ? ['Riding Gear & Apparel','Waterproof Riding Gear',['riding-gear','riding-gear/clothing'],{'l0':'riding-gear','l1':'riding-gear/clothing','l2':'riding-gear/clothing/waterproof-riding-gear'},[]] : 
+   id == 'riding-gear/clothing/casual-rider-apparel' ? ['Riding Gear & Apparel','Casual Rider Apparel',['riding-gear','riding-gear/clothing'],{'l0':'riding-gear','l1':'riding-gear/clothing','l2':'riding-gear/clothing/casual-rider-apparel'},[]] :  [];}
+  function categoryBucket30(id){return 
+   id == 'riding-gear/protection/chest-protectors' ? ['Riding Gear & Apparel','Chest Protectors',['riding-gear','riding-gear/protection'],{'l0':'riding-gear','l1':'riding-gear/protection','l2':'riding-gear/protection/chest-protectors'},[]] : 
+   id == 'riding-gear/protection/body-armour' ? ['Riding Gear & Apparel','Body Armour',['riding-gear','riding-gear/protection'],{'l0':'riding-gear','l1':'riding-gear/protection','l2':'riding-gear/protection/body-armour'},[]] : 
+   id == 'riding-gear/protection/knee-braces' ? ['Riding Gear & Apparel','Knee Braces',['riding-gear','riding-gear/protection'],{'l0':'riding-gear','l1':'riding-gear/protection','l2':'riding-gear/protection/knee-braces'},[]] : 
+   id == 'riding-gear/protection/knee-guards' ? ['Riding Gear & Apparel','Knee Guards',['riding-gear','riding-gear/protection'],{'l0':'riding-gear','l1':'riding-gear/protection','l2':'riding-gear/protection/knee-guards'},[]] : 
+   id == 'riding-gear/protection/neck-braces' ? ['Riding Gear & Apparel','Neck Braces',['riding-gear','riding-gear/protection'],{'l0':'riding-gear','l1':'riding-gear/protection','l2':'riding-gear/protection/neck-braces'},[]] : 
+   id == 'riding-gear/protection/elbow-guards' ? ['Riding Gear & Apparel','Elbow Guards',['riding-gear','riding-gear/protection'],{'l0':'riding-gear','l1':'riding-gear/protection','l2':'riding-gear/protection/elbow-guards'},[]] : 
+   id == 'riding-gear/protection/back-protectors' ? ['Riding Gear & Apparel','Back Protectors',['riding-gear','riding-gear/protection'],{'l0':'riding-gear','l1':'riding-gear/protection','l2':'riding-gear/protection/back-protectors'},[]] : 
+   id == 'riding-gear/protection/protective-shorts' ? ['Riding Gear & Apparel','Protective Shorts',['riding-gear','riding-gear/protection'],{'l0':'riding-gear','l1':'riding-gear/protection','l2':'riding-gear/protection/protective-shorts'},[]] : 
+   id == 'riding-gear/protection/other-protective-equipment' ? ['Riding Gear & Apparel','Other Protective Equipment',['riding-gear','riding-gear/protection'],{'l0':'riding-gear','l1':'riding-gear/protection','l2':'riding-gear/protection/other-protective-equipment'},[]] :  [];}
+  function categoryBucket31(id){return 
+   id == 'riding-gear/gloves-goggles/riding-gloves' ? ['Riding Gear & Apparel','Riding Gloves',['riding-gear','riding-gear/gloves-goggles'],{'l0':'riding-gear','l1':'riding-gear/gloves-goggles','l2':'riding-gear/gloves-goggles/riding-gloves'},[]] : 
+   id == 'riding-gear/gloves-goggles/goggles' ? ['Riding Gear & Apparel','Goggles',['riding-gear','riding-gear/gloves-goggles'],{'l0':'riding-gear','l1':'riding-gear/gloves-goggles','l2':'riding-gear/gloves-goggles/goggles'},[]] : 
+   id == 'riding-gear/gloves-goggles/lenses' ? ['Riding Gear & Apparel','Lenses',['riding-gear','riding-gear/gloves-goggles'],{'l0':'riding-gear','l1':'riding-gear/gloves-goggles','l2':'riding-gear/gloves-goggles/lenses'},[]] : 
+   id == 'riding-gear/gloves-goggles/tear-offs-roll-offs' ? ['Riding Gear & Apparel','Tear-offs / Roll-offs',['riding-gear','riding-gear/gloves-goggles'],{'l0':'riding-gear','l1':'riding-gear/gloves-goggles','l2':'riding-gear/gloves-goggles/tear-offs-roll-offs'},[]] : 
+   id == 'riding-gear/gloves-goggles/goggle-accessories' ? ['Riding Gear & Apparel','Goggle Accessories',['riding-gear','riding-gear/gloves-goggles'],{'l0':'riding-gear','l1':'riding-gear/gloves-goggles','l2':'riding-gear/gloves-goggles/goggle-accessories'},[]] :  [];}
+  function categoryBucket32(id){return 
+   id == 'riding-gear/bags-hydration/hydration-packs' ? ['Riding Gear & Apparel','Hydration Packs',['riding-gear','riding-gear/bags-hydration'],{'l0':'riding-gear','l1':'riding-gear/bags-hydration','l2':'riding-gear/bags-hydration/hydration-packs'},[]] : 
+   id == 'riding-gear/bags-hydration/riding-backpacks' ? ['Riding Gear & Apparel','Riding Backpacks',['riding-gear','riding-gear/bags-hydration'],{'l0':'riding-gear','l1':'riding-gear/bags-hydration','l2':'riding-gear/bags-hydration/riding-backpacks'},[]] : 
+   id == 'riding-gear/bags-hydration/tool-bags' ? ['Riding Gear & Apparel','Tool Bags',['riding-gear','riding-gear/bags-hydration'],{'l0':'riding-gear','l1':'riding-gear/bags-hydration','l2':'riding-gear/bags-hydration/tool-bags'},[]] : 
+   id == 'riding-gear/bags-hydration/waist-packs' ? ['Riding Gear & Apparel','Waist Packs',['riding-gear','riding-gear/bags-hydration'],{'l0':'riding-gear','l1':'riding-gear/bags-hydration','l2':'riding-gear/bags-hydration/waist-packs'},[]] :  [];}
+  function categoryBucket33(id){return 
+   id == 'electronics/gps-navigation' ? ['Electronics & Technology','GPS & Navigation',['electronics'],{'l0':'electronics','l1':'electronics/gps-navigation'},[]] : 
+   id == 'electronics/watches-wearables' ? ['Electronics & Technology','Watches & Wearables',['electronics'],{'l0':'electronics','l1':'electronics/watches-wearables'},[]] : 
+   id == 'electronics/tracking-security' ? ['Electronics & Technology','Motorcycle Tracking & Security',['electronics'],{'l0':'electronics','l1':'electronics/tracking-security'},[]] : 
+   id == 'electronics/ride-data' ? ['Electronics & Technology','Ride Monitoring & Data',['electronics'],{'l0':'electronics','l1':'electronics/ride-data'},[]] : 
+   id == 'electronics/cameras' ? ['Electronics & Technology','Action Cameras & Video',['electronics'],{'l0':'electronics','l1':'electronics/cameras'},[]] : 
+   id == 'electronics/communication' ? ['Electronics & Technology','Communication Equipment',['electronics'],{'l0':'electronics','l1':'electronics/communication'},[]] : 
+   id == 'electronics/power' ? ['Electronics & Technology','Power & Charging',['electronics'],{'l0':'electronics','l1':'electronics/power'},[]] : 
+   id == 'electronics/other' ? ['Electronics & Technology','Other Electronics',['electronics'],{'l0':'electronics','l1':'electronics/other'},[]] :  [];}
+  function categoryBucket34(id){return 
+   id == 'electronics/gps-navigation/handheld-gps-devices' ? ['Electronics & Technology','Handheld GPS Devices',['electronics','electronics/gps-navigation'],{'l0':'electronics','l1':'electronics/gps-navigation','l2':'electronics/gps-navigation/handheld-gps-devices'},[]] : 
+   id == 'electronics/gps-navigation/motorcycle-gps-units' ? ['Electronics & Technology','Motorcycle GPS Units',['electronics','electronics/gps-navigation'],{'l0':'electronics','l1':'electronics/gps-navigation','l2':'electronics/gps-navigation/motorcycle-gps-units'},[]] : 
+   id == 'electronics/gps-navigation/gps-navigation-systems' ? ['Electronics & Technology','GPS Navigation Systems',['electronics','electronics/gps-navigation'],{'l0':'electronics','l1':'electronics/gps-navigation','l2':'electronics/gps-navigation/gps-navigation-systems'},[]] : 
+   id == 'electronics/gps-navigation/navigation-mounts' ? ['Electronics & Technology','Navigation Mounts',['electronics','electronics/gps-navigation'],{'l0':'electronics','l1':'electronics/gps-navigation','l2':'electronics/gps-navigation/navigation-mounts'},[]] : 
+   id == 'electronics/gps-navigation/gps-accessories' ? ['Electronics & Technology','GPS Accessories',['electronics','electronics/gps-navigation'],{'l0':'electronics','l1':'electronics/gps-navigation','l2':'electronics/gps-navigation/gps-accessories'},[]] : 
+   id == 'electronics/gps-navigation/navigation-controllers' ? ['Electronics & Technology','Navigation Controllers',['electronics','electronics/gps-navigation'],{'l0':'electronics','l1':'electronics/gps-navigation','l2':'electronics/gps-navigation/navigation-controllers'},[]] : 
+   id == 'electronics/gps-navigation/rally-navigation-equipment' ? ['Electronics & Technology','Rally Navigation Equipment',['electronics','electronics/gps-navigation'],{'l0':'electronics','l1':'electronics/gps-navigation','l2':'electronics/gps-navigation/rally-navigation-equipment'},[]] :  [];}
+  function categoryBucket35(id){return 
+   id == 'electronics/watches-wearables/gps-watches' ? ['Electronics & Technology','GPS Watches',['electronics','electronics/watches-wearables'],{'l0':'electronics','l1':'electronics/watches-wearables','l2':'electronics/watches-wearables/gps-watches'},[]] : 
+   id == 'electronics/watches-wearables/smartwatches' ? ['Electronics & Technology','Smartwatches',['electronics','electronics/watches-wearables'],{'l0':'electronics','l1':'electronics/watches-wearables','l2':'electronics/watches-wearables/smartwatches'},[]] : 
+   id == 'electronics/watches-wearables/fitness-trackers' ? ['Electronics & Technology','Fitness Trackers',['electronics','electronics/watches-wearables'],{'l0':'electronics','l1':'electronics/watches-wearables','l2':'electronics/watches-wearables/fitness-trackers'},[]] : 
+   id == 'electronics/watches-wearables/heart-rate-monitors' ? ['Electronics & Technology','Heart Rate Monitors',['electronics','electronics/watches-wearables'],{'l0':'electronics','l1':'electronics/watches-wearables','l2':'electronics/watches-wearables/heart-rate-monitors'},[]] : 
+   id == 'electronics/watches-wearables/wearable-accessories' ? ['Electronics & Technology','Wearable Accessories',['electronics','electronics/watches-wearables'],{'l0':'electronics','l1':'electronics/watches-wearables','l2':'electronics/watches-wearables/wearable-accessories'},[]] :  [];}
+  function categoryBucket36(id){return 
+   id == 'electronics/tracking-security/gps-trackers' ? ['Electronics & Technology','GPS Trackers',['electronics','electronics/tracking-security'],{'l0':'electronics','l1':'electronics/tracking-security','l2':'electronics/tracking-security/gps-trackers'},[]] : 
+   id == 'electronics/tracking-security/anti-theft-tracking-devices' ? ['Electronics & Technology','Anti-Theft Tracking Devices',['electronics','electronics/tracking-security'],{'l0':'electronics','l1':'electronics/tracking-security','l2':'electronics/tracking-security/anti-theft-tracking-devices'},[]] : 
+   id == 'electronics/tracking-security/motorcycle-alarms' ? ['Electronics & Technology','Motorcycle Alarms',['electronics','electronics/tracking-security'],{'l0':'electronics','l1':'electronics/tracking-security','l2':'electronics/tracking-security/motorcycle-alarms'},[]] : 
+   id == 'electronics/tracking-security/security-sensors' ? ['Electronics & Technology','Security Sensors',['electronics','electronics/tracking-security'],{'l0':'electronics','l1':'electronics/tracking-security','l2':'electronics/tracking-security/security-sensors'},[]] : 
+   id == 'electronics/tracking-security/tracker-accessories' ? ['Electronics & Technology','Tracker Accessories',['electronics','electronics/tracking-security'],{'l0':'electronics','l1':'electronics/tracking-security','l2':'electronics/tracking-security/tracker-accessories'},[]] :  [];}
+  function categoryBucket37(id){return 
+   id == 'electronics/ride-data/engine-hour-meters' ? ['Electronics & Technology','Engine Hour Meters',['electronics','electronics/ride-data'],{'l0':'electronics','l1':'electronics/ride-data','l2':'electronics/ride-data/engine-hour-meters'},[]] : 
+   id == 'electronics/ride-data/digital-dashboards' ? ['Electronics & Technology','Digital Dashboards',['electronics','electronics/ride-data'],{'l0':'electronics','l1':'electronics/ride-data','l2':'electronics/ride-data/digital-dashboards'},[]] : 
+   id == 'electronics/ride-data/lap-timers' ? ['Electronics & Technology','Lap Timers',['electronics','electronics/ride-data'],{'l0':'electronics','l1':'electronics/ride-data','l2':'electronics/ride-data/lap-timers'},[]] : 
+   id == 'electronics/ride-data/data-loggers' ? ['Electronics & Technology','Data Loggers',['electronics','electronics/ride-data'],{'l0':'electronics','l1':'electronics/ride-data','l2':'electronics/ride-data/data-loggers'},[]] : 
+   id == 'electronics/ride-data/ride-telemetry' ? ['Electronics & Technology','Ride Telemetry',['electronics','electronics/ride-data'],{'l0':'electronics','l1':'electronics/ride-data','l2':'electronics/ride-data/ride-telemetry'},[]] : 
+   id == 'electronics/ride-data/electronic-speedometers' ? ['Electronics & Technology','Electronic Speedometers',['electronics','electronics/ride-data'],{'l0':'electronics','l1':'electronics/ride-data','l2':'electronics/ride-data/electronic-speedometers'},[]] : 
+   id == 'electronics/ride-data/other-monitoring-equipment' ? ['Electronics & Technology','Other Monitoring Equipment',['electronics','electronics/ride-data'],{'l0':'electronics','l1':'electronics/ride-data','l2':'electronics/ride-data/other-monitoring-equipment'},[]] :  [];}
+  function categoryBucket38(id){return 
+   id == 'electronics/cameras/action-cameras' ? ['Electronics & Technology','Action Cameras',['electronics','electronics/cameras'],{'l0':'electronics','l1':'electronics/cameras','l2':'electronics/cameras/action-cameras'},[]] : 
+   id == 'electronics/cameras/helmet-cameras' ? ['Electronics & Technology','Helmet Cameras',['electronics','electronics/cameras'],{'l0':'electronics','l1':'electronics/cameras','l2':'electronics/cameras/helmet-cameras'},[]] : 
+   id == 'electronics/cameras/camera-mounts' ? ['Electronics & Technology','Camera Mounts',['electronics','electronics/cameras'],{'l0':'electronics','l1':'electronics/cameras','l2':'electronics/cameras/camera-mounts'},[]] : 
+   id == 'electronics/cameras/camera-batteries' ? ['Electronics & Technology','Camera Batteries',['electronics','electronics/cameras'],{'l0':'electronics','l1':'electronics/cameras','l2':'electronics/cameras/camera-batteries'},[]] : 
+   id == 'electronics/cameras/camera-accessories' ? ['Electronics & Technology','Camera Accessories',['electronics','electronics/cameras'],{'l0':'electronics','l1':'electronics/cameras','l2':'electronics/cameras/camera-accessories'},[]] :  [];}
+  function categoryBucket39(id){return 
+   id == 'electronics/communication/helmet-communication-systems' ? ['Electronics & Technology','Helmet Communication Systems',['electronics','electronics/communication'],{'l0':'electronics','l1':'electronics/communication','l2':'electronics/communication/helmet-communication-systems'},[]] : 
+   id == 'electronics/communication/bluetooth-intercoms' ? ['Electronics & Technology','Bluetooth Intercoms',['electronics','electronics/communication'],{'l0':'electronics','l1':'electronics/communication','l2':'electronics/communication/bluetooth-intercoms'},[]] : 
+   id == 'electronics/communication/radios' ? ['Electronics & Technology','Radios',['electronics','electronics/communication'],{'l0':'electronics','l1':'electronics/communication','l2':'electronics/communication/radios'},[]] : 
+   id == 'electronics/communication/communication-accessories' ? ['Electronics & Technology','Communication Accessories',['electronics','electronics/communication'],{'l0':'electronics','l1':'electronics/communication','l2':'electronics/communication/communication-accessories'},[]] :  [];}
+  function categoryBucket40(id){return 
+   id == 'electronics/power/portable-power-banks' ? ['Electronics & Technology','Portable Power Banks',['electronics','electronics/power'],{'l0':'electronics','l1':'electronics/power','l2':'electronics/power/portable-power-banks'},[]] : 
+   id == 'electronics/power/chargers' ? ['Electronics & Technology','Chargers',['electronics','electronics/power'],{'l0':'electronics','l1':'electronics/power','l2':'electronics/power/chargers'},[]] : 
+   id == 'electronics/power/usb-power-systems' ? ['Electronics & Technology','USB Power Systems',['electronics','electronics/power'],{'l0':'electronics','l1':'electronics/power','l2':'electronics/power/usb-power-systems'},[]] : 
+   id == 'electronics/power/12v-accessories' ? ['Electronics & Technology','12V Accessories',['electronics','electronics/power'],{'l0':'electronics','l1':'electronics/power','l2':'electronics/power/12v-accessories'},[]] : 
+   id == 'electronics/power/charging-cables-and-mounts' ? ['Electronics & Technology','Charging Cables & Mounts',['electronics','electronics/power'],{'l0':'electronics','l1':'electronics/power','l2':'electronics/power/charging-cables-and-mounts'},[]] :  [];}
+  function categoryBucket41(id){return 
+   id == 'accessories/transport' ? ['Accessories & Equipment','Transport & Storage',['accessories'],{'l0':'accessories','l1':'accessories/transport'},[]] : 
+   id == 'accessories/riding' ? ['Accessories & Equipment','Riding & Pit Equipment',['accessories'],{'l0':'accessories','l1':'accessories/riding'},[]] : 
+   id == 'accessories/other-accessories' ? ['Accessories & Equipment','Other accessories',['accessories'],{'l0':'accessories','l1':'accessories/other-accessories'},[]] :  [];}
+  function categoryBucket42(id){return 
+   id == 'accessories/transport/bike-covers' ? ['Accessories & Equipment','Bike Covers',['accessories','accessories/transport'],{'l0':'accessories','l1':'accessories/transport','l2':'accessories/transport/bike-covers'},[]] : 
+   id == 'accessories/transport/tie-down-straps' ? ['Accessories & Equipment','Tie-down Straps',['accessories','accessories/transport'],{'l0':'accessories','l1':'accessories/transport','l2':'accessories/transport/tie-down-straps'},[]] : 
+   id == 'accessories/transport/loading-ramps' ? ['Accessories & Equipment','Loading Ramps',['accessories','accessories/transport'],{'l0':'accessories','l1':'accessories/transport','l2':'accessories/transport/loading-ramps'},[]] : 
+   id == 'accessories/transport/bike-transport-accessories' ? ['Accessories & Equipment','Bike Transport Accessories',['accessories','accessories/transport'],{'l0':'accessories','l1':'accessories/transport','l2':'accessories/transport/bike-transport-accessories'},[]] : 
+   id == 'accessories/transport/motorcycle-luggage' ? ['Accessories & Equipment','Motorcycle Luggage',['accessories','accessories/transport'],{'l0':'accessories','l1':'accessories/transport','l2':'accessories/transport/motorcycle-luggage'},[]] :  [];}
+  function categoryBucket43(id){return 
+   id == 'accessories/riding/off-road-riding-accessories' ? ['Accessories & Equipment','Off-Road Riding Accessories',['accessories','accessories/riding'],{'l0':'accessories','l1':'accessories/riding','l2':'accessories/riding/off-road-riding-accessories'},[]] : 
+   id == 'accessories/riding/pit-equipment' ? ['Accessories & Equipment','Pit Equipment',['accessories','accessories/riding'],{'l0':'accessories','l1':'accessories/riding','l2':'accessories/riding/pit-equipment'},[]] : 
+   id == 'accessories/riding/hydration-accessories' ? ['Accessories & Equipment','Hydration Accessories',['accessories','accessories/riding'],{'l0':'accessories','l1':'accessories/riding','l2':'accessories/riding/hydration-accessories'},[]] : 
+   id == 'accessories/riding/camping-trail-accessories' ? ['Accessories & Equipment','Camping / Trail Accessories',['accessories','accessories/riding'],{'l0':'accessories','l1':'accessories/riding','l2':'accessories/riding/camping-trail-accessories'},[]] : 
+   id == 'accessories/riding/other-equipment' ? ['Accessories & Equipment','Other Equipment',['accessories','accessories/riding'],{'l0':'accessories','l1':'accessories/riding','l2':'accessories/riding/other-equipment'},[]] :  [];}
+  function categoryBucket44(id){return 
+   id == 'tools/tools' ? ['Tools & Workshop','Specialist Motorcycle Tools',['tools'],{'l0':'tools','l1':'tools/tools'},[]] : 
+   id == 'tools/workshop' ? ['Tools & Workshop','Workshop Equipment',['tools'],{'l0':'tools','l1':'tools/workshop'},[]] : 
+   id == 'tools/other-workshop-items' ? ['Tools & Workshop','Other workshop items',['tools'],{'l0':'tools','l1':'tools/other-workshop-items'},[]] :  [];}
+  function categoryBucket45(id){return 
+   id == 'tools/tools/general-motorcycle-tools' ? ['Tools & Workshop','General Motorcycle Tools',['tools','tools/tools'],{'l0':'tools','l1':'tools/tools','l2':'tools/tools/general-motorcycle-tools'},[]] : 
+   id == 'tools/tools/engine-tools' ? ['Tools & Workshop','Engine Tools',['tools','tools/tools'],{'l0':'tools','l1':'tools/tools','l2':'tools/tools/engine-tools'},[]] : 
+   id == 'tools/tools/flywheel-pullers' ? ['Tools & Workshop','Flywheel Pullers',['tools','tools/tools'],{'l0':'tools','l1':'tools/tools','l2':'tools/tools/flywheel-pullers'},[]] : 
+   id == 'tools/tools/bearing-tools' ? ['Tools & Workshop','Bearing Tools',['tools','tools/tools'],{'l0':'tools','l1':'tools/tools','l2':'tools/tools/bearing-tools'},[]] : 
+   id == 'tools/tools/torque-wrenches' ? ['Tools & Workshop','Torque Wrenches',['tools','tools/tools'],{'l0':'tools','l1':'tools/tools','l2':'tools/tools/torque-wrenches'},[]] : 
+   id == 'tools/tools/carburettor-tools' ? ['Tools & Workshop','Carburettor Tools',['tools','tools/tools'],{'l0':'tools','l1':'tools/tools','l2':'tools/tools/carburettor-tools'},[]] : 
+   id == 'tools/tools/tyre-changing-tools' ? ['Tools & Workshop','Tyre Changing Tools',['tools','tools/tools'],{'l0':'tools','l1':'tools/tools','l2':'tools/tools/tyre-changing-tools'},[]] : 
+   id == 'tools/tools/suspension-tools' ? ['Tools & Workshop','Suspension Tools',['tools','tools/tools'],{'l0':'tools','l1':'tools/tools','l2':'tools/tools/suspension-tools'},[]] : 
+   id == 'tools/tools/diagnostic-equipment' ? ['Tools & Workshop','Diagnostic Equipment',['tools','tools/tools'],{'l0':'tools','l1':'tools/tools','l2':'tools/tools/diagnostic-equipment'},[]] : 
+   id == 'tools/tools/other-workshop-tools' ? ['Tools & Workshop','Other Workshop Tools',['tools','tools/tools'],{'l0':'tools','l1':'tools/tools','l2':'tools/tools/other-workshop-tools'},[]] :  [];}
+  function categoryBucket46(id){return 
+   id == 'tools/workshop/bike-workshop-stands' ? ['Tools & Workshop','Bike / Workshop Stands',['tools','tools/workshop'],{'l0':'tools','l1':'tools/workshop','l2':'tools/workshop/bike-workshop-stands'},[]] : 
+   id == 'tools/workshop/lifts' ? ['Tools & Workshop','Lifts',['tools','tools/workshop'],{'l0':'tools','l1':'tools/workshop','l2':'tools/workshop/lifts'},[]] : 
+   id == 'tools/workshop/maintenance-equipment' ? ['Tools & Workshop','Maintenance Equipment',['tools','tools/workshop'],{'l0':'tools','l1':'tools/workshop','l2':'tools/workshop/maintenance-equipment'},[]] :  [];}
+  function rootRecord0(d,p){return p == 'motorcycles' ? categoryBucket1(d.categoryId) : p == 'motorcycles/motocross' ? categoryBucket2(d.categoryId) : p == 'motorcycles/enduro' ? categoryBucket3(d.categoryId) : p == 'motorcycles/trials' ? categoryBucket4(d.categoryId) : p == 'motorcycles/trail' ? categoryBucket5(d.categoryId) :  []; }
+  function rootRecord1(d,p){return p == 'parts' ? categoryBucket6(d.categoryId) : p == 'parts/complete-engines' ? categoryBucket7(d.categoryId) : p == 'parts/engine' ? categoryBucket8(d.categoryId) : p == 'parts/engine/top-end' ? categoryBucket9(d.categoryId) : p == 'parts/engine/bottom-end' ? categoryBucket10(d.categoryId) : p == 'parts/transmission' ? categoryBucket11(d.categoryId) : p == 'parts/clutch' ? categoryBucket12(d.categoryId) : p == 'parts/fuel-intake' ? categoryBucket13(d.categoryId) : p == 'parts/exhaust' ? categoryBucket14(d.categoryId) : p == 'parts/cooling' ? categoryBucket15(d.categoryId) : p == 'parts/electrical' ? categoryBucket16(d.categoryId) : p == 'parts/suspension' ? categoryBucket17(d.categoryId) : p == 'parts/brakes' ? categoryBucket18(d.categoryId) : p == 'parts/wheels-tyres' ? categoryBucket19(d.categoryId) : p == 'parts/drivetrain' ? categoryBucket20(d.categoryId) : p == 'parts/frame-controls' ? categoryBucket21(d.categoryId) : p == 'parts/bodywork' ? categoryBucket22(d.categoryId) : p == 'parts/guards' ? categoryBucket23(d.categoryId) : p == 'parts/service' ? categoryBucket24(d.categoryId) : p == 'parts/breaking' ? categoryBucket25(d.categoryId) :  []; }
+  function rootRecord2(d,p){return p == 'riding-gear' ? categoryBucket26(d.categoryId) : p == 'riding-gear/helmets' ? categoryBucket27(d.categoryId) : p == 'riding-gear/boots' ? categoryBucket28(d.categoryId) : p == 'riding-gear/clothing' ? categoryBucket29(d.categoryId) : p == 'riding-gear/protection' ? categoryBucket30(d.categoryId) : p == 'riding-gear/gloves-goggles' ? categoryBucket31(d.categoryId) : p == 'riding-gear/bags-hydration' ? categoryBucket32(d.categoryId) :  []; }
+  function rootRecord3(d,p){return p == 'electronics' ? categoryBucket33(d.categoryId) : p == 'electronics/gps-navigation' ? categoryBucket34(d.categoryId) : p == 'electronics/watches-wearables' ? categoryBucket35(d.categoryId) : p == 'electronics/tracking-security' ? categoryBucket36(d.categoryId) : p == 'electronics/ride-data' ? categoryBucket37(d.categoryId) : p == 'electronics/cameras' ? categoryBucket38(d.categoryId) : p == 'electronics/communication' ? categoryBucket39(d.categoryId) : p == 'electronics/power' ? categoryBucket40(d.categoryId) :  []; }
+  function rootRecord4(d,p){return p == 'accessories' ? categoryBucket41(d.categoryId) : p == 'accessories/transport' ? categoryBucket42(d.categoryId) : p == 'accessories/riding' ? categoryBucket43(d.categoryId) :  []; }
+  function rootRecord5(d,p){return p == 'tools' ? categoryBucket44(d.categoryId) : p == 'tools/tools' ? categoryBucket45(d.categoryId) : p == 'tools/workshop' ? categoryBucket46(d.categoryId) :  []; }
+  function categoryRecord(d){let p=d.categoryAncestorIds.size()>0 ? d.categoryAncestorIds[d.categoryAncestorIds.size()-1] : '';return p == '' ? categoryBucket0(d.categoryId) : d.primaryCategoryId == 'motorcycles' ? rootRecord0(d,p) : d.primaryCategoryId == 'parts' ? rootRecord1(d,p) : d.primaryCategoryId == 'riding-gear' ? rootRecord2(d,p) : d.primaryCategoryId == 'electronics' ? rootRecord3(d,p) : d.primaryCategoryId == 'accessories' ? rootRecord4(d,p) : d.primaryCategoryId == 'tools' ? rootRecord5(d,p) :  [];}
+
+  function validCategory(d){let c=categoryRecord(d);return c.size() == 5 && d.primaryCategoryId == d.categoryPath.l0 && d.category == c[0] && d.subcategory == c[1] && d.categoryAncestorIds == c[2] && d.categoryPath == c[3] && (c[4].size() == 0 || d.details.engineType == '' || d.details.engineType in c[4]);}
+  function validMake(d){return (d.make == '' && d.model == '') || (d.make in ['Honda','Yamaha','Kawasaki','Suzuki','KTM','Husqvarna','GasGas','Beta','Sherco','TM Racing','Fantic','Rieju','Montesa','TRS','Scorpa','Vertigo'] && (d.model == '' || d.model in (d.make == 'Honda' ? ['CR80','CR85','CR125','CR250','CR500','CRF150R','CRF250R','CRF250X','CRF450R','CRF450X','CRF250F'] : d.make == 'Yamaha' ? ['YZ65','YZ85','YZ125','YZ250','YZ250F','YZ450F','YZ250X','YZ250FX','WR250F','WR450F','TT-R125','TT-R230'] : d.make == 'Kawasaki' ? ['KX65','KX85','KX100','KX112','KX125','KX250','KX250F','KX450','KX450F','KDX200','KDX220','KLX110','KLX230','KLX300'] : d.make == 'Suzuki' ? ['RM80','RM85','RM125','RM250','RM-Z250','RM-Z450','DR-Z125','DR-Z400'] : d.make == 'KTM' ? ['50 SX','65 SX','85 SX','125 SX','250 SX','250 SX-F','350 SX-F','450 SX-F','250 EXC','300 EXC','250 EXC-F','350 EXC-F','450 EXC-F','500 EXC-F'] : d.make == 'Husqvarna' ? ['TC 65','TC 85','TC 125','TC 250','FC 250','FC 350','FC 450','TE 150','TE 250','TE 300','FE 250','FE 350','FE 450','FE 501'] : d.make == 'GasGas' ? ['MC 65','MC 85','MC 125','MC 250','MC 250F','MC 450F','EC 250','EC 300','EC 250F','EC 350F','TXT Racing 250','TXT Racing 300'] : d.make == 'Beta' ? ['RR 125','RR 200','RR 250','RR 300','RR 350','RR 390','RR 430','RR 480','Xtrainer 250','Xtrainer 300','Evo 250','Evo 300'] : d.make == 'Sherco' ? ['125 SE','250 SE','300 SE','250 SEF','300 SEF','450 SEF','500 SEF','ST 250','ST 300'] : d.make == 'TM Racing' ? ['MX 125','MX 250','MX 250 Fi','MX 450 Fi','EN 125','EN 250','EN 300','EN 250 Fi','EN 450 Fi'] : d.make == 'Fantic' ? ['XX 125','XX 250','XXF 250','XXF 450','XE 125','XE 300','XEF 250','XEF 450'] : d.make == 'Rieju' ? ['MR 250','MR 300','Ranger 200','Ranger 300'] : d.make == 'Montesa' ? ['Cota 4RT','Cota 301RR'] : d.make == 'TRS' ? ['One 125','One 250','One 280','One 300'] : d.make == 'Scorpa' ? ['SC 125','SC 250','SC 300'] : d.make == 'Vertigo' ? ['Combat 250','Combat 300','Nitro 250','Nitro 300'] :  [])));}
+  function validProvince(region){return region in ['ZA-GP','ZA-WC','ZA-KZN','ZA-EC','ZA-FS','ZA-LP','ZA-MP','ZA-NW','ZA-NC'];}
+  // END GENERATED MARKETPLACE CATEGORIES
+  function validListing(d){return d.keys().hasOnly(['id','ownerId','slug','title','description','category','subcategory','make','model','year','price','currency','country','region','city','condition','shipping','specs','images','status','createdAt','updatedAt','searchTokens','categoryId','primaryCategoryId','categoryAncestorIds','categoryPath','details'])
+   && validCategory(d) && validMake(d) && validDetails(d)
+   && shortText(d.title,100) && shortText(d.description,5000) && shortText(d.slug,120)
+   && shortText(d.make,40) && shortText(d.model,80) && shortText(d.subcategory,80)
+   && shortText(d.region,80) && shortText(d.city,80) && shortText(d.specs,1500)
+   && d.year is number && (d.year == 0 || (d.year >= 1950 && d.year <= 2028))
+   && d.createdAt is number && d.updatedAt is number
+   && d.condition in ['New','Excellent','Good','Used']
+   && d.shipping in ['Collection only','Domestic shipping']
+   && d.price is number && d.price >= 0 && d.price <= 10000000 && d.images is list && d.images.size() <= 8
+   && d.searchTokens is list && d.searchTokens.size() <= 350 && d.country == 'ZA'
+   && d.currency == 'ZAR' && (validProvince(d.region) || (d.status == 'draft' && d.region == ''))
+   && d.status in ['draft','published','sold'] && (d.status != 'published' || (d.title.size() >= 8 && d.description.size() >= 20 && d.price > 0 && d.images.size() > 0 && d.city.size() >= 2 && d.region.size() >= 2));}
+  match /listings/{id} {
+   allow read: if (resource.data.status in ['published','sold','expired','on-hold'] && resource.data.country == 'ZA' && resource.data.currency == 'ZAR') || owner(resource.data.ownerId) || admin();
+   // Lifecycle changes and published edits use the token-verified server API, which records history.
+   allow create: if owner(request.resource.data.ownerId) && request.resource.data.id == id && request.resource.data.status == 'draft' && request.resource.data.createdAt >= request.time.toMillis()-60000 && request.resource.data.createdAt <= request.time.toMillis()+60000 && validListing(request.resource.data);
+   allow update: if (owner(resource.data.ownerId) && resource.data.status == 'draft' && request.resource.data.status == 'draft' && request.resource.data.ownerId == resource.data.ownerId && request.resource.data.createdAt == resource.data.createdAt && request.resource.data.id == resource.data.id && validListing(request.resource.data)) || (admin() && resource.data.status != 'removed' && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status','updatedAt']) && request.resource.data.status in ['hidden','published']);
+   allow delete: if false;
+   match /history/{eventId} { allow read: if owner(get(/databases/$(database)/documents/listings/$(id)).data.ownerId) || admin(); allow write: if false; }
+   match /mediaCleanup/{job} { allow read,write: if false; }
+  }
+  function validProfile(d){return d.keys().hasOnly(['displayName','bio','city','region','country','sellerType','createdAt','photoURL']) && shortText(d.displayName,80) && d.displayName.size() >= 2 && shortText(d.bio,600) && shortText(d.city,80) && (d.get('region','') == '' || validProvince(d.region)) && d.country in ['ZA','GB','US','AU'] && d.sellerType in ['private','dealer'] && shortText(d.get('photoURL',''),2048) && (d.get('photoURL','') == '' || d.photoURL.matches('https://[^ ]+')) && d.createdAt is number;}
+  match /profiles/{uid} {
+   allow read: if true;
+   allow create: if owner(uid) && validProfile(request.resource.data) && request.resource.data.createdAt >= request.time.toMillis()-60000 && request.resource.data.createdAt <= request.time.toMillis()+60000;
+   allow update: if owner(uid) && validProfile(request.resource.data) && request.resource.data.createdAt == resource.data.createdAt;
+   allow delete: if false;
+   match /following/{target} {
+    allow read: if true;
+    allow create: if active() && owner(uid) && uid != target && exists(/databases/$(database)/documents/profiles/$(uid)) && exists(/databases/$(database)/documents/profiles/$(target)) && request.resource.data.keys().hasOnly(['createdAt']) && request.resource.data.createdAt == request.time && getAfter(/databases/$(database)/documents/profiles/$(target)/followers/$(uid)).data.createdAt == request.time;
+    allow delete: if owner(uid) && !existsAfter(/databases/$(database)/documents/profiles/$(target)/followers/$(uid));
+    allow update: if false;
+   }
+   match /followers/{follower} {
+    allow read: if true;
+    allow create: if active() && owner(follower) && uid != follower && exists(/databases/$(database)/documents/profiles/$(uid)) && exists(/databases/$(database)/documents/profiles/$(follower)) && request.resource.data.keys().hasOnly(['createdAt']) && request.resource.data.createdAt == request.time && getAfter(/databases/$(database)/documents/profiles/$(follower)/following/$(uid)).data.createdAt == request.time;
+    allow delete: if owner(follower) && !existsAfter(/databases/$(database)/documents/profiles/$(follower)/following/$(uid));
+    allow update: if false;
+   }
+  }
+  function validSaved(d){let f=d.filters;return d.keys().hasOnly(['name','filters','createdAt','notificationsEnabled','version']) && shortText(d.name,160) && d.name.size() > 0 && d.createdAt is number && d.version == 2 && d.notificationsEnabled == false && f is map && f.keys().hasOnly(['country','category','term','make','model','year','yearFrom','yearTo','region','city','condition','shipping','min','max','sort','engineType','displacement','maxHours','fuelSystem','origin','brand','size','sizeSystem','sellerType','vintage']) && shortText(f.country,100) && shortText(f.category,100) && shortText(f.term,100) && shortText(f.make,100) && shortText(f.model,100) && shortText(f.year,100) && shortText(f.yearFrom,100) && shortText(f.yearTo,100) && shortText(f.region,100) && shortText(f.city,100) && shortText(f.condition,100) && shortText(f.shipping,100) && shortText(f.min,100) && shortText(f.max,100) && shortText(f.sort,100) && shortText(f.engineType,100) && shortText(f.displacement,100) && shortText(f.maxHours,100) && shortText(f.fuelSystem,100) && shortText(f.origin,100) && shortText(f.brand,100) && shortText(f.size,100) && shortText(f.sizeSystem,100) && shortText(f.sellerType,100) && shortText(f.vintage,100) && f.country == 'ZA' && (f.category == '' || f.category in ['motorcycles','motorcycles/motocross','motorcycles/motocross/two-stroke-motocross','motorcycles/motocross/four-stroke-motocross','motorcycles/motocross/youth-motocross','motorcycles/enduro','motorcycles/enduro/hard-enduro','motorcycles/enduro/cross-country-enduro','motorcycles/enduro/trail-enduro','motorcycles/enduro/road-legal-enduro','motorcycles/trials','motorcycles/trials/modern-trials','motorcycles/trials/youth-trials','motorcycles/trail','motorcycles/trail/trail-bikes','motorcycles/trail/recreational-off-road-bikes','motorcycles/trail/youth-mini-bikes','motorcycles/pit-bikes','motorcycles/kids-bikes','parts','parts/complete-engines','parts/complete-engines/complete-engines','parts/complete-engines/engine-cases-assemblies','parts/complete-engines/engine-packages','parts/complete-engines/engines-for-parts','parts/engine','parts/engine/top-end','parts/engine/top-end/cylinder-heads','parts/engine/top-end/cylinders-barrels','parts/engine/top-end/pistons','parts/engine/top-end/piston-rings','parts/engine/top-end/piston-kits','parts/engine/top-end/wrist-gudgeon-pins','parts/engine/top-end/cylinder-head-gaskets','parts/engine/top-end/base-gaskets','parts/engine/top-end/top-end-gasket-kits','parts/engine/top-end/power-valves-power-valve-components','parts/engine/top-end/camshafts','parts/engine/top-end/intake-valves','parts/engine/top-end/exhaust-valves','parts/engine/top-end/valve-springs','parts/engine/top-end/valve-guides','parts/engine/top-end/rocker-arms-followers','parts/engine/top-end/timing-chains','parts/engine/top-end/timing-chain-tensioners','parts/engine/top-end/other-top-end-components','parts/engine/bottom-end','parts/engine/bottom-end/crankshafts','parts/engine/bottom-end/connecting-rods','parts/engine/bottom-end/crank-bearings','parts/engine/bottom-end/main-bearings','parts/engine/bottom-end/crank-seals','parts/engine/bottom-end/crankcases','parts/engine/bottom-end/crankcase-covers','parts/engine/bottom-end/bottom-end-gasket-kits','parts/engine/bottom-end/complete-bottom-end-assemblies','parts/engine/bottom-end/other-bottom-end-components','parts/transmission','parts/transmission/complete-gearboxes','parts/transmission/gear-sets','parts/transmission/transmission-shafts','parts/transmission/shift-forks','parts/transmission/shift-drums','parts/transmission/gear-selector-mechanisms','parts/transmission/bearings-and-seals','parts/transmission/other-gearbox-components','parts/clutch','parts/clutch/clutch-baskets','parts/clutch/inner-hubs','parts/clutch/pressure-plates','parts/clutch/clutch-plates','parts/clutch/friction-plates','parts/clutch/clutch-springs','parts/clutch/clutch-covers','parts/clutch/clutch-cables','parts/clutch/hydraulic-clutch-components','parts/clutch/complete-clutch-assemblies','parts/fuel-intake','parts/fuel-intake/complete-carburettors','parts/fuel-intake/carburettor-bodies','parts/fuel-intake/carburettor-jets','parts/fuel-intake/carburettor-needles','parts/fuel-intake/carburettor-rebuild-kits','parts/fuel-intake/intake-manifolds','parts/fuel-intake/reed-valves','parts/fuel-intake/reed-blocks-cages','parts/fuel-intake/fuel-injectors','parts/fuel-intake/throttle-bodies','parts/fuel-intake/fuel-pumps','parts/fuel-intake/fuel-tanks','parts/fuel-intake/fuel-taps-petcocks','parts/fuel-intake/fuel-lines-and-filters','parts/fuel-intake/airboxes','parts/fuel-intake/air-filters','parts/fuel-intake/other-intake-components','parts/exhaust','parts/exhaust/two-stroke-expansion-chambers','parts/exhaust/two-stroke-silencers','parts/exhaust/four-stroke-header-pipes','parts/exhaust/four-stroke-mufflers','parts/exhaust/complete-exhaust-systems','parts/exhaust/exhaust-guards','parts/exhaust/exhaust-mounts-and-brackets','parts/exhaust/exhaust-packing','parts/exhaust/exhaust-springs','parts/exhaust/other-exhaust-parts','parts/cooling','parts/cooling/radiators','parts/cooling/radiator-hoses','parts/cooling/water-pumps','parts/cooling/water-pump-impellers','parts/cooling/radiator-caps','parts/cooling/cooling-fans','parts/cooling/overflow-tanks','parts/cooling/cooling-system-accessories','parts/electrical','parts/electrical/stators','parts/electrical/flywheels','parts/electrical/ignition-coils','parts/electrical/cdi-units','parts/electrical/ecus','parts/electrical/wiring-harnesses','parts/electrical/sensors','parts/electrical/spark-plugs-and-caps','parts/electrical/voltage-regulators','parts/electrical/rectifiers','parts/electrical/batteries','parts/electrical/electric-starters-starter-motors','parts/electrical/other-electrical-components','parts/suspension','parts/suspension/front-forks','parts/suspension/fork-tubes','parts/suspension/fork-seals','parts/suspension/fork-springs','parts/suspension/fork-internals','parts/suspension/rear-shocks','parts/suspension/shock-springs','parts/suspension/suspension-linkages','parts/suspension/suspension-bearings','parts/suspension/triple-clamps','parts/suspension/suspension-protection','parts/brakes','parts/brakes/brake-calipers','parts/brakes/brake-discs-rotors','parts/brakes/brake-pads','parts/brakes/master-cylinders','parts/brakes/brake-lines','parts/brakes/brake-levers','parts/brakes/brake-rebuild-kits','parts/brakes/other-brake-components','parts/wheels-tyres','parts/wheels-tyres/complete-front-wheels','parts/wheels-tyres/complete-rear-wheels','parts/wheels-tyres/rims','parts/wheels-tyres/hubs','parts/wheels-tyres/spokes','parts/wheels-tyres/axles','parts/wheels-tyres/wheel-bearings','parts/wheels-tyres/motocross-tyres','parts/wheels-tyres/enduro-tyres','parts/wheels-tyres/trials-tyres','parts/wheels-tyres/tubes','parts/wheels-tyres/mousses','parts/wheels-tyres/rim-locks','parts/wheels-tyres/tyre-accessories','parts/drivetrain','parts/drivetrain/front-sprockets','parts/drivetrain/rear-sprockets','parts/drivetrain/chains','parts/drivetrain/chain-guides','parts/drivetrain/chain-sliders','parts/drivetrain/chain-tensioners','parts/drivetrain/chain-and-sprocket-kits','parts/frame-controls','parts/frame-controls/frames','parts/frame-controls/subframes','parts/frame-controls/swingarms','parts/frame-controls/footpegs','parts/frame-controls/handlebars','parts/frame-controls/handlebar-mounts','parts/frame-controls/grips','parts/frame-controls/throttles','parts/frame-controls/throttle-cables','parts/frame-controls/clutch-levers','parts/frame-controls/gear-shifters','parts/frame-controls/rear-brake-pedals','parts/frame-controls/kickstarters','parts/frame-controls/steering-bearings','parts/frame-controls/engine-mounts','parts/bodywork','parts/bodywork/complete-plastic-kits','parts/bodywork/front-fenders','parts/bodywork/rear-fenders','parts/bodywork/side-panels','parts/bodywork/radiator-shrouds','parts/bodywork/number-plates','parts/bodywork/seats','parts/bodywork/seat-covers','parts/bodywork/graphics-kits','parts/bodywork/fuel-tank-covers','parts/bodywork/other-plastics','parts/guards','parts/guards/skid-plates','parts/guards/handguards','parts/guards/radiator-guards','parts/guards/disc-guards','parts/guards/engine-case-guards','parts/guards/frame-guards','parts/guards/fork-guards','parts/service','parts/service/oil-filters','parts/service/gaskets','parts/service/bearings','parts/service/seals','parts/service/fastener-kits','parts/service/maintenance-kits','parts/service/service-components','parts/breaking','parts/breaking/complete-bikes-for-breaking','parts/breaking/parts-lots','parts/breaking/mixed-spare-parts','parts/other','riding-gear','riding-gear/helmets','riding-gear/helmets/motocross-helmets','riding-gear/helmets/enduro-helmets','riding-gear/helmets/trials-helmets','riding-gear/helmets/helmet-accessories','riding-gear/boots','riding-gear/boots/motocross-boots','riding-gear/boots/enduro-boots','riding-gear/boots/trials-boots','riding-gear/boots/boot-accessories-and-replacement-parts','riding-gear/clothing','riding-gear/clothing/jerseys','riding-gear/clothing/riding-pants','riding-gear/clothing/jackets','riding-gear/clothing/base-layers','riding-gear/clothing/waterproof-riding-gear','riding-gear/clothing/casual-rider-apparel','riding-gear/protection','riding-gear/protection/chest-protectors','riding-gear/protection/body-armour','riding-gear/protection/knee-braces','riding-gear/protection/knee-guards','riding-gear/protection/neck-braces','riding-gear/protection/elbow-guards','riding-gear/protection/back-protectors','riding-gear/protection/protective-shorts','riding-gear/protection/other-protective-equipment','riding-gear/gloves-goggles','riding-gear/gloves-goggles/riding-gloves','riding-gear/gloves-goggles/goggles','riding-gear/gloves-goggles/lenses','riding-gear/gloves-goggles/tear-offs-roll-offs','riding-gear/gloves-goggles/goggle-accessories','riding-gear/bags-hydration','riding-gear/bags-hydration/hydration-packs','riding-gear/bags-hydration/riding-backpacks','riding-gear/bags-hydration/tool-bags','riding-gear/bags-hydration/waist-packs','electronics','electronics/gps-navigation','electronics/gps-navigation/handheld-gps-devices','electronics/gps-navigation/motorcycle-gps-units','electronics/gps-navigation/gps-navigation-systems','electronics/gps-navigation/navigation-mounts','electronics/gps-navigation/gps-accessories','electronics/gps-navigation/navigation-controllers','electronics/gps-navigation/rally-navigation-equipment','electronics/watches-wearables','electronics/watches-wearables/gps-watches','electronics/watches-wearables/smartwatches','electronics/watches-wearables/fitness-trackers','electronics/watches-wearables/heart-rate-monitors','electronics/watches-wearables/wearable-accessories','electronics/tracking-security','electronics/tracking-security/gps-trackers','electronics/tracking-security/anti-theft-tracking-devices','electronics/tracking-security/motorcycle-alarms','electronics/tracking-security/security-sensors','electronics/tracking-security/tracker-accessories','electronics/ride-data','electronics/ride-data/engine-hour-meters','electronics/ride-data/digital-dashboards','electronics/ride-data/lap-timers','electronics/ride-data/data-loggers','electronics/ride-data/ride-telemetry','electronics/ride-data/electronic-speedometers','electronics/ride-data/other-monitoring-equipment','electronics/cameras','electronics/cameras/action-cameras','electronics/cameras/helmet-cameras','electronics/cameras/camera-mounts','electronics/cameras/camera-batteries','electronics/cameras/camera-accessories','electronics/communication','electronics/communication/helmet-communication-systems','electronics/communication/bluetooth-intercoms','electronics/communication/radios','electronics/communication/communication-accessories','electronics/power','electronics/power/portable-power-banks','electronics/power/chargers','electronics/power/usb-power-systems','electronics/power/12v-accessories','electronics/power/charging-cables-and-mounts','electronics/other','accessories','accessories/transport','accessories/transport/bike-covers','accessories/transport/tie-down-straps','accessories/transport/loading-ramps','accessories/transport/bike-transport-accessories','accessories/transport/motorcycle-luggage','accessories/riding','accessories/riding/off-road-riding-accessories','accessories/riding/pit-equipment','accessories/riding/hydration-accessories','accessories/riding/camping-trail-accessories','accessories/riding/other-equipment','tools','tools/tools','tools/tools/general-motorcycle-tools','tools/tools/engine-tools','tools/tools/flywheel-pullers','tools/tools/bearing-tools','tools/tools/torque-wrenches','tools/tools/carburettor-tools','tools/tools/tyre-changing-tools','tools/tools/suspension-tools','tools/tools/diagnostic-equipment','tools/tools/other-workshop-tools','tools/workshop','tools/workshop/bike-workshop-stands','tools/workshop/lifts','tools/workshop/maintenance-equipment','accessories/other-accessories','riding-gear/other-riding-gear','tools/other-workshop-items']);}
+  match /users/{uid}/{privateCollection}/{id} {
+   allow read,delete: if owner(uid) && privateCollection in ['favourites','savedSearches','preferences'];
+   allow create,update: if owner(uid) && privateCollection == 'savedSearches' && validSaved(request.resource.data);
+   allow create,update: if owner(uid) && privateCollection == 'favourites' && request.resource.data.keys().hasOnly(['listingId','createdAt']) && request.resource.data.listingId == id;
+  }
+  match /conversations/{cid} {
+   allow get: if signed() && (!exists(/databases/$(database)/documents/conversations/$(cid)) || request.auth.uid in resource.data.participants);
+   allow list: if signed() && request.auth.uid in resource.data.participants;
+   allow create: if signed() && request.resource.data.keys().hasOnly(['listingId','listingTitle','buyerId','sellerId','participants','createdAt']) && request.resource.data.buyerId == request.auth.uid && request.resource.data.sellerId != request.auth.uid && request.resource.data.participants == [request.auth.uid,request.resource.data.sellerId] && get(/databases/$(database)/documents/listings/$(request.resource.data.listingId)).data.ownerId == request.resource.data.sellerId && get(/databases/$(database)/documents/listings/$(request.resource.data.listingId)).data.status == 'published';
+   allow update: if signed() && request.auth.uid in resource.data.participants && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['readAt']) && request.resource.data.readAt.diff(resource.data.get('readAt',{})).affectedKeys().hasOnly([request.auth.uid]) && request.resource.data.readAt[request.auth.uid] is number;
+   match /messages/{mid} {
+    allow read: if participant(cid);
+    allow create: if participant(cid) && request.resource.data.keys().hasOnly(['senderId','text','createdAt']) && request.resource.data.senderId == request.auth.uid && request.resource.data.text is string && request.resource.data.text.size() > 0 && request.resource.data.text.size() <= 2000 && request.resource.data.createdAt is number;
+    allow update,delete: if false;
+   }
+  }
+  match /listingReports/{id} {
+   allow create: if signed() && request.resource.data.keys().hasOnly(['listingId','reporterId','reason','status','createdAt']) && request.resource.data.reporterId == request.auth.uid && request.resource.data.reason is string && request.resource.data.reason.size() >= 10 && request.resource.data.reason.size() <= 1500 && request.resource.data.status == 'open';
+   allow read: if admin();
+   allow update: if admin() && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status']) && request.resource.data.status in ['open','reviewed'];
+  }
+  match /moderationActions/{id} {allow read: if admin();allow create: if admin() && request.resource.data.adminId == request.auth.uid && request.resource.data.keys().hasOnly(['adminId','listingId','reportId','action','createdAt']);}
+  match /postingLimits/{uid} {
+   allow read: if owner(uid);
+   allow create,update: if owner(uid) && request.resource.data.keys().hasOnly(['lastPostAt']) && request.resource.data.lastPostAt == request.time;
+  }
+  match /restrictions/{uid} {
+   allow read: if owner(uid) || moderator();
+   allow create,update: if moderator() && request.resource.data.keys().hasOnly(['suspended','reason','actorId','updatedAt']) && request.resource.data.suspended is bool && request.resource.data.actorId == request.auth.uid && shortText(request.resource.data.reason,500);
+  }
+  function validThread(d){return d.keys().hasOnly(['title','body','category','ownerId','authorName','status','locked','slug','createdAt','updatedAt','lastReplyAt','searchTokens']) && shortText(d.title,140) && d.title.size() >= 8 && shortText(d.body,12000) && d.body.size() >= 2 && d.category in ['general','motocross','enduro','technical','builds','racing','trails','gear','trading','vintage'] && shortText(d.authorName,80) && shortText(d.slug,160) && d.searchTokens is list && d.searchTokens.size() <= 350 && d.createdAt is number && d.updatedAt is number && d.lastReplyAt is number && d.locked is bool;}
+  match /forumThreads/{tid} {
+   allow read: if resource.data.status == 'published' || owner(resource.data.ownerId) || moderator();
+   allow create: if cooled() && owner(request.resource.data.ownerId) && request.resource.data.authorName == get(/databases/$(database)/documents/profiles/$(request.auth.uid)).data.displayName && request.resource.data.status == 'published' && request.resource.data.locked == false && request.resource.data.body.size() >= 20 && validThread(request.resource.data);
+   allow update: if (active() && owner(resource.data.ownerId) && resource.data.status == 'published' && resource.data.locked == false && request.resource.data.status in ['published','deleted'] && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['body','searchTokens','updatedAt','status']) && validThread(request.resource.data))
+    || (cooled() && resource.data.status == 'published' && resource.data.locked == false && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['lastReplyAt']) && request.resource.data.lastReplyAt is number)
+    || (moderator() && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status','locked','body','updatedAt']) && request.resource.data.status in ['published','hidden','deleted'] && request.resource.data.locked is bool);
+   match /replies/{rid} {
+    function parent(){return get(/databases/$(database)/documents/forumThreads/$(tid)).data;}
+    allow read: if (resource.data.status == 'published' && parent().status == 'published') || owner(resource.data.ownerId) || moderator();
+    allow create: if cooled() && parent().status == 'published' && parent().locked == false && request.resource.data.keys().hasOnly(['body','ownerId','authorName','status','createdAt','updatedAt']) && owner(request.resource.data.ownerId) && request.resource.data.authorName == get(/databases/$(database)/documents/profiles/$(request.auth.uid)).data.displayName && request.resource.data.status == 'published' && shortText(request.resource.data.body,6000) && request.resource.data.body.size() >= 2 && request.resource.data.createdAt is number && request.resource.data.updatedAt is number;
+    allow update: if (active() && owner(resource.data.ownerId) && parent().locked == false && parent().status == 'published' && resource.data.status == 'published' && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['body','status','updatedAt']) && request.resource.data.status in ['published','deleted'] && shortText(request.resource.data.body,6000) && request.resource.data.body.size() >= 2) || (moderator() && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['body','status','updatedAt']) && request.resource.data.status in ['published','hidden','deleted']);
+   }
+  }
+  function validArticle(d){return d.keys().hasOnly(['title','body','summary','category','authorName','caption','coverImage','ownerId','status','slug','createdAt','updatedAt','publishedAt','searchTokens']) && shortText(d.title,160) && d.title.size() >= 8 && shortText(d.body,50000) && d.body.size() >= 40 && shortText(d.summary,350) && shortText(d.authorName,80) && shortText(d.caption,300) && shortText(d.coverImage,2000) && d.status in ['draft','published'] && d.category in ['Motocross News','Enduro News','Racing','New Motorcycles','Product Reviews','Riding Gear','Maintenance & Technical','Industry News','Community Stories'] && d.createdAt is number && d.updatedAt is number && d.publishedAt is number && d.searchTokens is list && d.searchTokens.size() <= 350;}
+  match /newsArticles/{id} {
+   allow read: if resource.data.status == 'published' || admin();
+   allow create: if admin() && owner(request.resource.data.ownerId) && validArticle(request.resource.data);
+   allow update: if admin() && request.resource.data.ownerId == resource.data.ownerId && request.resource.data.createdAt == resource.data.createdAt && validArticle(request.resource.data);
+   allow delete: if admin();
+  }
+  function validStolen(d){return d.keys().hasOnly(['make','model','year','colour','features','stolenDate','country','region','city','description','ownerId','images','status','createdAt','updatedAt','searchTokens']) && shortText(d.make,40) && d.make.size() >= 2 && shortText(d.model,80) && d.model.size() >= 1 && d.year is number && d.year >= 1950 && d.year <= 2028 && shortText(d.colour,60) && shortText(d.features,1500) && shortText(d.stolenDate,10) && d.stolenDate.matches('[0-9]{4}-[0-9]{2}-[0-9]{2}') && d.country == 'ZA' && validProvince(d.region) && shortText(d.city,80) && d.city.size() >= 2 && shortText(d.region,80) && d.region.size() >= 2 && shortText(d.description,3000) && d.description.size() >= 20 && d.images is list && d.images.size() <= 4 && d.createdAt is number && d.updatedAt is number && d.searchTokens is list && d.searchTokens.size() <= 350 && d.status in ['pending','published','recovered','rejected','archived'];}
+  match /stolenReports/{id} {
+   allow read: if (resource.data.status in ['published','recovered'] && resource.data.country == 'ZA') || owner(resource.data.ownerId) || moderator();
+   allow create: if active() && owner(request.resource.data.ownerId) && request.resource.data.status == 'pending' && validStolen(request.resource.data);
+   allow update: if (owner(resource.data.ownerId) && request.resource.data.ownerId == resource.data.ownerId && request.resource.data.createdAt == resource.data.createdAt && validStolen(request.resource.data) && ((resource.data.status in ['pending','rejected'] && request.resource.data.status == 'pending') || (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status','updatedAt']) && (request.resource.data.status == 'archived' || (resource.data.status == 'published' && request.resource.data.status == 'recovered'))))) || (moderator() && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status','updatedAt']) && request.resource.data.status in ['pending','published','recovered','rejected','archived']);
+   match /private/{privateId} {
+    allow read: if owner(get(/databases/$(database)/documents/stolenReports/$(id)).data.ownerId) || moderator();
+    allow create,update: if privateId == 'evidence' && owner(getAfter(/databases/$(database)/documents/stolenReports/$(id)).data.ownerId) && request.resource.data.ownerId == request.auth.uid && request.resource.data.keys().hasOnly(['ownerId','policeCase','frameId','engineId','note','paths']) && shortText(request.resource.data.policeCase,120) && shortText(request.resource.data.frameId,120) && shortText(request.resource.data.engineId,120) && shortText(request.resource.data.note,1500) && request.resource.data.paths is list && request.resource.data.paths.size() <= 4;
+   }
+   match /tips/{tipId} {
+    allow read: if owner(get(/databases/$(database)/documents/stolenReports/$(id)).data.ownerId) || moderator();
+    allow create: if active() && get(/databases/$(database)/documents/stolenReports/$(id)).data.status in ['published','recovered'] && request.resource.data.keys().hasOnly(['senderId','text','createdAt']) && request.resource.data.senderId == request.auth.uid && shortText(request.resource.data.text,2000) && request.resource.data.text.size() >= 10 && request.resource.data.createdAt is number;
+   }
+  }
+  match /{reportCollection}/{id} {
+   allow create: if reportCollection in ['forumReports','stolenFlags','directoryFlags'] && active() && request.resource.data.keys().hasOnly(['targetId','replyId','reporterId','reason','status','createdAt']) && request.resource.data.reporterId == request.auth.uid && shortText(request.resource.data.targetId,128) && shortText(request.resource.data.replyId,128) && shortText(request.resource.data.reason,1500) && request.resource.data.reason.size() >= 10 && request.resource.data.status == 'open' && request.resource.data.createdAt is number;
+   allow read: if reportCollection in ['forumReports','stolenFlags','directoryFlags'] && moderator();
+   allow update: if reportCollection in ['forumReports','stolenFlags','directoryFlags'] && moderator() && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status']) && request.resource.data.status in ['open','reviewed'];
+  }
+  match /communityActions/{id} {allow read: if moderator(); allow create: if moderator() && request.resource.data.actorId == request.auth.uid && request.resource.data.keys().hasOnly(['actorId','targetCollection','targetId','action','createdAt']) && shortText(request.resource.data.action,100);}
+  function validEvent(d){return d.keys().hasOnly(['title','body','type','startsAt','endsAt','country','region','city','venue','organizer','link','ownerId','status','createdAt','updatedAt']) && shortText(d.title,140) && d.title.size() >= 8 && shortText(d.body,8000) && d.body.size() >= 20 && d.type in ['Motocross','Enduro','Trail ride','Club event','Training','Community ride'] && d.startsAt is number && d.endsAt is number && d.endsAt >= d.startsAt && d.country == 'ZA' && validProvince(d.region) && shortText(d.region,80) && shortText(d.city,80) && shortText(d.venue,160) && shortText(d.organizer,120) && shortText(d.link,500) && (d.link == '' || d.link.matches('https://.*')) && d.status in ['draft','published'];}
+  match /events/{id} {
+   allow read: if (resource.data.status == 'published' && resource.data.country == 'ZA') || admin();
+   allow create: if admin() && owner(request.resource.data.ownerId) && validEvent(request.resource.data);
+   allow update: if admin() && request.resource.data.ownerId == resource.data.ownerId && request.resource.data.createdAt == resource.data.createdAt && validEvent(request.resource.data);
+   allow delete: if admin();
+  }
+  // Reviews are one per author/profile pair. Evidence stays private in the conversation.
+  function validReview(d, uid, author) {
+   return d.keys().hasOnly(['authorId','authorName','subjectId','listingId','listingTitle','conversationId','role','authorMessageId','subjectMessageId','rating','body','status','response','createdAt','updatedAt'])
+    && d.authorId == author && d.subjectId == uid && author != uid
+    && d.rating is int && d.rating >= 1 && d.rating <= 5
+    && shortText(d.body,2000) && d.body.size() >= 20
+    && shortText(d.response,1000) && shortText(d.authorName,80)
+    && shortText(d.listingId,128) && shortText(d.listingTitle,100)
+    && shortText(d.conversationId,300) && shortText(d.authorMessageId,128) && shortText(d.subjectMessageId,128)
+    && d.createdAt is timestamp && d.updatedAt == request.time;
+  }
+  function reviewInteraction(d, uid) {
+   let c = get(/databases/$(database)/documents/conversations/$(d.conversationId)).data;
+   return request.auth.uid in c.participants && uid in c.participants
+    && ((c.buyerId == request.auth.uid && c.sellerId == uid && d.role == 'buyer') || (c.sellerId == request.auth.uid && c.buyerId == uid && d.role == 'seller'))
+    && c.listingId == d.listingId && c.listingTitle == d.listingTitle
+    && get(/databases/$(database)/documents/conversations/$(d.conversationId)/messages/$(d.authorMessageId)).data.senderId == request.auth.uid
+    && get(/databases/$(database)/documents/conversations/$(d.conversationId)/messages/$(d.subjectMessageId)).data.senderId == uid
+    && get(/databases/$(database)/documents/profiles/$(request.auth.uid)).data.displayName == d.authorName;
+  }
+  match /profiles/{uid}/reviews/{author} {
+   allow read: if resource.data.status == 'published' || owner(author) || moderator();
+   // An authenticated member can check whether they have already reviewed this profile.
+   allow get: if owner(author);
+   allow create: if active() && owner(author) && exists(/databases/$(database)/documents/profiles/$(uid))
+    && validReview(request.resource.data,uid,author) && reviewInteraction(request.resource.data,uid)
+    && request.resource.data.status == 'published' && request.resource.data.response == '' && request.resource.data.createdAt == request.time;
+   allow update: if (active() && resource.data.status == 'published' && validReview(request.resource.data,uid,author)
+    && ((owner(author) && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['rating','body','updatedAt']))
+     || (owner(uid) && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['response','updatedAt']))))
+    || (moderator() && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status','updatedAt']) && request.resource.data.status in ['published','hidden']);
+   allow delete: if false;
+  }
+  match /reviewFlags/{id} {
+   allow create: if active() && request.resource.data.keys().hasOnly(['targetId','replyId','reporterId','reason','status','createdAt'])
+    && request.resource.data.reporterId == request.auth.uid && shortText(request.resource.data.targetId,128) && shortText(request.resource.data.replyId,128)
+    && exists(/databases/$(database)/documents/profiles/$(request.resource.data.targetId)/reviews/$(request.resource.data.replyId))
+    && shortText(request.resource.data.reason,1500) && request.resource.data.reason.size() >= 10 && request.resource.data.status == 'open' && request.resource.data.createdAt is number;
+   allow read: if moderator();
+   allow update: if moderator() && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status']) && request.resource.data.status in ['open','reviewed'];
+  }
+  function validDirectory(d){return d.keys().hasOnly(['kind','title','body','category','organisation','region','city','contactEmail','price','ownerId','country','status','createdAt','updatedAt'])
+   && d.kind in ['job','entry','service'] && shortText(d.title,140) && d.title.size() >= 8 && shortText(d.body,6000) && d.body.size() >= 20
+   && ((d.kind == 'job' && d.category in ['Workshop & mechanics','Sales & retail','Riding & coaching','Events & operations','Marketing & admin','Other jobs'])
+    || (d.kind == 'entry' && d.category in ['Race entries','Trail ride entries','Club events','Training days','Other entries'])
+    || (d.kind == 'service' && d.category in ['Repairs & servicing','Suspension & tuning','Bike transport','Training & coaching','Rentals & tours','Accommodation','Other services']))
+   && shortText(d.organisation,120) && validProvince(d.region) && shortText(d.city,80) && d.city.size() >= 2
+   && shortText(d.contactEmail,254) && d.contactEmail.matches('[^ @]+@[^ @]+[.][^ @]+')
+   && d.price is number && d.price >= 0 && d.price <= 10000000 && d.country == 'ZA'
+   && d.createdAt is number && d.updatedAt is number && d.status in ['pending','published','rejected','archived'];}
+  match /directoryPosts/{id} {
+   allow read: if (resource.data.status == 'published' && resource.data.country == 'ZA') || owner(resource.data.ownerId) || moderator();
+   allow create: if active() && owner(request.resource.data.ownerId) && request.resource.data.status == 'pending' && validDirectory(request.resource.data);
+   allow update: if (active() && owner(resource.data.ownerId) && request.resource.data.ownerId == resource.data.ownerId && request.resource.data.createdAt == resource.data.createdAt && request.resource.data.status in ['pending','archived'] && validDirectory(request.resource.data))
+    || (moderator() && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status','updatedAt']) && request.resource.data.status in ['pending','published','rejected','archived']);
+   allow delete: if false;
+  }
+
+  match /{document=**} {allow read,write: if false;}
+ }
+}
+

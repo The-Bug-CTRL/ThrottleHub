@@ -1,0 +1,14 @@
+node_modules/
+.next/
+.tools/
+.env.local
+*-debug.log
+firebase-export/
+
+# Local environment profiles and server credentials
+.env.*
+!.env.example
+!.env.emulator.example
+!.env.cloud.example
+.secrets/
+*service-account*.json

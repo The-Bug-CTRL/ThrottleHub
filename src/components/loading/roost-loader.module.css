@@ -1,0 +1,117 @@
+.loader {
+  flex-shrink: 0;
+  display: inline-block;
+  max-width: 100%;
+  vertical-align: middle;
+  line-height: 0;
+}
+.loader svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+.wheel {
+  transform-origin: 220px 112px;
+  animation: wheel-turn 0.46s linear infinite;
+}
+.particle {
+  opacity: 0;
+  animation: dirt-flight var(--duration) linear var(--delay) infinite;
+}
+.trail {
+  transform-origin: 218px 177px;
+  animation: roost-sweep 0.7s ease-out infinite;
+  opacity: 0;
+}
+@keyframes roost-sweep {
+  0% {
+    transform: scale(0.12);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.85;
+  }
+  65% {
+    transform: scale(var(--reach));
+    opacity: 0.5;
+  }
+  100% {
+    transform: translate(-20px, -8px) scale(var(--reach));
+    opacity: 0;
+  }
+}
+.contact {
+  animation: contact-flicker 0.19s ease-in-out infinite alternate;
+  transform-origin: 218px 177px;
+}
+@keyframes wheel-turn {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes dirt-flight {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) rotate(var(--angle)) scale(0.25);
+  }
+  9% {
+    opacity: 1;
+  }
+  25% {
+    opacity: 1;
+    transform: translate(var(--qx), var(--qy)) rotate(var(--angle))
+      scale(var(--scale));
+  }
+  50% {
+    opacity: 0.95;
+    transform: translate(var(--mx), var(--my)) rotate(var(--angle))
+      scale(var(--scale));
+  }
+  75% {
+    opacity: 0.75;
+    transform: translate(var(--tx), var(--ty)) rotate(var(--end-angle))
+      scale(var(--scale));
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--dx), var(--dy)) rotate(var(--end-angle))
+      scale(var(--scale));
+  }
+}
+@keyframes contact-flicker {
+  to {
+    transform: scale(0.88, 0.8);
+    opacity: 0.65;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .wheel,
+  .trail,
+  .particle,
+  .contact {
+    animation: none;
+  }
+  .particle:nth-child(n) {
+    opacity: 0;
+  }
+  .roost > g:nth-child(4n) .particle {
+    opacity: 0.7;
+    transform: translate(var(--mx), var(--my)) rotate(var(--angle)) scale(0.8);
+  }
+  .roost > g:nth-child(2) .trail {
+    opacity: 0.65;
+    transform: scale(0.7);
+  }
+}

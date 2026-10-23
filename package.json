@@ -1,0 +1,55 @@
+{
+  "name": "throttlehub",
+  "version": "0.2.0",
+  "private": true,
+  "engines": {
+    "node": "22.x"
+  },
+  "scripts": {
+    "dev": "node scripts/dev.mjs",
+    "build": "next build",
+    "start": "next start --hostname 127.0.0.1",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "emulators": "firebase emulators:start --project demo-throttlehub",
+    "test:rules": "node scripts/test-emulators.mjs",
+    "dev:web": "next dev --hostname 127.0.0.1",
+    "test:integration": "node scripts/test-emulators.mjs",
+    "admin:bootstrap": "node scripts/admin-bootstrap.mjs",
+    "dev:emulator": "node scripts/dev.mjs --emulator",
+    "firebase:check": "node scripts/check-firebase-config.mjs",
+    "firebase:verify-cloud": "node scripts/verify-firebase-cloud.mjs"
+  },
+  "dependencies": {
+    "@hookform/resolvers": "^3.10.0",
+    "firebase": "^12.0.0",
+    "firebase-admin": "^13.4.0",
+    "lucide-react": "^0.468.0",
+    "next": "^15.5.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "react-hook-form": "^7.54.0",
+    "zod": "^3.24.0"
+  },
+  "devDependencies": {
+    "@firebase/rules-unit-testing": "^5.0.0",
+    "@tailwindcss/postcss": "^4.1.0",
+    "@types/node": "^22.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "eslint": "^9.0.0",
+    "eslint-config-next": "^15.5.0",
+    "firebase-tools": "^14.0.0",
+    "prettier": "^3.9.10",
+    "tailwindcss": "^4.1.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.8.0",
+    "vitest": "^3.2.0"
+  },
+  "overrides": {
+    "@grpc/grpc-js": "1.14.6",
+    "postcss": "8.5.31",
+    "uuid": "11.1.1"
+  }
+}

@@ -1,0 +1,5119 @@
+[
+  {
+    "id": "motorcycles",
+    "slug": "motorcycles",
+    "name": "Motorcycles",
+    "parentId": null,
+    "ancestorIds": [],
+    "level": 0,
+    "sortOrder": 0,
+    "isActive": true,
+    "itemType": "motorcycle",
+    "filterSchema": "motorcycle"
+  },
+  {
+    "id": "motorcycles/motocross",
+    "slug": "motocross",
+    "name": "Motocross",
+    "parentId": "motorcycles",
+    "ancestorIds": [
+      "motorcycles"
+    ],
+    "level": 1,
+    "sortOrder": 0,
+    "isActive": true,
+    "itemType": "motorcycle",
+    "filterSchema": "motorcycle"
+  },
+  {
+    "id": "motorcycles/motocross/two-stroke-motocross",
+    "slug": "two-stroke-motocross",
+    "name": "Two-Stroke Motocross",
+    "parentId": "motorcycles/motocross",
+    "ancestorIds": [
+      "motorcycles",
+      "motorcycles/motocross"
+    ],
+    "level": 2,
+    "sortOrder": 0,
+    "isActive": true,
+    "itemType": "motorcycle",
+    "filterSchema": "motorcycle",
+    "engineTypes": [
+      "two-stroke"
+    ]
+  },
+  {
+    "id": "motorcycles/motocross/four-stroke-motocross",
+    "slug": "four-stroke-motocross",
+    "name": "Four-Stroke Motocross",
+    "parentId": "motorcycles/motocross",
+    "ancestorIds": [
+      "motorcycles",
+      "motorcycles/motocross"
+    ],
+    "level": 2,
+    "sortOrder": 1,
+    "isActive": true,
+    "itemType": "motorcycle",
+    "filterSchema": "motorcycle",
+    "engineTypes": [
+      "four-stroke"
+    ]
+  },
+  {
+    "id": "motorcycles/motocross/youth-motocross",
+    "slug": "youth-motocross",
+    "name": "Youth Motocross",
+    "parentId": "motorcycles/motocross",
+    "ancestorIds": [
+      "motorcycles",
+      "motorcycles/motocross"
+    ],
+    "level": 2,
+    "sortOrder": 2,
+    "isActive": true,
+    "itemType": "motorcycle",
+    "filterSchema": "motorcycle"
+  },
+  {
+    "id": "motorcycles/enduro",
+    "slug": "enduro",
+    "name": "Enduro",
+    "parentId": "motorcycles",
+    "ancestorIds": [
+      "motorcycles"
+    ],
+    "level": 1,
+    "sortOrder": 1,
+    "isActive": true,
+    "itemType": "motorcycle",
+    "filterSchema": "motorcycle"
+  },
+  {
+    "id": "motorcycles/enduro/hard-enduro",
+    "slug": "hard-enduro",
+    "name": "Hard Enduro",
+    "parentId": "motorcycles/enduro",
+    "ancestorIds": [
+      "motorcycles",
+      "motorcycles/enduro"
+    ],
+    "level": 2,
+    "sortOrder": 0,
+    "isActive": true,
+    "itemType": "motorcycle",
+    "filterSchema": "motorcycle"
+  },
+  {
+    "id": "motorcycles/enduro/cross-country-enduro",
+    "slug": "cross-country-enduro",
+    "name": "Cross-Country / Enduro",
+    "parentId": "motorcycles/enduro",
+    "ancestorIds": [
+      "motorcycles",
+      "motorcycles/enduro"
+    ],
+    "level": 2,
+    "sortOrder": 1,
+    "isActive": true,
+    "itemType": "motorcycle",
+    "filterSchema": "motorcycle"
+  },
+  {
+    "id": "motorcycles/enduro/trail-enduro",
+    "slug": "trail-enduro",
+    "name": "Trail Enduro",
+    "parentId": "motorcycles/enduro",
+    "ancestorIds": [
+      "motorcycles",
+      "motorcycles/enduro"
+    ],
+    "level": 2,
+    "sortOrder": 2,
+    "isActive": true,
+    "itemType": "motorcycle",
+    "filterSchema": "motorcycle"
+  },
+  {
+    "id": "motorcycles/enduro/road-legal-enduro",
+    "slug": "road-legal-enduro",
+    "name": "Road-Legal Enduro",
+    "parentId": "motorcycles/enduro",
+    "ancestorIds": [
+      "motorcycles",
+      "motorcycles/enduro"
+    ],
+    "level": 2,
+    "sortOrder": 3,
+    "isActive": true,
+    "itemType": "motorcycle",
+    "filterSchema": "motorcycle"
+  },
+  {
+    "id": "motorcycles/trials",
+    "slug": "trials",
+    "name": "Trials",
+    "parentId": "motorcycles",
+    "ancestorIds": [
+      "motorcycles"
+    ],
+    "level": 1,
+    "sortOrder": 2,
+    "isActive": true,
+    "itemType": "motorcycle",
+    "filterSchema": "motorcycle"
+  },
+  {
+    "id": "motorcycles/trials/modern-trials",
+    "slug": "modern-trials",
+    "name": "Modern Trials",
+    "parentId": "motorcycles/trials",
+    "ancestorIds": [
+      "motorcycles",
+      "motorcycles/trials"
+    ],
+    "level": 2,
+    "sortOrder": 0,
+    "isActive": true,
+    "itemType": "motorcycle",
+    "filterSchema": "motorcycle"
+  },
+  {
+    "id": "motorcycles/trials/youth-trials",
+    "slug": "youth-trials",
+    "name": "Youth Trials",
+    "parentId": "motorcycles/trials",
+    "ancestorIds": [
+      "motorcycles",
+      "motorcycles/trials"
+    ],
+    "level": 2,
+    "sortOrder": 2,
+    "isActive": true,
+    "itemType": "motorcycle",
+    "filterSchema": "motorcycle"
+  },
+  {
+    "id": "motorcycles/trail",
+    "slug": "trail",
+    "name": "Trail & Recreational",
+    "parentId": "motorcycles",
+    "ancestorIds": [
+      "motorcycles"
+    ],
+    "level": 1,
+    "sortOrder": 3,
+    "isActive": true,
+    "itemType": "motorcycle",
+    "filterSchema": "motorcycle"
+  },
+  {
+    "id": "motorcycles/trail/trail-bikes",
+    "slug": "trail-bikes",
+    "name": "Trail Bikes",
+    "parentId": "motorcycles/trail",
+    "ancestorIds": [
+      "motorcycles",
+      "motorcycles/trail"
+    ],
+    "level": 2,
+    "sortOrder": 0,
+    "isActive": true,
+    "itemType": "motorcycle",
+    "filterSchema": "motorcycle"
+  },
+  {
+    "id": "motorcycles/trail/recreational-off-road-bikes",
+    "slug": "recreational-off-road-bikes",
+    "name": "Recreational Off-Road Bikes",
+    "parentId": "motorcycles/trail",
+    "ancestorIds": [
+      "motorcycles",
+      "motorcycles/trail"
+    ],
+    "level": 2,
+    "sortOrder": 1,
+    "isActive": true,
+    "itemType": "motorcycle",
+    "filterSchema": "motorcycle"
+  },
+  {
+    "id": "motorcycles/trail/youth-mini-bikes",
+    "slug": "youth-mini-bikes",
+    "name": "Youth / Mini Bikes",
+    "parentId": "motorcycles/trail",
+    "ancestorIds": [
+      "motorcycles",
+      "motorcycles/trail"
+    ],
+    "level": 2,
+    "sortOrder": 2,
+    "isActive": true,
+    "itemType": "motorcycle",
+    "filterSchema": "motorcycle"
+  },
+  {
+    "id": "motorcycles/pit-bikes",
+    "slug": "pit-bikes",
+    "name": "Pit bikes",
+    "parentId": "motorcycles",
+    "ancestorIds": [
+      "motorcycles"
+    ],
+    "level": 1,
+    "sortOrder": 4,
+    "isActive": true,
+    "itemType": "motorcycle",
+    "filterSchema": "motorcycle"
+  },
+  {
+    "id": "motorcycles/kids-bikes",
+    "slug": "kids-bikes",
+    "name": "Kids bikes",
+    "parentId": "motorcycles",
+    "ancestorIds": [
+      "motorcycles"
+    ],
+    "level": 1,
+    "sortOrder": 5,
+    "isActive": true,
+    "itemType": "motorcycle",
+    "filterSchema": "motorcycle"
+  },
+  {
+    "id": "parts",
+    "slug": "parts",
+    "name": "Parts & Spares",
+    "parentId": null,
+    "ancestorIds": [],
+    "level": 0,
+    "sortOrder": 1,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/complete-engines",
+    "slug": "complete-engines",
+    "name": "Complete Engines & Assemblies",
+    "parentId": "parts",
+    "ancestorIds": [
+      "parts"
+    ],
+    "level": 1,
+    "sortOrder": 0,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/complete-engines/complete-engines",
+    "slug": "complete-engines",
+    "name": "Complete Engines",
+    "parentId": "parts/complete-engines",
+    "ancestorIds": [
+      "parts",
+      "parts/complete-engines"
+    ],
+    "level": 2,
+    "sortOrder": 0,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/complete-engines/engine-cases-assemblies",
+    "slug": "engine-cases-assemblies",
+    "name": "Engine Cases / Assemblies",
+    "parentId": "parts/complete-engines",
+    "ancestorIds": [
+      "parts",
+      "parts/complete-engines"
+    ],
+    "level": 2,
+    "sortOrder": 1,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/complete-engines/engine-packages",
+    "slug": "engine-packages",
+    "name": "Engine Packages",
+    "parentId": "parts/complete-engines",
+    "ancestorIds": [
+      "parts",
+      "parts/complete-engines"
+    ],
+    "level": 2,
+    "sortOrder": 2,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/complete-engines/engines-for-parts",
+    "slug": "engines-for-parts",
+    "name": "Engines for Parts",
+    "parentId": "parts/complete-engines",
+    "ancestorIds": [
+      "parts",
+      "parts/complete-engines"
+    ],
+    "level": 2,
+    "sortOrder": 3,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/engine",
+    "slug": "engine",
+    "name": "Engine",
+    "parentId": "parts",
+    "ancestorIds": [
+      "parts"
+    ],
+    "level": 1,
+    "sortOrder": 1,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/engine/top-end",
+    "slug": "top-end",
+    "name": "Top End",
+    "parentId": "parts/engine",
+    "ancestorIds": [
+      "parts",
+      "parts/engine"
+    ],
+    "level": 2,
+    "sortOrder": 0,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/engine/top-end/cylinder-heads",
+    "slug": "cylinder-heads",
+    "name": "Cylinder Heads",
+    "parentId": "parts/engine/top-end",
+    "ancestorIds": [
+      "parts",
+      "parts/engine",
+      "parts/engine/top-end"
+    ],
+    "level": 3,
+    "sortOrder": 0,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/engine/top-end/cylinders-barrels",
+    "slug": "cylinders-barrels",
+    "name": "Cylinders / Barrels",
+    "parentId": "parts/engine/top-end",
+    "ancestorIds": [
+      "parts",
+      "parts/engine",
+      "parts/engine/top-end"
+    ],
+    "level": 3,
+    "sortOrder": 1,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/engine/top-end/pistons",
+    "slug": "pistons",
+    "name": "Pistons",
+    "parentId": "parts/engine/top-end",
+    "ancestorIds": [
+      "parts",
+      "parts/engine",
+      "parts/engine/top-end"
+    ],
+    "level": 3,
+    "sortOrder": 2,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/engine/top-end/piston-rings",
+    "slug": "piston-rings",
+    "name": "Piston Rings",
+    "parentId": "parts/engine/top-end",
+    "ancestorIds": [
+      "parts",
+      "parts/engine",
+      "parts/engine/top-end"
+    ],
+    "level": 3,
+    "sortOrder": 3,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/engine/top-end/piston-kits",
+    "slug": "piston-kits",
+    "name": "Piston Kits",
+    "parentId": "parts/engine/top-end",
+    "ancestorIds": [
+      "parts",
+      "parts/engine",
+      "parts/engine/top-end"
+    ],
+    "level": 3,
+    "sortOrder": 4,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/engine/top-end/wrist-gudgeon-pins",
+    "slug": "wrist-gudgeon-pins",
+    "name": "Wrist / Gudgeon Pins",
+    "parentId": "parts/engine/top-end",
+    "ancestorIds": [
+      "parts",
+      "parts/engine",
+      "parts/engine/top-end"
+    ],
+    "level": 3,
+    "sortOrder": 5,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/engine/top-end/cylinder-head-gaskets",
+    "slug": "cylinder-head-gaskets",
+    "name": "Cylinder Head Gaskets",
+    "parentId": "parts/engine/top-end",
+    "ancestorIds": [
+      "parts",
+      "parts/engine",
+      "parts/engine/top-end"
+    ],
+    "level": 3,
+    "sortOrder": 6,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/engine/top-end/base-gaskets",
+    "slug": "base-gaskets",
+    "name": "Base Gaskets",
+    "parentId": "parts/engine/top-end",
+    "ancestorIds": [
+      "parts",
+      "parts/engine",
+      "parts/engine/top-end"
+    ],
+    "level": 3,
+    "sortOrder": 7,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/engine/top-end/top-end-gasket-kits",
+    "slug": "top-end-gasket-kits",
+    "name": "Top-End Gasket Kits",
+    "parentId": "parts/engine/top-end",
+    "ancestorIds": [
+      "parts",
+      "parts/engine",
+      "parts/engine/top-end"
+    ],
+    "level": 3,
+    "sortOrder": 8,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/engine/top-end/power-valves-power-valve-components",
+    "slug": "power-valves-power-valve-components",
+    "name": "Power Valves / Power Valve Components",
+    "parentId": "parts/engine/top-end",
+    "ancestorIds": [
+      "parts",
+      "parts/engine",
+      "parts/engine/top-end"
+    ],
+    "level": 3,
+    "sortOrder": 9,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part",
+    "engineTypes": [
+      "two-stroke"
+    ]
+  },
+  {
+    "id": "parts/engine/top-end/camshafts",
+    "slug": "camshafts",
+    "name": "Camshafts",
+    "parentId": "parts/engine/top-end",
+    "ancestorIds": [
+      "parts",
+      "parts/engine",
+      "parts/engine/top-end"
+    ],
+    "level": 3,
+    "sortOrder": 10,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part",
+    "engineTypes": [
+      "four-stroke"
+    ]
+  },
+  {
+    "id": "parts/engine/top-end/intake-valves",
+    "slug": "intake-valves",
+    "name": "Intake Valves",
+    "parentId": "parts/engine/top-end",
+    "ancestorIds": [
+      "parts",
+      "parts/engine",
+      "parts/engine/top-end"
+    ],
+    "level": 3,
+    "sortOrder": 11,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part",
+    "engineTypes": [
+      "four-stroke"
+    ]
+  },
+  {
+    "id": "parts/engine/top-end/exhaust-valves",
+    "slug": "exhaust-valves",
+    "name": "Exhaust Valves",
+    "parentId": "parts/engine/top-end",
+    "ancestorIds": [
+      "parts",
+      "parts/engine",
+      "parts/engine/top-end"
+    ],
+    "level": 3,
+    "sortOrder": 12,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part",
+    "engineTypes": [
+      "four-stroke"
+    ]
+  },
+  {
+    "id": "parts/engine/top-end/valve-springs",
+    "slug": "valve-springs",
+    "name": "Valve Springs",
+    "parentId": "parts/engine/top-end",
+    "ancestorIds": [
+      "parts",
+      "parts/engine",
+      "parts/engine/top-end"
+    ],
+    "level": 3,
+    "sortOrder": 13,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part",
+    "engineTypes": [
+      "four-stroke"
+    ]
+  },
+  {
+    "id": "parts/engine/top-end/valve-guides",
+    "slug": "valve-guides",
+    "name": "Valve Guides",
+    "parentId": "parts/engine/top-end",
+    "ancestorIds": [
+      "parts",
+      "parts/engine",
+      "parts/engine/top-end"
+    ],
+    "level": 3,
+    "sortOrder": 14,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part",
+    "engineTypes": [
+      "four-stroke"
+    ]
+  },
+  {
+    "id": "parts/engine/top-end/rocker-arms-followers",
+    "slug": "rocker-arms-followers",
+    "name": "Rocker Arms / Followers",
+    "parentId": "parts/engine/top-end",
+    "ancestorIds": [
+      "parts",
+      "parts/engine",
+      "parts/engine/top-end"
+    ],
+    "level": 3,
+    "sortOrder": 15,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part",
+    "engineTypes": [
+      "four-stroke"
+    ]
+  },
+  {
+    "id": "parts/engine/top-end/timing-chains",
+    "slug": "timing-chains",
+    "name": "Timing Chains",
+    "parentId": "parts/engine/top-end",
+    "ancestorIds": [
+      "parts",
+      "parts/engine",
+      "parts/engine/top-end"
+    ],
+    "level": 3,
+    "sortOrder": 16,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part",
+    "engineTypes": [
+      "four-stroke"
+    ]
+  },
+  {
+    "id": "parts/engine/top-end/timing-chain-tensioners",
+    "slug": "timing-chain-tensioners",
+    "name": "Timing Chain Tensioners",
+    "parentId": "parts/engine/top-end",
+    "ancestorIds": [
+      "parts",
+      "parts/engine",
+      "parts/engine/top-end"
+    ],
+    "level": 3,
+    "sortOrder": 17,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part",
+    "engineTypes": [
+      "four-stroke"
+    ]
+  },
+  {
+    "id": "parts/engine/top-end/other-top-end-components",
+    "slug": "other-top-end-components",
+    "name": "Other Top-End Components",
+    "parentId": "parts/engine/top-end",
+    "ancestorIds": [
+      "parts",
+      "parts/engine",
+      "parts/engine/top-end"
+    ],
+    "level": 3,
+    "sortOrder": 18,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/engine/bottom-end",
+    "slug": "bottom-end",
+    "name": "Bottom End",
+    "parentId": "parts/engine",
+    "ancestorIds": [
+      "parts",
+      "parts/engine"
+    ],
+    "level": 2,
+    "sortOrder": 1,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/engine/bottom-end/crankshafts",
+    "slug": "crankshafts",
+    "name": "Crankshafts",
+    "parentId": "parts/engine/bottom-end",
+    "ancestorIds": [
+      "parts",
+      "parts/engine",
+      "parts/engine/bottom-end"
+    ],
+    "level": 3,
+    "sortOrder": 0,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/engine/bottom-end/connecting-rods",
+    "slug": "connecting-rods",
+    "name": "Connecting Rods",
+    "parentId": "parts/engine/bottom-end",
+    "ancestorIds": [
+      "parts",
+      "parts/engine",
+      "parts/engine/bottom-end"
+    ],
+    "level": 3,
+    "sortOrder": 1,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/engine/bottom-end/crank-bearings",
+    "slug": "crank-bearings",
+    "name": "Crank Bearings",
+    "parentId": "parts/engine/bottom-end",
+    "ancestorIds": [
+      "parts",
+      "parts/engine",
+      "parts/engine/bottom-end"
+    ],
+    "level": 3,
+    "sortOrder": 2,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/engine/bottom-end/main-bearings",
+    "slug": "main-bearings",
+    "name": "Main Bearings",
+    "parentId": "parts/engine/bottom-end",
+    "ancestorIds": [
+      "parts",
+      "parts/engine",
+      "parts/engine/bottom-end"
+    ],
+    "level": 3,
+    "sortOrder": 3,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/engine/bottom-end/crank-seals",
+    "slug": "crank-seals",
+    "name": "Crank Seals",
+    "parentId": "parts/engine/bottom-end",
+    "ancestorIds": [
+      "parts",
+      "parts/engine",
+      "parts/engine/bottom-end"
+    ],
+    "level": 3,
+    "sortOrder": 4,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/engine/bottom-end/crankcases",
+    "slug": "crankcases",
+    "name": "Crankcases",
+    "parentId": "parts/engine/bottom-end",
+    "ancestorIds": [
+      "parts",
+      "parts/engine",
+      "parts/engine/bottom-end"
+    ],
+    "level": 3,
+    "sortOrder": 5,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/engine/bottom-end/crankcase-covers",
+    "slug": "crankcase-covers",
+    "name": "Crankcase Covers",
+    "parentId": "parts/engine/bottom-end",
+    "ancestorIds": [
+      "parts",
+      "parts/engine",
+      "parts/engine/bottom-end"
+    ],
+    "level": 3,
+    "sortOrder": 6,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/engine/bottom-end/bottom-end-gasket-kits",
+    "slug": "bottom-end-gasket-kits",
+    "name": "Bottom-End Gasket Kits",
+    "parentId": "parts/engine/bottom-end",
+    "ancestorIds": [
+      "parts",
+      "parts/engine",
+      "parts/engine/bottom-end"
+    ],
+    "level": 3,
+    "sortOrder": 7,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/engine/bottom-end/complete-bottom-end-assemblies",
+    "slug": "complete-bottom-end-assemblies",
+    "name": "Complete Bottom-End Assemblies",
+    "parentId": "parts/engine/bottom-end",
+    "ancestorIds": [
+      "parts",
+      "parts/engine",
+      "parts/engine/bottom-end"
+    ],
+    "level": 3,
+    "sortOrder": 8,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/engine/bottom-end/other-bottom-end-components",
+    "slug": "other-bottom-end-components",
+    "name": "Other Bottom-End Components",
+    "parentId": "parts/engine/bottom-end",
+    "ancestorIds": [
+      "parts",
+      "parts/engine",
+      "parts/engine/bottom-end"
+    ],
+    "level": 3,
+    "sortOrder": 9,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/transmission",
+    "slug": "transmission",
+    "name": "Transmission & Gearbox",
+    "parentId": "parts",
+    "ancestorIds": [
+      "parts"
+    ],
+    "level": 1,
+    "sortOrder": 2,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/transmission/complete-gearboxes",
+    "slug": "complete-gearboxes",
+    "name": "Complete Gearboxes",
+    "parentId": "parts/transmission",
+    "ancestorIds": [
+      "parts",
+      "parts/transmission"
+    ],
+    "level": 2,
+    "sortOrder": 0,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/transmission/gear-sets",
+    "slug": "gear-sets",
+    "name": "Gear Sets",
+    "parentId": "parts/transmission",
+    "ancestorIds": [
+      "parts",
+      "parts/transmission"
+    ],
+    "level": 2,
+    "sortOrder": 1,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/transmission/transmission-shafts",
+    "slug": "transmission-shafts",
+    "name": "Transmission Shafts",
+    "parentId": "parts/transmission",
+    "ancestorIds": [
+      "parts",
+      "parts/transmission"
+    ],
+    "level": 2,
+    "sortOrder": 2,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/transmission/shift-forks",
+    "slug": "shift-forks",
+    "name": "Shift Forks",
+    "parentId": "parts/transmission",
+    "ancestorIds": [
+      "parts",
+      "parts/transmission"
+    ],
+    "level": 2,
+    "sortOrder": 3,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/transmission/shift-drums",
+    "slug": "shift-drums",
+    "name": "Shift Drums",
+    "parentId": "parts/transmission",
+    "ancestorIds": [
+      "parts",
+      "parts/transmission"
+    ],
+    "level": 2,
+    "sortOrder": 4,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/transmission/gear-selector-mechanisms",
+    "slug": "gear-selector-mechanisms",
+    "name": "Gear Selector Mechanisms",
+    "parentId": "parts/transmission",
+    "ancestorIds": [
+      "parts",
+      "parts/transmission"
+    ],
+    "level": 2,
+    "sortOrder": 5,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/transmission/bearings-and-seals",
+    "slug": "bearings-and-seals",
+    "name": "Bearings & Seals",
+    "parentId": "parts/transmission",
+    "ancestorIds": [
+      "parts",
+      "parts/transmission"
+    ],
+    "level": 2,
+    "sortOrder": 6,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/transmission/other-gearbox-components",
+    "slug": "other-gearbox-components",
+    "name": "Other Gearbox Components",
+    "parentId": "parts/transmission",
+    "ancestorIds": [
+      "parts",
+      "parts/transmission"
+    ],
+    "level": 2,
+    "sortOrder": 7,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/clutch",
+    "slug": "clutch",
+    "name": "Clutch",
+    "parentId": "parts",
+    "ancestorIds": [
+      "parts"
+    ],
+    "level": 1,
+    "sortOrder": 3,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/clutch/clutch-baskets",
+    "slug": "clutch-baskets",
+    "name": "Clutch Baskets",
+    "parentId": "parts/clutch",
+    "ancestorIds": [
+      "parts",
+      "parts/clutch"
+    ],
+    "level": 2,
+    "sortOrder": 0,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/clutch/inner-hubs",
+    "slug": "inner-hubs",
+    "name": "Inner Hubs",
+    "parentId": "parts/clutch",
+    "ancestorIds": [
+      "parts",
+      "parts/clutch"
+    ],
+    "level": 2,
+    "sortOrder": 1,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/clutch/pressure-plates",
+    "slug": "pressure-plates",
+    "name": "Pressure Plates",
+    "parentId": "parts/clutch",
+    "ancestorIds": [
+      "parts",
+      "parts/clutch"
+    ],
+    "level": 2,
+    "sortOrder": 2,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/clutch/clutch-plates",
+    "slug": "clutch-plates",
+    "name": "Clutch Plates",
+    "parentId": "parts/clutch",
+    "ancestorIds": [
+      "parts",
+      "parts/clutch"
+    ],
+    "level": 2,
+    "sortOrder": 3,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/clutch/friction-plates",
+    "slug": "friction-plates",
+    "name": "Friction Plates",
+    "parentId": "parts/clutch",
+    "ancestorIds": [
+      "parts",
+      "parts/clutch"
+    ],
+    "level": 2,
+    "sortOrder": 4,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/clutch/clutch-springs",
+    "slug": "clutch-springs",
+    "name": "Clutch Springs",
+    "parentId": "parts/clutch",
+    "ancestorIds": [
+      "parts",
+      "parts/clutch"
+    ],
+    "level": 2,
+    "sortOrder": 5,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/clutch/clutch-covers",
+    "slug": "clutch-covers",
+    "name": "Clutch Covers",
+    "parentId": "parts/clutch",
+    "ancestorIds": [
+      "parts",
+      "parts/clutch"
+    ],
+    "level": 2,
+    "sortOrder": 6,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/clutch/clutch-cables",
+    "slug": "clutch-cables",
+    "name": "Clutch Cables",
+    "parentId": "parts/clutch",
+    "ancestorIds": [
+      "parts",
+      "parts/clutch"
+    ],
+    "level": 2,
+    "sortOrder": 7,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/clutch/hydraulic-clutch-components",
+    "slug": "hydraulic-clutch-components",
+    "name": "Hydraulic Clutch Components",
+    "parentId": "parts/clutch",
+    "ancestorIds": [
+      "parts",
+      "parts/clutch"
+    ],
+    "level": 2,
+    "sortOrder": 8,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/clutch/complete-clutch-assemblies",
+    "slug": "complete-clutch-assemblies",
+    "name": "Complete Clutch Assemblies",
+    "parentId": "parts/clutch",
+    "ancestorIds": [
+      "parts",
+      "parts/clutch"
+    ],
+    "level": 2,
+    "sortOrder": 9,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/fuel-intake",
+    "slug": "fuel-intake",
+    "name": "Fuel & Intake",
+    "parentId": "parts",
+    "ancestorIds": [
+      "parts"
+    ],
+    "level": 1,
+    "sortOrder": 4,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/fuel-intake/complete-carburettors",
+    "slug": "complete-carburettors",
+    "name": "Complete Carburettors",
+    "parentId": "parts/fuel-intake",
+    "ancestorIds": [
+      "parts",
+      "parts/fuel-intake"
+    ],
+    "level": 2,
+    "sortOrder": 0,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/fuel-intake/carburettor-bodies",
+    "slug": "carburettor-bodies",
+    "name": "Carburettor Bodies",
+    "parentId": "parts/fuel-intake",
+    "ancestorIds": [
+      "parts",
+      "parts/fuel-intake"
+    ],
+    "level": 2,
+    "sortOrder": 1,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/fuel-intake/carburettor-jets",
+    "slug": "carburettor-jets",
+    "name": "Carburettor Jets",
+    "parentId": "parts/fuel-intake",
+    "ancestorIds": [
+      "parts",
+      "parts/fuel-intake"
+    ],
+    "level": 2,
+    "sortOrder": 2,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/fuel-intake/carburettor-needles",
+    "slug": "carburettor-needles",
+    "name": "Carburettor Needles",
+    "parentId": "parts/fuel-intake",
+    "ancestorIds": [
+      "parts",
+      "parts/fuel-intake"
+    ],
+    "level": 2,
+    "sortOrder": 3,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/fuel-intake/carburettor-rebuild-kits",
+    "slug": "carburettor-rebuild-kits",
+    "name": "Carburettor Rebuild Kits",
+    "parentId": "parts/fuel-intake",
+    "ancestorIds": [
+      "parts",
+      "parts/fuel-intake"
+    ],
+    "level": 2,
+    "sortOrder": 4,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/fuel-intake/intake-manifolds",
+    "slug": "intake-manifolds",
+    "name": "Intake Manifolds",
+    "parentId": "parts/fuel-intake",
+    "ancestorIds": [
+      "parts",
+      "parts/fuel-intake"
+    ],
+    "level": 2,
+    "sortOrder": 5,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/fuel-intake/reed-valves",
+    "slug": "reed-valves",
+    "name": "Reed Valves",
+    "parentId": "parts/fuel-intake",
+    "ancestorIds": [
+      "parts",
+      "parts/fuel-intake"
+    ],
+    "level": 2,
+    "sortOrder": 6,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part",
+    "engineTypes": [
+      "two-stroke"
+    ]
+  },
+  {
+    "id": "parts/fuel-intake/reed-blocks-cages",
+    "slug": "reed-blocks-cages",
+    "name": "Reed Blocks / Cages",
+    "parentId": "parts/fuel-intake",
+    "ancestorIds": [
+      "parts",
+      "parts/fuel-intake"
+    ],
+    "level": 2,
+    "sortOrder": 7,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part",
+    "engineTypes": [
+      "two-stroke"
+    ]
+  },
+  {
+    "id": "parts/fuel-intake/fuel-injectors",
+    "slug": "fuel-injectors",
+    "name": "Fuel Injectors",
+    "parentId": "parts/fuel-intake",
+    "ancestorIds": [
+      "parts",
+      "parts/fuel-intake"
+    ],
+    "level": 2,
+    "sortOrder": 8,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/fuel-intake/throttle-bodies",
+    "slug": "throttle-bodies",
+    "name": "Throttle Bodies",
+    "parentId": "parts/fuel-intake",
+    "ancestorIds": [
+      "parts",
+      "parts/fuel-intake"
+    ],
+    "level": 2,
+    "sortOrder": 9,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/fuel-intake/fuel-pumps",
+    "slug": "fuel-pumps",
+    "name": "Fuel Pumps",
+    "parentId": "parts/fuel-intake",
+    "ancestorIds": [
+      "parts",
+      "parts/fuel-intake"
+    ],
+    "level": 2,
+    "sortOrder": 10,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/fuel-intake/fuel-tanks",
+    "slug": "fuel-tanks",
+    "name": "Fuel Tanks",
+    "parentId": "parts/fuel-intake",
+    "ancestorIds": [
+      "parts",
+      "parts/fuel-intake"
+    ],
+    "level": 2,
+    "sortOrder": 11,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/fuel-intake/fuel-taps-petcocks",
+    "slug": "fuel-taps-petcocks",
+    "name": "Fuel Taps / Petcocks",
+    "parentId": "parts/fuel-intake",
+    "ancestorIds": [
+      "parts",
+      "parts/fuel-intake"
+    ],
+    "level": 2,
+    "sortOrder": 12,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/fuel-intake/fuel-lines-and-filters",
+    "slug": "fuel-lines-and-filters",
+    "name": "Fuel Lines & Filters",
+    "parentId": "parts/fuel-intake",
+    "ancestorIds": [
+      "parts",
+      "parts/fuel-intake"
+    ],
+    "level": 2,
+    "sortOrder": 13,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/fuel-intake/airboxes",
+    "slug": "airboxes",
+    "name": "Airboxes",
+    "parentId": "parts/fuel-intake",
+    "ancestorIds": [
+      "parts",
+      "parts/fuel-intake"
+    ],
+    "level": 2,
+    "sortOrder": 14,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/fuel-intake/air-filters",
+    "slug": "air-filters",
+    "name": "Air Filters",
+    "parentId": "parts/fuel-intake",
+    "ancestorIds": [
+      "parts",
+      "parts/fuel-intake"
+    ],
+    "level": 2,
+    "sortOrder": 15,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/fuel-intake/other-intake-components",
+    "slug": "other-intake-components",
+    "name": "Other Intake Components",
+    "parentId": "parts/fuel-intake",
+    "ancestorIds": [
+      "parts",
+      "parts/fuel-intake"
+    ],
+    "level": 2,
+    "sortOrder": 16,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/exhaust",
+    "slug": "exhaust",
+    "name": "Exhaust Systems",
+    "parentId": "parts",
+    "ancestorIds": [
+      "parts"
+    ],
+    "level": 1,
+    "sortOrder": 5,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/exhaust/two-stroke-expansion-chambers",
+    "slug": "two-stroke-expansion-chambers",
+    "name": "Two-Stroke Expansion Chambers",
+    "parentId": "parts/exhaust",
+    "ancestorIds": [
+      "parts",
+      "parts/exhaust"
+    ],
+    "level": 2,
+    "sortOrder": 0,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part",
+    "engineTypes": [
+      "two-stroke"
+    ]
+  },
+  {
+    "id": "parts/exhaust/two-stroke-silencers",
+    "slug": "two-stroke-silencers",
+    "name": "Two-Stroke Silencers",
+    "parentId": "parts/exhaust",
+    "ancestorIds": [
+      "parts",
+      "parts/exhaust"
+    ],
+    "level": 2,
+    "sortOrder": 1,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part",
+    "engineTypes": [
+      "two-stroke"
+    ]
+  },
+  {
+    "id": "parts/exhaust/four-stroke-header-pipes",
+    "slug": "four-stroke-header-pipes",
+    "name": "Four-Stroke Header Pipes",
+    "parentId": "parts/exhaust",
+    "ancestorIds": [
+      "parts",
+      "parts/exhaust"
+    ],
+    "level": 2,
+    "sortOrder": 2,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part",
+    "engineTypes": [
+      "four-stroke"
+    ]
+  },
+  {
+    "id": "parts/exhaust/four-stroke-mufflers",
+    "slug": "four-stroke-mufflers",
+    "name": "Four-Stroke Mufflers",
+    "parentId": "parts/exhaust",
+    "ancestorIds": [
+      "parts",
+      "parts/exhaust"
+    ],
+    "level": 2,
+    "sortOrder": 3,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part",
+    "engineTypes": [
+      "four-stroke"
+    ]
+  },
+  {
+    "id": "parts/exhaust/complete-exhaust-systems",
+    "slug": "complete-exhaust-systems",
+    "name": "Complete Exhaust Systems",
+    "parentId": "parts/exhaust",
+    "ancestorIds": [
+      "parts",
+      "parts/exhaust"
+    ],
+    "level": 2,
+    "sortOrder": 4,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/exhaust/exhaust-guards",
+    "slug": "exhaust-guards",
+    "name": "Exhaust Guards",
+    "parentId": "parts/exhaust",
+    "ancestorIds": [
+      "parts",
+      "parts/exhaust"
+    ],
+    "level": 2,
+    "sortOrder": 5,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/exhaust/exhaust-mounts-and-brackets",
+    "slug": "exhaust-mounts-and-brackets",
+    "name": "Exhaust Mounts & Brackets",
+    "parentId": "parts/exhaust",
+    "ancestorIds": [
+      "parts",
+      "parts/exhaust"
+    ],
+    "level": 2,
+    "sortOrder": 6,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/exhaust/exhaust-packing",
+    "slug": "exhaust-packing",
+    "name": "Exhaust Packing",
+    "parentId": "parts/exhaust",
+    "ancestorIds": [
+      "parts",
+      "parts/exhaust"
+    ],
+    "level": 2,
+    "sortOrder": 7,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/exhaust/exhaust-springs",
+    "slug": "exhaust-springs",
+    "name": "Exhaust Springs",
+    "parentId": "parts/exhaust",
+    "ancestorIds": [
+      "parts",
+      "parts/exhaust"
+    ],
+    "level": 2,
+    "sortOrder": 8,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/exhaust/other-exhaust-parts",
+    "slug": "other-exhaust-parts",
+    "name": "Other Exhaust Parts",
+    "parentId": "parts/exhaust",
+    "ancestorIds": [
+      "parts",
+      "parts/exhaust"
+    ],
+    "level": 2,
+    "sortOrder": 9,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/cooling",
+    "slug": "cooling",
+    "name": "Cooling",
+    "parentId": "parts",
+    "ancestorIds": [
+      "parts"
+    ],
+    "level": 1,
+    "sortOrder": 6,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/cooling/radiators",
+    "slug": "radiators",
+    "name": "Radiators",
+    "parentId": "parts/cooling",
+    "ancestorIds": [
+      "parts",
+      "parts/cooling"
+    ],
+    "level": 2,
+    "sortOrder": 0,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/cooling/radiator-hoses",
+    "slug": "radiator-hoses",
+    "name": "Radiator Hoses",
+    "parentId": "parts/cooling",
+    "ancestorIds": [
+      "parts",
+      "parts/cooling"
+    ],
+    "level": 2,
+    "sortOrder": 1,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/cooling/water-pumps",
+    "slug": "water-pumps",
+    "name": "Water Pumps",
+    "parentId": "parts/cooling",
+    "ancestorIds": [
+      "parts",
+      "parts/cooling"
+    ],
+    "level": 2,
+    "sortOrder": 2,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/cooling/water-pump-impellers",
+    "slug": "water-pump-impellers",
+    "name": "Water Pump Impellers",
+    "parentId": "parts/cooling",
+    "ancestorIds": [
+      "parts",
+      "parts/cooling"
+    ],
+    "level": 2,
+    "sortOrder": 3,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/cooling/radiator-caps",
+    "slug": "radiator-caps",
+    "name": "Radiator Caps",
+    "parentId": "parts/cooling",
+    "ancestorIds": [
+      "parts",
+      "parts/cooling"
+    ],
+    "level": 2,
+    "sortOrder": 4,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/cooling/cooling-fans",
+    "slug": "cooling-fans",
+    "name": "Cooling Fans",
+    "parentId": "parts/cooling",
+    "ancestorIds": [
+      "parts",
+      "parts/cooling"
+    ],
+    "level": 2,
+    "sortOrder": 5,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/cooling/overflow-tanks",
+    "slug": "overflow-tanks",
+    "name": "Overflow Tanks",
+    "parentId": "parts/cooling",
+    "ancestorIds": [
+      "parts",
+      "parts/cooling"
+    ],
+    "level": 2,
+    "sortOrder": 6,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/cooling/cooling-system-accessories",
+    "slug": "cooling-system-accessories",
+    "name": "Cooling System Accessories",
+    "parentId": "parts/cooling",
+    "ancestorIds": [
+      "parts",
+      "parts/cooling"
+    ],
+    "level": 2,
+    "sortOrder": 7,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/electrical",
+    "slug": "electrical",
+    "name": "Electrical & Ignition",
+    "parentId": "parts",
+    "ancestorIds": [
+      "parts"
+    ],
+    "level": 1,
+    "sortOrder": 7,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/electrical/stators",
+    "slug": "stators",
+    "name": "Stators",
+    "parentId": "parts/electrical",
+    "ancestorIds": [
+      "parts",
+      "parts/electrical"
+    ],
+    "level": 2,
+    "sortOrder": 0,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/electrical/flywheels",
+    "slug": "flywheels",
+    "name": "Flywheels",
+    "parentId": "parts/electrical",
+    "ancestorIds": [
+      "parts",
+      "parts/electrical"
+    ],
+    "level": 2,
+    "sortOrder": 1,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/electrical/ignition-coils",
+    "slug": "ignition-coils",
+    "name": "Ignition Coils",
+    "parentId": "parts/electrical",
+    "ancestorIds": [
+      "parts",
+      "parts/electrical"
+    ],
+    "level": 2,
+    "sortOrder": 2,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/electrical/cdi-units",
+    "slug": "cdi-units",
+    "name": "CDI Units",
+    "parentId": "parts/electrical",
+    "ancestorIds": [
+      "parts",
+      "parts/electrical"
+    ],
+    "level": 2,
+    "sortOrder": 3,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/electrical/ecus",
+    "slug": "ecus",
+    "name": "ECUs",
+    "parentId": "parts/electrical",
+    "ancestorIds": [
+      "parts",
+      "parts/electrical"
+    ],
+    "level": 2,
+    "sortOrder": 4,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/electrical/wiring-harnesses",
+    "slug": "wiring-harnesses",
+    "name": "Wiring Harnesses",
+    "parentId": "parts/electrical",
+    "ancestorIds": [
+      "parts",
+      "parts/electrical"
+    ],
+    "level": 2,
+    "sortOrder": 5,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/electrical/sensors",
+    "slug": "sensors",
+    "name": "Sensors",
+    "parentId": "parts/electrical",
+    "ancestorIds": [
+      "parts",
+      "parts/electrical"
+    ],
+    "level": 2,
+    "sortOrder": 6,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/electrical/spark-plugs-and-caps",
+    "slug": "spark-plugs-and-caps",
+    "name": "Spark Plugs & Caps",
+    "parentId": "parts/electrical",
+    "ancestorIds": [
+      "parts",
+      "parts/electrical"
+    ],
+    "level": 2,
+    "sortOrder": 7,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/electrical/voltage-regulators",
+    "slug": "voltage-regulators",
+    "name": "Voltage Regulators",
+    "parentId": "parts/electrical",
+    "ancestorIds": [
+      "parts",
+      "parts/electrical"
+    ],
+    "level": 2,
+    "sortOrder": 8,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/electrical/rectifiers",
+    "slug": "rectifiers",
+    "name": "Rectifiers",
+    "parentId": "parts/electrical",
+    "ancestorIds": [
+      "parts",
+      "parts/electrical"
+    ],
+    "level": 2,
+    "sortOrder": 9,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/electrical/batteries",
+    "slug": "batteries",
+    "name": "Batteries",
+    "parentId": "parts/electrical",
+    "ancestorIds": [
+      "parts",
+      "parts/electrical"
+    ],
+    "level": 2,
+    "sortOrder": 10,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/electrical/electric-starters-starter-motors",
+    "slug": "electric-starters-starter-motors",
+    "name": "Electric Starters / Starter Motors",
+    "parentId": "parts/electrical",
+    "ancestorIds": [
+      "parts",
+      "parts/electrical"
+    ],
+    "level": 2,
+    "sortOrder": 11,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/electrical/other-electrical-components",
+    "slug": "other-electrical-components",
+    "name": "Other Electrical Components",
+    "parentId": "parts/electrical",
+    "ancestorIds": [
+      "parts",
+      "parts/electrical"
+    ],
+    "level": 2,
+    "sortOrder": 12,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/suspension",
+    "slug": "suspension",
+    "name": "Suspension",
+    "parentId": "parts",
+    "ancestorIds": [
+      "parts"
+    ],
+    "level": 1,
+    "sortOrder": 8,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/suspension/front-forks",
+    "slug": "front-forks",
+    "name": "Front Forks",
+    "parentId": "parts/suspension",
+    "ancestorIds": [
+      "parts",
+      "parts/suspension"
+    ],
+    "level": 2,
+    "sortOrder": 0,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/suspension/fork-tubes",
+    "slug": "fork-tubes",
+    "name": "Fork Tubes",
+    "parentId": "parts/suspension",
+    "ancestorIds": [
+      "parts",
+      "parts/suspension"
+    ],
+    "level": 2,
+    "sortOrder": 1,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/suspension/fork-seals",
+    "slug": "fork-seals",
+    "name": "Fork Seals",
+    "parentId": "parts/suspension",
+    "ancestorIds": [
+      "parts",
+      "parts/suspension"
+    ],
+    "level": 2,
+    "sortOrder": 2,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/suspension/fork-springs",
+    "slug": "fork-springs",
+    "name": "Fork Springs",
+    "parentId": "parts/suspension",
+    "ancestorIds": [
+      "parts",
+      "parts/suspension"
+    ],
+    "level": 2,
+    "sortOrder": 3,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/suspension/fork-internals",
+    "slug": "fork-internals",
+    "name": "Fork Internals",
+    "parentId": "parts/suspension",
+    "ancestorIds": [
+      "parts",
+      "parts/suspension"
+    ],
+    "level": 2,
+    "sortOrder": 4,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/suspension/rear-shocks",
+    "slug": "rear-shocks",
+    "name": "Rear Shocks",
+    "parentId": "parts/suspension",
+    "ancestorIds": [
+      "parts",
+      "parts/suspension"
+    ],
+    "level": 2,
+    "sortOrder": 5,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/suspension/shock-springs",
+    "slug": "shock-springs",
+    "name": "Shock Springs",
+    "parentId": "parts/suspension",
+    "ancestorIds": [
+      "parts",
+      "parts/suspension"
+    ],
+    "level": 2,
+    "sortOrder": 6,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/suspension/suspension-linkages",
+    "slug": "suspension-linkages",
+    "name": "Suspension Linkages",
+    "parentId": "parts/suspension",
+    "ancestorIds": [
+      "parts",
+      "parts/suspension"
+    ],
+    "level": 2,
+    "sortOrder": 7,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/suspension/suspension-bearings",
+    "slug": "suspension-bearings",
+    "name": "Suspension Bearings",
+    "parentId": "parts/suspension",
+    "ancestorIds": [
+      "parts",
+      "parts/suspension"
+    ],
+    "level": 2,
+    "sortOrder": 8,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/suspension/triple-clamps",
+    "slug": "triple-clamps",
+    "name": "Triple Clamps",
+    "parentId": "parts/suspension",
+    "ancestorIds": [
+      "parts",
+      "parts/suspension"
+    ],
+    "level": 2,
+    "sortOrder": 9,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/suspension/suspension-protection",
+    "slug": "suspension-protection",
+    "name": "Suspension Protection",
+    "parentId": "parts/suspension",
+    "ancestorIds": [
+      "parts",
+      "parts/suspension"
+    ],
+    "level": 2,
+    "sortOrder": 10,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/brakes",
+    "slug": "brakes",
+    "name": "Brakes",
+    "parentId": "parts",
+    "ancestorIds": [
+      "parts"
+    ],
+    "level": 1,
+    "sortOrder": 9,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/brakes/brake-calipers",
+    "slug": "brake-calipers",
+    "name": "Brake Calipers",
+    "parentId": "parts/brakes",
+    "ancestorIds": [
+      "parts",
+      "parts/brakes"
+    ],
+    "level": 2,
+    "sortOrder": 0,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/brakes/brake-discs-rotors",
+    "slug": "brake-discs-rotors",
+    "name": "Brake Discs / Rotors",
+    "parentId": "parts/brakes",
+    "ancestorIds": [
+      "parts",
+      "parts/brakes"
+    ],
+    "level": 2,
+    "sortOrder": 1,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/brakes/brake-pads",
+    "slug": "brake-pads",
+    "name": "Brake Pads",
+    "parentId": "parts/brakes",
+    "ancestorIds": [
+      "parts",
+      "parts/brakes"
+    ],
+    "level": 2,
+    "sortOrder": 2,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/brakes/master-cylinders",
+    "slug": "master-cylinders",
+    "name": "Master Cylinders",
+    "parentId": "parts/brakes",
+    "ancestorIds": [
+      "parts",
+      "parts/brakes"
+    ],
+    "level": 2,
+    "sortOrder": 3,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/brakes/brake-lines",
+    "slug": "brake-lines",
+    "name": "Brake Lines",
+    "parentId": "parts/brakes",
+    "ancestorIds": [
+      "parts",
+      "parts/brakes"
+    ],
+    "level": 2,
+    "sortOrder": 4,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/brakes/brake-levers",
+    "slug": "brake-levers",
+    "name": "Brake Levers",
+    "parentId": "parts/brakes",
+    "ancestorIds": [
+      "parts",
+      "parts/brakes"
+    ],
+    "level": 2,
+    "sortOrder": 5,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/brakes/brake-rebuild-kits",
+    "slug": "brake-rebuild-kits",
+    "name": "Brake Rebuild Kits",
+    "parentId": "parts/brakes",
+    "ancestorIds": [
+      "parts",
+      "parts/brakes"
+    ],
+    "level": 2,
+    "sortOrder": 6,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/brakes/other-brake-components",
+    "slug": "other-brake-components",
+    "name": "Other Brake Components",
+    "parentId": "parts/brakes",
+    "ancestorIds": [
+      "parts",
+      "parts/brakes"
+    ],
+    "level": 2,
+    "sortOrder": 7,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/wheels-tyres",
+    "slug": "wheels-tyres",
+    "name": "Wheels & Tyres",
+    "parentId": "parts",
+    "ancestorIds": [
+      "parts"
+    ],
+    "level": 1,
+    "sortOrder": 10,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/wheels-tyres/complete-front-wheels",
+    "slug": "complete-front-wheels",
+    "name": "Complete Front Wheels",
+    "parentId": "parts/wheels-tyres",
+    "ancestorIds": [
+      "parts",
+      "parts/wheels-tyres"
+    ],
+    "level": 2,
+    "sortOrder": 0,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/wheels-tyres/complete-rear-wheels",
+    "slug": "complete-rear-wheels",
+    "name": "Complete Rear Wheels",
+    "parentId": "parts/wheels-tyres",
+    "ancestorIds": [
+      "parts",
+      "parts/wheels-tyres"
+    ],
+    "level": 2,
+    "sortOrder": 1,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/wheels-tyres/rims",
+    "slug": "rims",
+    "name": "Rims",
+    "parentId": "parts/wheels-tyres",
+    "ancestorIds": [
+      "parts",
+      "parts/wheels-tyres"
+    ],
+    "level": 2,
+    "sortOrder": 2,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/wheels-tyres/hubs",
+    "slug": "hubs",
+    "name": "Hubs",
+    "parentId": "parts/wheels-tyres",
+    "ancestorIds": [
+      "parts",
+      "parts/wheels-tyres"
+    ],
+    "level": 2,
+    "sortOrder": 3,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/wheels-tyres/spokes",
+    "slug": "spokes",
+    "name": "Spokes",
+    "parentId": "parts/wheels-tyres",
+    "ancestorIds": [
+      "parts",
+      "parts/wheels-tyres"
+    ],
+    "level": 2,
+    "sortOrder": 4,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/wheels-tyres/axles",
+    "slug": "axles",
+    "name": "Axles",
+    "parentId": "parts/wheels-tyres",
+    "ancestorIds": [
+      "parts",
+      "parts/wheels-tyres"
+    ],
+    "level": 2,
+    "sortOrder": 5,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/wheels-tyres/wheel-bearings",
+    "slug": "wheel-bearings",
+    "name": "Wheel Bearings",
+    "parentId": "parts/wheels-tyres",
+    "ancestorIds": [
+      "parts",
+      "parts/wheels-tyres"
+    ],
+    "level": 2,
+    "sortOrder": 6,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/wheels-tyres/motocross-tyres",
+    "slug": "motocross-tyres",
+    "name": "Motocross Tyres",
+    "parentId": "parts/wheels-tyres",
+    "ancestorIds": [
+      "parts",
+      "parts/wheels-tyres"
+    ],
+    "level": 2,
+    "sortOrder": 7,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/wheels-tyres/enduro-tyres",
+    "slug": "enduro-tyres",
+    "name": "Enduro Tyres",
+    "parentId": "parts/wheels-tyres",
+    "ancestorIds": [
+      "parts",
+      "parts/wheels-tyres"
+    ],
+    "level": 2,
+    "sortOrder": 8,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/wheels-tyres/trials-tyres",
+    "slug": "trials-tyres",
+    "name": "Trials Tyres",
+    "parentId": "parts/wheels-tyres",
+    "ancestorIds": [
+      "parts",
+      "parts/wheels-tyres"
+    ],
+    "level": 2,
+    "sortOrder": 9,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/wheels-tyres/tubes",
+    "slug": "tubes",
+    "name": "Tubes",
+    "parentId": "parts/wheels-tyres",
+    "ancestorIds": [
+      "parts",
+      "parts/wheels-tyres"
+    ],
+    "level": 2,
+    "sortOrder": 10,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/wheels-tyres/mousses",
+    "slug": "mousses",
+    "name": "Mousses",
+    "parentId": "parts/wheels-tyres",
+    "ancestorIds": [
+      "parts",
+      "parts/wheels-tyres"
+    ],
+    "level": 2,
+    "sortOrder": 11,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/wheels-tyres/rim-locks",
+    "slug": "rim-locks",
+    "name": "Rim Locks",
+    "parentId": "parts/wheels-tyres",
+    "ancestorIds": [
+      "parts",
+      "parts/wheels-tyres"
+    ],
+    "level": 2,
+    "sortOrder": 12,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/wheels-tyres/tyre-accessories",
+    "slug": "tyre-accessories",
+    "name": "Tyre Accessories",
+    "parentId": "parts/wheels-tyres",
+    "ancestorIds": [
+      "parts",
+      "parts/wheels-tyres"
+    ],
+    "level": 2,
+    "sortOrder": 13,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/drivetrain",
+    "slug": "drivetrain",
+    "name": "Drivetrain",
+    "parentId": "parts",
+    "ancestorIds": [
+      "parts"
+    ],
+    "level": 1,
+    "sortOrder": 11,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/drivetrain/front-sprockets",
+    "slug": "front-sprockets",
+    "name": "Front Sprockets",
+    "parentId": "parts/drivetrain",
+    "ancestorIds": [
+      "parts",
+      "parts/drivetrain"
+    ],
+    "level": 2,
+    "sortOrder": 0,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/drivetrain/rear-sprockets",
+    "slug": "rear-sprockets",
+    "name": "Rear Sprockets",
+    "parentId": "parts/drivetrain",
+    "ancestorIds": [
+      "parts",
+      "parts/drivetrain"
+    ],
+    "level": 2,
+    "sortOrder": 1,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/drivetrain/chains",
+    "slug": "chains",
+    "name": "Chains",
+    "parentId": "parts/drivetrain",
+    "ancestorIds": [
+      "parts",
+      "parts/drivetrain"
+    ],
+    "level": 2,
+    "sortOrder": 2,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/drivetrain/chain-guides",
+    "slug": "chain-guides",
+    "name": "Chain Guides",
+    "parentId": "parts/drivetrain",
+    "ancestorIds": [
+      "parts",
+      "parts/drivetrain"
+    ],
+    "level": 2,
+    "sortOrder": 3,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/drivetrain/chain-sliders",
+    "slug": "chain-sliders",
+    "name": "Chain Sliders",
+    "parentId": "parts/drivetrain",
+    "ancestorIds": [
+      "parts",
+      "parts/drivetrain"
+    ],
+    "level": 2,
+    "sortOrder": 4,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/drivetrain/chain-tensioners",
+    "slug": "chain-tensioners",
+    "name": "Chain Tensioners",
+    "parentId": "parts/drivetrain",
+    "ancestorIds": [
+      "parts",
+      "parts/drivetrain"
+    ],
+    "level": 2,
+    "sortOrder": 5,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/drivetrain/chain-and-sprocket-kits",
+    "slug": "chain-and-sprocket-kits",
+    "name": "Chain & Sprocket Kits",
+    "parentId": "parts/drivetrain",
+    "ancestorIds": [
+      "parts",
+      "parts/drivetrain"
+    ],
+    "level": 2,
+    "sortOrder": 6,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/frame-controls",
+    "slug": "frame-controls",
+    "name": "Frame, Chassis & Controls",
+    "parentId": "parts",
+    "ancestorIds": [
+      "parts"
+    ],
+    "level": 1,
+    "sortOrder": 12,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/frame-controls/frames",
+    "slug": "frames",
+    "name": "Frames",
+    "parentId": "parts/frame-controls",
+    "ancestorIds": [
+      "parts",
+      "parts/frame-controls"
+    ],
+    "level": 2,
+    "sortOrder": 0,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/frame-controls/subframes",
+    "slug": "subframes",
+    "name": "Subframes",
+    "parentId": "parts/frame-controls",
+    "ancestorIds": [
+      "parts",
+      "parts/frame-controls"
+    ],
+    "level": 2,
+    "sortOrder": 1,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/frame-controls/swingarms",
+    "slug": "swingarms",
+    "name": "Swingarms",
+    "parentId": "parts/frame-controls",
+    "ancestorIds": [
+      "parts",
+      "parts/frame-controls"
+    ],
+    "level": 2,
+    "sortOrder": 2,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/frame-controls/footpegs",
+    "slug": "footpegs",
+    "name": "Footpegs",
+    "parentId": "parts/frame-controls",
+    "ancestorIds": [
+      "parts",
+      "parts/frame-controls"
+    ],
+    "level": 2,
+    "sortOrder": 3,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/frame-controls/handlebars",
+    "slug": "handlebars",
+    "name": "Handlebars",
+    "parentId": "parts/frame-controls",
+    "ancestorIds": [
+      "parts",
+      "parts/frame-controls"
+    ],
+    "level": 2,
+    "sortOrder": 4,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/frame-controls/handlebar-mounts",
+    "slug": "handlebar-mounts",
+    "name": "Handlebar Mounts",
+    "parentId": "parts/frame-controls",
+    "ancestorIds": [
+      "parts",
+      "parts/frame-controls"
+    ],
+    "level": 2,
+    "sortOrder": 5,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/frame-controls/grips",
+    "slug": "grips",
+    "name": "Grips",
+    "parentId": "parts/frame-controls",
+    "ancestorIds": [
+      "parts",
+      "parts/frame-controls"
+    ],
+    "level": 2,
+    "sortOrder": 6,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/frame-controls/throttles",
+    "slug": "throttles",
+    "name": "Throttles",
+    "parentId": "parts/frame-controls",
+    "ancestorIds": [
+      "parts",
+      "parts/frame-controls"
+    ],
+    "level": 2,
+    "sortOrder": 7,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/frame-controls/throttle-cables",
+    "slug": "throttle-cables",
+    "name": "Throttle Cables",
+    "parentId": "parts/frame-controls",
+    "ancestorIds": [
+      "parts",
+      "parts/frame-controls"
+    ],
+    "level": 2,
+    "sortOrder": 8,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/frame-controls/clutch-levers",
+    "slug": "clutch-levers",
+    "name": "Clutch Levers",
+    "parentId": "parts/frame-controls",
+    "ancestorIds": [
+      "parts",
+      "parts/frame-controls"
+    ],
+    "level": 2,
+    "sortOrder": 9,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/frame-controls/gear-shifters",
+    "slug": "gear-shifters",
+    "name": "Gear Shifters",
+    "parentId": "parts/frame-controls",
+    "ancestorIds": [
+      "parts",
+      "parts/frame-controls"
+    ],
+    "level": 2,
+    "sortOrder": 10,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/frame-controls/rear-brake-pedals",
+    "slug": "rear-brake-pedals",
+    "name": "Rear Brake Pedals",
+    "parentId": "parts/frame-controls",
+    "ancestorIds": [
+      "parts",
+      "parts/frame-controls"
+    ],
+    "level": 2,
+    "sortOrder": 11,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/frame-controls/kickstarters",
+    "slug": "kickstarters",
+    "name": "Kickstarters",
+    "parentId": "parts/frame-controls",
+    "ancestorIds": [
+      "parts",
+      "parts/frame-controls"
+    ],
+    "level": 2,
+    "sortOrder": 12,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/frame-controls/steering-bearings",
+    "slug": "steering-bearings",
+    "name": "Steering Bearings",
+    "parentId": "parts/frame-controls",
+    "ancestorIds": [
+      "parts",
+      "parts/frame-controls"
+    ],
+    "level": 2,
+    "sortOrder": 13,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/frame-controls/engine-mounts",
+    "slug": "engine-mounts",
+    "name": "Engine Mounts",
+    "parentId": "parts/frame-controls",
+    "ancestorIds": [
+      "parts",
+      "parts/frame-controls"
+    ],
+    "level": 2,
+    "sortOrder": 14,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/bodywork",
+    "slug": "bodywork",
+    "name": "Bodywork & Plastics",
+    "parentId": "parts",
+    "ancestorIds": [
+      "parts"
+    ],
+    "level": 1,
+    "sortOrder": 13,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/bodywork/complete-plastic-kits",
+    "slug": "complete-plastic-kits",
+    "name": "Complete Plastic Kits",
+    "parentId": "parts/bodywork",
+    "ancestorIds": [
+      "parts",
+      "parts/bodywork"
+    ],
+    "level": 2,
+    "sortOrder": 0,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/bodywork/front-fenders",
+    "slug": "front-fenders",
+    "name": "Front Fenders",
+    "parentId": "parts/bodywork",
+    "ancestorIds": [
+      "parts",
+      "parts/bodywork"
+    ],
+    "level": 2,
+    "sortOrder": 1,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/bodywork/rear-fenders",
+    "slug": "rear-fenders",
+    "name": "Rear Fenders",
+    "parentId": "parts/bodywork",
+    "ancestorIds": [
+      "parts",
+      "parts/bodywork"
+    ],
+    "level": 2,
+    "sortOrder": 2,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/bodywork/side-panels",
+    "slug": "side-panels",
+    "name": "Side Panels",
+    "parentId": "parts/bodywork",
+    "ancestorIds": [
+      "parts",
+      "parts/bodywork"
+    ],
+    "level": 2,
+    "sortOrder": 3,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/bodywork/radiator-shrouds",
+    "slug": "radiator-shrouds",
+    "name": "Radiator Shrouds",
+    "parentId": "parts/bodywork",
+    "ancestorIds": [
+      "parts",
+      "parts/bodywork"
+    ],
+    "level": 2,
+    "sortOrder": 4,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/bodywork/number-plates",
+    "slug": "number-plates",
+    "name": "Number Plates",
+    "parentId": "parts/bodywork",
+    "ancestorIds": [
+      "parts",
+      "parts/bodywork"
+    ],
+    "level": 2,
+    "sortOrder": 5,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/bodywork/seats",
+    "slug": "seats",
+    "name": "Seats",
+    "parentId": "parts/bodywork",
+    "ancestorIds": [
+      "parts",
+      "parts/bodywork"
+    ],
+    "level": 2,
+    "sortOrder": 6,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/bodywork/seat-covers",
+    "slug": "seat-covers",
+    "name": "Seat Covers",
+    "parentId": "parts/bodywork",
+    "ancestorIds": [
+      "parts",
+      "parts/bodywork"
+    ],
+    "level": 2,
+    "sortOrder": 7,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/bodywork/graphics-kits",
+    "slug": "graphics-kits",
+    "name": "Graphics Kits",
+    "parentId": "parts/bodywork",
+    "ancestorIds": [
+      "parts",
+      "parts/bodywork"
+    ],
+    "level": 2,
+    "sortOrder": 8,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/bodywork/fuel-tank-covers",
+    "slug": "fuel-tank-covers",
+    "name": "Fuel Tank Covers",
+    "parentId": "parts/bodywork",
+    "ancestorIds": [
+      "parts",
+      "parts/bodywork"
+    ],
+    "level": 2,
+    "sortOrder": 9,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/bodywork/other-plastics",
+    "slug": "other-plastics",
+    "name": "Other Plastics",
+    "parentId": "parts/bodywork",
+    "ancestorIds": [
+      "parts",
+      "parts/bodywork"
+    ],
+    "level": 2,
+    "sortOrder": 10,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/guards",
+    "slug": "guards",
+    "name": "Protection & Guards",
+    "parentId": "parts",
+    "ancestorIds": [
+      "parts"
+    ],
+    "level": 1,
+    "sortOrder": 14,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/guards/skid-plates",
+    "slug": "skid-plates",
+    "name": "Skid Plates",
+    "parentId": "parts/guards",
+    "ancestorIds": [
+      "parts",
+      "parts/guards"
+    ],
+    "level": 2,
+    "sortOrder": 0,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/guards/handguards",
+    "slug": "handguards",
+    "name": "Handguards",
+    "parentId": "parts/guards",
+    "ancestorIds": [
+      "parts",
+      "parts/guards"
+    ],
+    "level": 2,
+    "sortOrder": 1,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/guards/radiator-guards",
+    "slug": "radiator-guards",
+    "name": "Radiator Guards",
+    "parentId": "parts/guards",
+    "ancestorIds": [
+      "parts",
+      "parts/guards"
+    ],
+    "level": 2,
+    "sortOrder": 2,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/guards/disc-guards",
+    "slug": "disc-guards",
+    "name": "Disc Guards",
+    "parentId": "parts/guards",
+    "ancestorIds": [
+      "parts",
+      "parts/guards"
+    ],
+    "level": 2,
+    "sortOrder": 3,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/guards/engine-case-guards",
+    "slug": "engine-case-guards",
+    "name": "Engine Case Guards",
+    "parentId": "parts/guards",
+    "ancestorIds": [
+      "parts",
+      "parts/guards"
+    ],
+    "level": 2,
+    "sortOrder": 4,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/guards/frame-guards",
+    "slug": "frame-guards",
+    "name": "Frame Guards",
+    "parentId": "parts/guards",
+    "ancestorIds": [
+      "parts",
+      "parts/guards"
+    ],
+    "level": 2,
+    "sortOrder": 5,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/guards/fork-guards",
+    "slug": "fork-guards",
+    "name": "Fork Guards",
+    "parentId": "parts/guards",
+    "ancestorIds": [
+      "parts",
+      "parts/guards"
+    ],
+    "level": 2,
+    "sortOrder": 6,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/service",
+    "slug": "service",
+    "name": "Consumables & Service Parts",
+    "parentId": "parts",
+    "ancestorIds": [
+      "parts"
+    ],
+    "level": 1,
+    "sortOrder": 15,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/service/oil-filters",
+    "slug": "oil-filters",
+    "name": "Oil Filters",
+    "parentId": "parts/service",
+    "ancestorIds": [
+      "parts",
+      "parts/service"
+    ],
+    "level": 2,
+    "sortOrder": 0,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/service/gaskets",
+    "slug": "gaskets",
+    "name": "Gaskets",
+    "parentId": "parts/service",
+    "ancestorIds": [
+      "parts",
+      "parts/service"
+    ],
+    "level": 2,
+    "sortOrder": 1,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/service/bearings",
+    "slug": "bearings",
+    "name": "Bearings",
+    "parentId": "parts/service",
+    "ancestorIds": [
+      "parts",
+      "parts/service"
+    ],
+    "level": 2,
+    "sortOrder": 2,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/service/seals",
+    "slug": "seals",
+    "name": "Seals",
+    "parentId": "parts/service",
+    "ancestorIds": [
+      "parts",
+      "parts/service"
+    ],
+    "level": 2,
+    "sortOrder": 3,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/service/fastener-kits",
+    "slug": "fastener-kits",
+    "name": "Fastener Kits",
+    "parentId": "parts/service",
+    "ancestorIds": [
+      "parts",
+      "parts/service"
+    ],
+    "level": 2,
+    "sortOrder": 4,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/service/maintenance-kits",
+    "slug": "maintenance-kits",
+    "name": "Maintenance Kits",
+    "parentId": "parts/service",
+    "ancestorIds": [
+      "parts",
+      "parts/service"
+    ],
+    "level": 2,
+    "sortOrder": 5,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/service/service-components",
+    "slug": "service-components",
+    "name": "Service Components",
+    "parentId": "parts/service",
+    "ancestorIds": [
+      "parts",
+      "parts/service"
+    ],
+    "level": 2,
+    "sortOrder": 6,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/breaking",
+    "slug": "breaking",
+    "name": "Parts for Breaking / Donor Bikes",
+    "parentId": "parts",
+    "ancestorIds": [
+      "parts"
+    ],
+    "level": 1,
+    "sortOrder": 16,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/breaking/complete-bikes-for-breaking",
+    "slug": "complete-bikes-for-breaking",
+    "name": "Complete Bikes for Breaking",
+    "parentId": "parts/breaking",
+    "ancestorIds": [
+      "parts",
+      "parts/breaking"
+    ],
+    "level": 2,
+    "sortOrder": 0,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/breaking/parts-lots",
+    "slug": "parts-lots",
+    "name": "Parts Lots",
+    "parentId": "parts/breaking",
+    "ancestorIds": [
+      "parts",
+      "parts/breaking"
+    ],
+    "level": 2,
+    "sortOrder": 1,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/breaking/mixed-spare-parts",
+    "slug": "mixed-spare-parts",
+    "name": "Mixed Spare Parts",
+    "parentId": "parts/breaking",
+    "ancestorIds": [
+      "parts",
+      "parts/breaking"
+    ],
+    "level": 2,
+    "sortOrder": 2,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "parts/other",
+    "slug": "other",
+    "name": "Other Parts",
+    "parentId": "parts",
+    "ancestorIds": [
+      "parts"
+    ],
+    "level": 1,
+    "sortOrder": 17,
+    "isActive": true,
+    "itemType": "part",
+    "filterSchema": "part"
+  },
+  {
+    "id": "riding-gear",
+    "slug": "riding-gear",
+    "name": "Riding Gear & Apparel",
+    "parentId": null,
+    "ancestorIds": [],
+    "level": 0,
+    "sortOrder": 2,
+    "isActive": true,
+    "itemType": "gear",
+    "filterSchema": "gear"
+  },
+  {
+    "id": "riding-gear/helmets",
+    "slug": "helmets",
+    "name": "Helmets",
+    "parentId": "riding-gear",
+    "ancestorIds": [
+      "riding-gear"
+    ],
+    "level": 1,
+    "sortOrder": 0,
+    "isActive": true,
+    "itemType": "gear",
+    "filterSchema": "gear"
+  },
+  {
+    "id": "riding-gear/helmets/motocross-helmets",
+    "slug": "motocross-helmets",
+    "name": "Motocross Helmets",
+    "parentId": "riding-gear/helmets",
+    "ancestorIds": [
+      "riding-gear",
+      "riding-gear/helmets"
+    ],
+    "level": 2,
+    "sortOrder": 0,
+    "isActive": true,
+    "itemType": "gear",
+    "filterSchema": "gear"
+  },
+  {
+    "id": "riding-gear/helmets/enduro-helmets",
+    "slug": "enduro-helmets",
+    "name": "Enduro Helmets",
+    "parentId": "riding-gear/helmets",
+    "ancestorIds": [
+      "riding-gear",
+      "riding-gear/helmets"
+    ],
+    "level": 2,
+    "sortOrder": 1,
+    "isActive": true,
+    "itemType": "gear",
+    "filterSchema": "gear"
+  },
+  {
+    "id": "riding-gear/helmets/trials-helmets",
+    "slug": "trials-helmets",
+    "name": "Trials Helmets",
+    "parentId": "riding-gear/helmets",
+    "ancestorIds": [
+      "riding-gear",
+      "riding-gear/helmets"
+    ],
+    "level": 2,
+    "sortOrder": 2,
+    "isActive": true,
+    "itemType": "gear",
+    "filterSchema": "gear"
+  },
+  {
+    "id": "riding-gear/helmets/helmet-accessories",
+    "slug": "helmet-accessories",
+    "name": "Helmet Accessories",
+    "parentId": "riding-gear/helmets",
+    "ancestorIds": [
+      "riding-gear",
+      "riding-gear/helmets"
+    ],
+    "level": 2,
+    "sortOrder": 3,
+    "isActive": true,
+    "itemType": "gear",
+    "filterSchema": "gear"
+  },
+  {
+    "id": "riding-gear/boots",
+    "slug": "boots",
+    "name": "Boots",
+    "parentId": "riding-gear",
+    "ancestorIds": [
+      "riding-gear"
+    ],
+    "level": 1,
+    "sortOrder": 1,
+    "isActive": true,
+    "itemType": "gear",
+    "filterSchema": "gear"
+  },
+  {
+    "id": "riding-gear/boots/motocross-boots",
+    "slug": "motocross-boots",
+    "name": "Motocross Boots",
+    "parentId": "riding-gear/boots",
+    "ancestorIds": [
+      "riding-gear",
+      "riding-gear/boots"
+    ],
+    "level": 2,
+    "sortOrder": 0,
+    "isActive": true,
+    "itemType": "gear",
+    "filterSchema": "gear"
+  },
+  {
+    "id": "riding-gear/boots/enduro-boots",
+    "slug": "enduro-boots",
+    "name": "Enduro Boots",
+    "parentId": "riding-gear/boots",
+    "ancestorIds": [
+      "riding-gear",
+      "riding-gear/boots"
+    ],
+    "level": 2,
+    "sortOrder": 1,
+    "isActive": true,
+    "itemType": "gear",
+    "filterSchema": "gear"
+  },
+  {
+    "id": "riding-gear/boots/trials-boots",
+    "slug": "trials-boots",
+    "name": "Trials Boots",
+    "parentId": "riding-gear/boots",
+    "ancestorIds": [
+      "riding-gear",
+      "riding-gear/boots"
+    ],
+    "level": 2,
+    "sortOrder": 2,
+    "isActive": true,
+    "itemType": "gear",
+    "filterSchema": "gear"
+  },
+  {
+    "id": "riding-gear/boots/boot-accessories-and-replacement-parts",
+    "slug": "boot-accessories-and-replacement-parts",
+    "name": "Boot Accessories & Replacement Parts",
+    "parentId": "riding-gear/boots",
+    "ancestorIds": [
+      "riding-gear",
+      "riding-gear/boots"
+    ],
+    "level": 2,
+    "sortOrder": 3,
+    "isActive": true,
+    "itemType": "gear",
+    "filterSchema": "gear"
+  },
+  {
+    "id": "riding-gear/clothing",
+    "slug": "clothing",
+    "name": "Clothing",
+    "parentId": "riding-gear",
+    "ancestorIds": [
+      "riding-gear"
+    ],
+    "level": 1,
+    "sortOrder": 2,
+    "isActive": true,
+    "itemType": "gear",
+    "filterSchema": "gear"
+  },
+  {
+    "id": "riding-gear/clothing/jerseys",
+    "slug": "jerseys",
+    "name": "Jerseys",
+    "parentId": "riding-gear/clothing",
+    "ancestorIds": [
+      "riding-gear",
+      "riding-gear/clothing"
+    ],
+    "level": 2,
+    "sortOrder": 0,
+    "isActive": true,
+    "itemType": "gear",
+    "filterSchema": "gear"
+  },
+  {
+    "id": "riding-gear/clothing/riding-pants",
+    "slug": "riding-pants",
+    "name": "Riding Pants",
+    "parentId": "riding-gear/clothing",
+    "ancestorIds": [
+      "riding-gear",
+      "riding-gear/clothing"
+    ],
+    "level": 2,
+    "sortOrder": 1,
+    "isActive": true,
+    "itemType": "gear",
+    "filterSchema": "gear"
+  },
+  {
+    "id": "riding-gear/clothing/jackets",
+    "slug": "jackets",
+    "name": "Jackets",
+    "parentId": "riding-gear/clothing",
+    "ancestorIds": [
+      "riding-gear",
+      "riding-gear/clothing"
+    ],
+    "level": 2,
+    "sortOrder": 2,
+    "isActive": true,
+    "itemType": "gear",
+    "filterSchema": "gear"
+  },
+  {
+    "id": "riding-gear/clothing/base-layers",
+    "slug": "base-layers",
+    "name": "Base Layers",
+    "parentId": "riding-gear/clothing",
+    "ancestorIds": [
+      "riding-gear",
+      "riding-gear/clothing"
+    ],
+    "level": 2,
+    "sortOrder": 3,
+    "isActive": true,
+    "itemType": "gear",
+    "filterSchema": "gear"
+  },
+  {
+    "id": "riding-gear/clothing/waterproof-riding-gear",
+    "slug": "waterproof-riding-gear",
+    "name": "Waterproof Riding Gear",
+    "parentId": "riding-gear/clothing",
+    "ancestorIds": [
+      "riding-gear",
+      "riding-gear/clothing"
+    ],
+    "level": 2,
+    "sortOrder": 4,
+    "isActive": true,
+    "itemType": "gear",
+    "filterSchema": "gear"
+  },
+  {
+    "id": "riding-gear/clothing/casual-rider-apparel",
+    "slug": "casual-rider-apparel",
+    "name": "Casual Rider Apparel",
+    "parentId": "riding-gear/clothing",
+    "ancestorIds": [
+      "riding-gear",
+      "riding-gear/clothing"
+    ],
+    "level": 2,
+    "sortOrder": 5,
+    "isActive": true,
+    "itemType": "gear",
+    "filterSchema": "gear"
+  },
+  {
+    "id": "riding-gear/protection",
+    "slug": "protection",
+    "name": "Protection",
+    "parentId": "riding-gear",
+    "ancestorIds": [
+      "riding-gear"
+    ],
+    "level": 1,
+    "sortOrder": 3,
+    "isActive": true,
+    "itemType": "gear",
+    "filterSchema": "gear"
+  },
+  {
+    "id": "riding-gear/protection/chest-protectors",
+    "slug": "chest-protectors",
+    "name": "Chest Protectors",
+    "parentId": "riding-gear/protection",
+    "ancestorIds": [
+      "riding-gear",
+      "riding-gear/protection"
+    ],
+    "level": 2,
+    "sortOrder": 0,
+    "isActive": true,
+    "itemType": "gear",
+    "filterSchema": "gear"
+  },
+  {
+    "id": "riding-gear/protection/body-armour",
+    "slug": "body-armour",
+    "name": "Body Armour",
+    "parentId": "riding-gear/protection",
+    "ancestorIds": [
+      "riding-gear",
+      "riding-gear/protection"
+    ],
+    "level": 2,
+    "sortOrder": 1,
+    "isActive": true,
+    "itemType": "gear",
+    "filterSchema": "gear"
+  },
+  {
+    "id": "riding-gear/protection/knee-braces",
+    "slug": "knee-braces",
+    "name": "Knee Braces",
+    "parentId": "riding-gear/protection",
+    "ancestorIds": [
+      "riding-gear",
+      "riding-gear/protection"
+    ],
+    "level": 2,
+    "sortOrder": 2,
+    "isActive": true,
+    "itemType": "gear",
+    "filterSchema": "gear"
+  },
+  {
+    "id": "riding-gear/protection/knee-guards",
+    "slug": "knee-guards",
+    "name": "Knee Guards",
+    "parentId": "riding-gear/protection",
+    "ancestorIds": [
+      "riding-gear",
+      "riding-gear/protection"
+    ],
+    "level": 2,
+    "sortOrder": 3,
+    "isActive": true,
+    "itemType": "gear",
+    "filterSchema": "gear"
+  },
+  {
+    "id": "riding-gear/protection/neck-braces",
+    "slug": "neck-braces",
+    "name": "Neck Braces",
+    "parentId": "riding-gear/protection",
+    "ancestorIds": [
+      "riding-gear",
+      "riding-gear/protection"
+    ],
+    "level": 2,
+    "sortOrder": 4,
+    "isActive": true,
+    "itemType": "gear",
+    "filterSchema": "gear"
+  },
+  {
+    "id": "riding-gear/protection/elbow-guards",
+    "slug": "elbow-guards",
+    "name": "Elbow Guards",
+    "parentId": "riding-gear/protection",
+    "ancestorIds": [
+      "riding-gear",
+      "riding-gear/protection"
+    ],
+    "level": 2,
+    "sortOrder": 5,
+    "isActive": true,
+    "itemType": "gear",
+    "filterSchema": "gear"
+  },
+  {
+    "id": "riding-gear/protection/back-protectors",
+    "slug": "back-protectors",
+    "name": "Back Protectors",
+    "parentId": "riding-gear/protection",
+    "ancestorIds": [
+      "riding-gear",
+      "riding-gear/protection"
+    ],
+    "level": 2,
+    "sortOrder": 6,
+    "isActive": true,
+    "itemType": "gear",
+    "filterSchema": "gear"
+  },
+  {
+    "id": "riding-gear/protection/protective-shorts",
+    "slug": "protective-shorts",
+    "name": "Protective Shorts",
+    "parentId": "riding-gear/protection",
+    "ancestorIds": [
+      "riding-gear",
+      "riding-gear/protection"
+    ],
+    "level": 2,
+    "sortOrder": 7,
+    "isActive": true,
+    "itemType": "gear",
+    "filterSchema": "gear"
+  },
+  {
+    "id": "riding-gear/protection/other-protective-equipment",
+    "slug": "other-protective-equipment",
+    "name": "Other Protective Equipment",
+    "parentId": "riding-gear/protection",
+    "ancestorIds": [
+      "riding-gear",
+      "riding-gear/protection"
+    ],
+    "level": 2,
+    "sortOrder": 8,
+    "isActive": true,
+    "itemType": "gear",
+    "filterSchema": "gear"
+  },
+  {
+    "id": "riding-gear/gloves-goggles",
+    "slug": "gloves-goggles",
+    "name": "Gloves & Goggles",
+    "parentId": "riding-gear",
+    "ancestorIds": [
+      "riding-gear"
+    ],
+    "level": 1,
+    "sortOrder": 4,
+    "isActive": true,
+    "itemType": "gear",
+    "filterSchema": "gear"
+  },
+  {
+    "id": "riding-gear/gloves-goggles/riding-gloves",
+    "slug": "riding-gloves",
+    "name": "Riding Gloves",
+    "parentId": "riding-gear/gloves-goggles",
+    "ancestorIds": [
+      "riding-gear",
+      "riding-gear/gloves-goggles"
+    ],
+    "level": 2,
+    "sortOrder": 0,
+    "isActive": true,
+    "itemType": "gear",
+    "filterSchema": "gear"
+  },
+  {
+    "id": "riding-gear/gloves-goggles/goggles",
+    "slug": "goggles",
+    "name": "Goggles",
+    "parentId": "riding-gear/gloves-goggles",
+    "ancestorIds": [
+      "riding-gear",
+      "riding-gear/gloves-goggles"
+    ],
+    "level": 2,
+    "sortOrder": 1,
+    "isActive": true,
+    "itemType": "gear",
+    "filterSchema": "gear"
+  },
+  {
+    "id": "riding-gear/gloves-goggles/lenses",
+    "slug": "lenses",
+    "name": "Lenses",
+    "parentId": "riding-gear/gloves-goggles",
+    "ancestorIds": [
+      "riding-gear",
+      "riding-gear/gloves-goggles"
+    ],
+    "level": 2,
+    "sortOrder": 2,
+    "isActive": true,
+    "itemType": "gear",
+    "filterSchema": "gear"
+  },
+  {
+    "id": "riding-gear/gloves-goggles/tear-offs-roll-offs",
+    "slug": "tear-offs-roll-offs",
+    "name": "Tear-offs / Roll-offs",
+    "parentId": "riding-gear/gloves-goggles",
+    "ancestorIds": [
+      "riding-gear",
+      "riding-gear/gloves-goggles"
+    ],
+    "level": 2,
+    "sortOrder": 3,
+    "isActive": true,
+    "itemType": "gear",
+    "filterSchema": "gear"
+  },
+  {
+    "id": "riding-gear/gloves-goggles/goggle-accessories",
+    "slug": "goggle-accessories",
+    "name": "Goggle Accessories",
+    "parentId": "riding-gear/gloves-goggles",
+    "ancestorIds": [
+      "riding-gear",
+      "riding-gear/gloves-goggles"
+    ],
+    "level": 2,
+    "sortOrder": 4,
+    "isActive": true,
+    "itemType": "gear",
+    "filterSchema": "gear"
+  },
+  {
+    "id": "riding-gear/bags-hydration",
+    "slug": "bags-hydration",
+    "name": "Riding Bags & Hydration",
+    "parentId": "riding-gear",
+    "ancestorIds": [
+      "riding-gear"
+    ],
+    "level": 1,
+    "sortOrder": 5,
+    "isActive": true,
+    "itemType": "gear",
+    "filterSchema": "gear"
+  },
+  {
+    "id": "riding-gear/bags-hydration/hydration-packs",
+    "slug": "hydration-packs",
+    "name": "Hydration Packs",
+    "parentId": "riding-gear/bags-hydration",
+    "ancestorIds": [
+      "riding-gear",
+      "riding-gear/bags-hydration"
+    ],
+    "level": 2,
+    "sortOrder": 0,
+    "isActive": true,
+    "itemType": "gear",
+    "filterSchema": "gear"
+  },
+  {
+    "id": "riding-gear/bags-hydration/riding-backpacks",
+    "slug": "riding-backpacks",
+    "name": "Riding Backpacks",
+    "parentId": "riding-gear/bags-hydration",
+    "ancestorIds": [
+      "riding-gear",
+      "riding-gear/bags-hydration"
+    ],
+    "level": 2,
+    "sortOrder": 1,
+    "isActive": true,
+    "itemType": "gear",
+    "filterSchema": "gear"
+  },
+  {
+    "id": "riding-gear/bags-hydration/tool-bags",
+    "slug": "tool-bags",
+    "name": "Tool Bags",
+    "parentId": "riding-gear/bags-hydration",
+    "ancestorIds": [
+      "riding-gear",
+      "riding-gear/bags-hydration"
+    ],
+    "level": 2,
+    "sortOrder": 2,
+    "isActive": true,
+    "itemType": "gear",
+    "filterSchema": "gear"
+  },
+  {
+    "id": "riding-gear/bags-hydration/waist-packs",
+    "slug": "waist-packs",
+    "name": "Waist Packs",
+    "parentId": "riding-gear/bags-hydration",
+    "ancestorIds": [
+      "riding-gear",
+      "riding-gear/bags-hydration"
+    ],
+    "level": 2,
+    "sortOrder": 3,
+    "isActive": true,
+    "itemType": "gear",
+    "filterSchema": "gear"
+  },
+  {
+    "id": "electronics",
+    "slug": "electronics",
+    "name": "Electronics & Technology",
+    "parentId": null,
+    "ancestorIds": [],
+    "level": 0,
+    "sortOrder": 3,
+    "isActive": true,
+    "itemType": "electronics",
+    "filterSchema": "electronics"
+  },
+  {
+    "id": "electronics/gps-navigation",
+    "slug": "gps-navigation",
+    "name": "GPS & Navigation",
+    "parentId": "electronics",
+    "ancestorIds": [
+      "electronics"
+    ],
+    "level": 1,
+    "sortOrder": 0,
+    "isActive": true,
+    "itemType": "electronics",
+    "filterSchema": "electronics"
+  },
+  {
+    "id": "electronics/gps-navigation/handheld-gps-devices",
+    "slug": "handheld-gps-devices",
+    "name": "Handheld GPS Devices",
+    "parentId": "electronics/gps-navigation",
+    "ancestorIds": [
+      "electronics",
+      "electronics/gps-navigation"
+    ],
+    "level": 2,
+    "sortOrder": 0,
+    "isActive": true,
+    "itemType": "electronics",
+    "filterSchema": "electronics"
+  },
+  {
+    "id": "electronics/gps-navigation/motorcycle-gps-units",
+    "slug": "motorcycle-gps-units",
+    "name": "Motorcycle GPS Units",
+    "parentId": "electronics/gps-navigation",
+    "ancestorIds": [
+      "electronics",
+      "electronics/gps-navigation"
+    ],
+    "level": 2,
+    "sortOrder": 1,
+    "isActive": true,
+    "itemType": "electronics",
+    "filterSchema": "electronics"
+  },
+  {
+    "id": "electronics/gps-navigation/gps-navigation-systems",
+    "slug": "gps-navigation-systems",
+    "name": "GPS Navigation Systems",
+    "parentId": "electronics/gps-navigation",
+    "ancestorIds": [
+      "electronics",
+      "electronics/gps-navigation"
+    ],
+    "level": 2,
+    "sortOrder": 2,
+    "isActive": true,
+    "itemType": "electronics",
+    "filterSchema": "electronics"
+  },
+  {
+    "id": "electronics/gps-navigation/navigation-mounts",
+    "slug": "navigation-mounts",
+    "name": "Navigation Mounts",
+    "parentId": "electronics/gps-navigation",
+    "ancestorIds": [
+      "electronics",
+      "electronics/gps-navigation"
+    ],
+    "level": 2,
+    "sortOrder": 3,
+    "isActive": true,
+    "itemType": "electronics",
+    "filterSchema": "electronics"
+  },
+  {
+    "id": "electronics/gps-navigation/gps-accessories",
+    "slug": "gps-accessories",
+    "name": "GPS Accessories",
+    "parentId": "electronics/gps-navigation",
+    "ancestorIds": [
+      "electronics",
+      "electronics/gps-navigation"
+    ],
+    "level": 2,
+    "sortOrder": 4,
+    "isActive": true,
+    "itemType": "electronics",
+    "filterSchema": "electronics"
+  },
+  {
+    "id": "electronics/gps-navigation/navigation-controllers",
+    "slug": "navigation-controllers",
+    "name": "Navigation Controllers",
+    "parentId": "electronics/gps-navigation",
+    "ancestorIds": [
+      "electronics",
+      "electronics/gps-navigation"
+    ],
+    "level": 2,
+    "sortOrder": 5,
+    "isActive": true,
+    "itemType": "electronics",
+    "filterSchema": "electronics"
+  },
+  {
+    "id": "electronics/gps-navigation/rally-navigation-equipment",
+    "slug": "rally-navigation-equipment",
+    "name": "Rally Navigation Equipment",
+    "parentId": "electronics/gps-navigation",
+    "ancestorIds": [
+      "electronics",
+      "electronics/gps-navigation"
+    ],
+    "level": 2,
+    "sortOrder": 6,
+    "isActive": true,
+    "itemType": "electronics",
+    "filterSchema": "electronics"
+  },
+  {
+    "id": "electronics/watches-wearables",
+    "slug": "watches-wearables",
+    "name": "Watches & Wearables",
+    "parentId": "electronics",
+    "ancestorIds": [
+      "electronics"
+    ],
+    "level": 1,
+    "sortOrder": 1,
+    "isActive": true,
+    "itemType": "electronics",
+    "filterSchema": "electronics"
+  },
+  {
+    "id": "electronics/watches-wearables/gps-watches",
+    "slug": "gps-watches",
+    "name": "GPS Watches",
+    "parentId": "electronics/watches-wearables",
+    "ancestorIds": [
+      "electronics",
+      "electronics/watches-wearables"
+    ],
+    "level": 2,
+    "sortOrder": 0,
+    "isActive": true,
+    "itemType": "electronics",
+    "filterSchema": "electronics"
+  },
+  {
+    "id": "electronics/watches-wearables/smartwatches",
+    "slug": "smartwatches",
+    "name": "Smartwatches",
+    "parentId": "electronics/watches-wearables",
+    "ancestorIds": [
+      "electronics",
+      "electronics/watches-wearables"
+    ],
+    "level": 2,
+    "sortOrder": 1,
+    "isActive": true,
+    "itemType": "electronics",
+    "filterSchema": "electronics"
+  },
+  {
+    "id": "electronics/watches-wearables/fitness-trackers",
+    "slug": "fitness-trackers",
+    "name": "Fitness Trackers",
+    "parentId": "electronics/watches-wearables",
+    "ancestorIds": [
+      "electronics",
+      "electronics/watches-wearables"
+    ],
+    "level": 2,
+    "sortOrder": 2,
+    "isActive": true,
+    "itemType": "electronics",
+    "filterSchema": "electronics"
+  },
+  {
+    "id": "electronics/watches-wearables/heart-rate-monitors",
+    "slug": "heart-rate-monitors",
+    "name": "Heart Rate Monitors",
+    "parentId": "electronics/watches-wearables",
+    "ancestorIds": [
+      "electronics",
+      "electronics/watches-wearables"
+    ],
+    "level": 2,
+    "sortOrder": 3,
+    "isActive": true,
+    "itemType": "electronics",
+    "filterSchema": "electronics"
+  },
+  {
+    "id": "electronics/watches-wearables/wearable-accessories",
+    "slug": "wearable-accessories",
+    "name": "Wearable Accessories",
+    "parentId": "electronics/watches-wearables",
+    "ancestorIds": [
+      "electronics",
+      "electronics/watches-wearables"
+    ],
+    "level": 2,
+    "sortOrder": 4,
+    "isActive": true,
+    "itemType": "electronics",
+    "filterSchema": "electronics"
+  },
+  {
+    "id": "electronics/tracking-security",
+    "slug": "tracking-security",
+    "name": "Motorcycle Tracking & Security",
+    "parentId": "electronics",
+    "ancestorIds": [
+      "electronics"
+    ],
+    "level": 1,
+    "sortOrder": 2,
+    "isActive": true,
+    "itemType": "electronics",
+    "filterSchema": "electronics"
+  },
+  {
+    "id": "electronics/tracking-security/gps-trackers",
+    "slug": "gps-trackers",
+    "name": "GPS Trackers",
+    "parentId": "electronics/tracking-security",
+    "ancestorIds": [
+      "electronics",
+      "electronics/tracking-security"
+    ],
+    "level": 2,
+    "sortOrder": 0,
+    "isActive": true,
+    "itemType": "electronics",
+    "filterSchema": "electronics"
+  },
+  {
+    "id": "electronics/tracking-security/anti-theft-tracking-devices",
+    "slug": "anti-theft-tracking-devices",
+    "name": "Anti-Theft Tracking Devices",
+    "parentId": "electronics/tracking-security",
+    "ancestorIds": [
+      "electronics",
+      "electronics/tracking-security"
+    ],
+    "level": 2,
+    "sortOrder": 1,
+    "isActive": true,
+    "itemType": "electronics",
+    "filterSchema": "electronics"
+  },
+  {
+    "id": "electronics/tracking-security/motorcycle-alarms",
+    "slug": "motorcycle-alarms",
+    "name": "Motorcycle Alarms",
+    "parentId": "electronics/tracking-security",
+    "ancestorIds": [
+      "electronics",
+      "electronics/tracking-security"
+    ],
+    "level": 2,
+    "sortOrder": 2,
+    "isActive": true,
+    "itemType": "electronics",
+    "filterSchema": "electronics"
+  },
+  {
+    "id": "electronics/tracking-security/security-sensors",
+    "slug": "security-sensors",
+    "name": "Security Sensors",
+    "parentId": "electronics/tracking-security",
+    "ancestorIds": [
+      "electronics",
+      "electronics/tracking-security"
+    ],
+    "level": 2,
+    "sortOrder": 3,
+    "isActive": true,
+    "itemType": "electronics",
+    "filterSchema": "electronics"
+  },
+  {
+    "id": "electronics/tracking-security/tracker-accessories",
+    "slug": "tracker-accessories",
+    "name": "Tracker Accessories",
+    "parentId": "electronics/tracking-security",
+    "ancestorIds": [
+      "electronics",
+      "electronics/tracking-security"
+    ],
+    "level": 2,
+    "sortOrder": 4,
+    "isActive": true,
+    "itemType": "electronics",
+    "filterSchema": "electronics"
+  },
+  {
+    "id": "electronics/ride-data",
+    "slug": "ride-data",
+    "name": "Ride Monitoring & Data",
+    "parentId": "electronics",
+    "ancestorIds": [
+      "electronics"
+    ],
+    "level": 1,
+    "sortOrder": 3,
+    "isActive": true,
+    "itemType": "electronics",
+    "filterSchema": "electronics"
+  },
+  {
+    "id": "electronics/ride-data/engine-hour-meters",
+    "slug": "engine-hour-meters",
+    "name": "Engine Hour Meters",
+    "parentId": "electronics/ride-data",
+    "ancestorIds": [
+      "electronics",
+      "electronics/ride-data"
+    ],
+    "level": 2,
+    "sortOrder": 0,
+    "isActive": true,
+    "itemType": "electronics",
+    "filterSchema": "electronics"
+  },
+  {
+    "id": "electronics/ride-data/digital-dashboards",
+    "slug": "digital-dashboards",
+    "name": "Digital Dashboards",
+    "parentId": "electronics/ride-data",
+    "ancestorIds": [
+      "electronics",
+      "electronics/ride-data"
+    ],
+    "level": 2,
+    "sortOrder": 1,
+    "isActive": true,
+    "itemType": "electronics",
+    "filterSchema": "electronics"
+  },
+  {
+    "id": "electronics/ride-data/lap-timers",
+    "slug": "lap-timers",
+    "name": "Lap Timers",
+    "parentId": "electronics/ride-data",
+    "ancestorIds": [
+      "electronics",
+      "electronics/ride-data"
+    ],
+    "level": 2,
+    "sortOrder": 2,
+    "isActive": true,
+    "itemType": "electronics",
+    "filterSchema": "electronics"
+  },
+  {
+    "id": "electronics/ride-data/data-loggers",
+    "slug": "data-loggers",
+    "name": "Data Loggers",
+    "parentId": "electronics/ride-data",
+    "ancestorIds": [
+      "electronics",
+      "electronics/ride-data"
+    ],
+    "level": 2,
+    "sortOrder": 3,
+    "isActive": true,
+    "itemType": "electronics",
+    "filterSchema": "electronics"
+  },
+  {
+    "id": "electronics/ride-data/ride-telemetry",
+    "slug": "ride-telemetry",
+    "name": "Ride Telemetry",
+    "parentId": "electronics/ride-data",
+    "ancestorIds": [
+      "electronics",
+      "electronics/ride-data"
+    ],
+    "level": 2,
+    "sortOrder": 4,
+    "isActive": true,
+    "itemType": "electronics",
+    "filterSchema": "electronics"
+  },
+  {
+    "id": "electronics/ride-data/electronic-speedometers",
+    "slug": "electronic-speedometers",
+    "name": "Electronic Speedometers",
+    "parentId": "electronics/ride-data",
+    "ancestorIds": [
+      "electronics",
+      "electronics/ride-data"
+    ],
+    "level": 2,
+    "sortOrder": 5,
+    "isActive": true,
+    "itemType": "electronics",
+    "filterSchema": "electronics"
+  },
+  {
+    "id": "electronics/ride-data/other-monitoring-equipment",
+    "slug": "other-monitoring-equipment",
+    "name": "Other Monitoring Equipment",
+    "parentId": "electronics/ride-data",
+    "ancestorIds": [
+      "electronics",
+      "electronics/ride-data"
+    ],
+    "level": 2,
+    "sortOrder": 6,
+    "isActive": true,
+    "itemType": "electronics",
+    "filterSchema": "electronics"
+  },
+  {
+    "id": "electronics/cameras",
+    "slug": "cameras",
+    "name": "Action Cameras & Video",
+    "parentId": "electronics",
+    "ancestorIds": [
+      "electronics"
+    ],
+    "level": 1,
+    "sortOrder": 4,
+    "isActive": true,
+    "itemType": "electronics",
+    "filterSchema": "electronics"
+  },
+  {
+    "id": "electronics/cameras/action-cameras",
+    "slug": "action-cameras",
+    "name": "Action Cameras",
+    "parentId": "electronics/cameras",
+    "ancestorIds": [
+      "electronics",
+      "electronics/cameras"
+    ],
+    "level": 2,
+    "sortOrder": 0,
+    "isActive": true,
+    "itemType": "electronics",
+    "filterSchema": "electronics"
+  },
+  {
+    "id": "electronics/cameras/helmet-cameras",
+    "slug": "helmet-cameras",
+    "name": "Helmet Cameras",
+    "parentId": "electronics/cameras",
+    "ancestorIds": [
+      "electronics",
+      "electronics/cameras"
+    ],
+    "level": 2,
+    "sortOrder": 1,
+    "isActive": true,
+    "itemType": "electronics",
+    "filterSchema": "electronics"
+  },
+  {
+    "id": "electronics/cameras/camera-mounts",
+    "slug": "camera-mounts",
+    "name": "Camera Mounts",
+    "parentId": "electronics/cameras",
+    "ancestorIds": [
+      "electronics",
+      "electronics/cameras"
+    ],
+    "level": 2,
+    "sortOrder": 2,
+    "isActive": true,
+    "itemType": "electronics",
+    "filterSchema": "electronics"
+  },
+  {
+    "id": "electronics/cameras/camera-batteries",
+    "slug": "camera-batteries",
+    "name": "Camera Batteries",
+    "parentId": "electronics/cameras",
+    "ancestorIds": [
+      "electronics",
+      "electronics/cameras"
+    ],
+    "level": 2,
+    "sortOrder": 3,
+    "isActive": true,
+    "itemType": "electronics",
+    "filterSchema": "electronics"
+  },
+  {
+    "id": "electronics/cameras/camera-accessories",
+    "slug": "camera-accessories",
+    "name": "Camera Accessories",
+    "parentId": "electronics/cameras",
+    "ancestorIds": [
+      "electronics",
+      "electronics/cameras"
+    ],
+    "level": 2,
+    "sortOrder": 4,
+    "isActive": true,
+    "itemType": "electronics",
+    "filterSchema": "electronics"
+  },
+  {
+    "id": "electronics/communication",
+    "slug": "communication",
+    "name": "Communication Equipment",
+    "parentId": "electronics",
+    "ancestorIds": [
+      "electronics"
+    ],
+    "level": 1,
+    "sortOrder": 5,
+    "isActive": true,
+    "itemType": "electronics",
+    "filterSchema": "electronics"
+  },
+  {
+    "id": "electronics/communication/helmet-communication-systems",
+    "slug": "helmet-communication-systems",
+    "name": "Helmet Communication Systems",
+    "parentId": "electronics/communication",
+    "ancestorIds": [
+      "electronics",
+      "electronics/communication"
+    ],
+    "level": 2,
+    "sortOrder": 0,
+    "isActive": true,
+    "itemType": "electronics",
+    "filterSchema": "electronics"
+  },
+  {
+    "id": "electronics/communication/bluetooth-intercoms",
+    "slug": "bluetooth-intercoms",
+    "name": "Bluetooth Intercoms",
+    "parentId": "electronics/communication",
+    "ancestorIds": [
+      "electronics",
+      "electronics/communication"
+    ],
+    "level": 2,
+    "sortOrder": 1,
+    "isActive": true,
+    "itemType": "electronics",
+    "filterSchema": "electronics"
+  },
+  {
+    "id": "electronics/communication/radios",
+    "slug": "radios",
+    "name": "Radios",
+    "parentId": "electronics/communication",
+    "ancestorIds": [
+      "electronics",
+      "electronics/communication"
+    ],
+    "level": 2,
+    "sortOrder": 2,
+    "isActive": true,
+    "itemType": "electronics",
+    "filterSchema": "electronics"
+  },
+  {
+    "id": "electronics/communication/communication-accessories",
+    "slug": "communication-accessories",
+    "name": "Communication Accessories",
+    "parentId": "electronics/communication",
+    "ancestorIds": [
+      "electronics",
+      "electronics/communication"
+    ],
+    "level": 2,
+    "sortOrder": 3,
+    "isActive": true,
+    "itemType": "electronics",
+    "filterSchema": "electronics"
+  },
+  {
+    "id": "electronics/power",
+    "slug": "power",
+    "name": "Power & Charging",
+    "parentId": "electronics",
+    "ancestorIds": [
+      "electronics"
+    ],
+    "level": 1,
+    "sortOrder": 6,
+    "isActive": true,
+    "itemType": "electronics",
+    "filterSchema": "electronics"
+  },
+  {
+    "id": "electronics/power/portable-power-banks",
+    "slug": "portable-power-banks",
+    "name": "Portable Power Banks",
+    "parentId": "electronics/power",
+    "ancestorIds": [
+      "electronics",
+      "electronics/power"
+    ],
+    "level": 2,
+    "sortOrder": 0,
+    "isActive": true,
+    "itemType": "electronics",
+    "filterSchema": "electronics"
+  },
+  {
+    "id": "electronics/power/chargers",
+    "slug": "chargers",
+    "name": "Chargers",
+    "parentId": "electronics/power",
+    "ancestorIds": [
+      "electronics",
+      "electronics/power"
+    ],
+    "level": 2,
+    "sortOrder": 1,
+    "isActive": true,
+    "itemType": "electronics",
+    "filterSchema": "electronics"
+  },
+  {
+    "id": "electronics/power/usb-power-systems",
+    "slug": "usb-power-systems",
+    "name": "USB Power Systems",
+    "parentId": "electronics/power",
+    "ancestorIds": [
+      "electronics",
+      "electronics/power"
+    ],
+    "level": 2,
+    "sortOrder": 2,
+    "isActive": true,
+    "itemType": "electronics",
+    "filterSchema": "electronics"
+  },
+  {
+    "id": "electronics/power/12v-accessories",
+    "slug": "12v-accessories",
+    "name": "12V Accessories",
+    "parentId": "electronics/power",
+    "ancestorIds": [
+      "electronics",
+      "electronics/power"
+    ],
+    "level": 2,
+    "sortOrder": 3,
+    "isActive": true,
+    "itemType": "electronics",
+    "filterSchema": "electronics"
+  },
+  {
+    "id": "electronics/power/charging-cables-and-mounts",
+    "slug": "charging-cables-and-mounts",
+    "name": "Charging Cables & Mounts",
+    "parentId": "electronics/power",
+    "ancestorIds": [
+      "electronics",
+      "electronics/power"
+    ],
+    "level": 2,
+    "sortOrder": 4,
+    "isActive": true,
+    "itemType": "electronics",
+    "filterSchema": "electronics"
+  },
+  {
+    "id": "electronics/other",
+    "slug": "other",
+    "name": "Other Electronics",
+    "parentId": "electronics",
+    "ancestorIds": [
+      "electronics"
+    ],
+    "level": 1,
+    "sortOrder": 7,
+    "isActive": true,
+    "itemType": "electronics",
+    "filterSchema": "electronics"
+  },
+  {
+    "id": "accessories",
+    "slug": "accessories",
+    "name": "Accessories & Equipment",
+    "parentId": null,
+    "ancestorIds": [],
+    "level": 0,
+    "sortOrder": 4,
+    "isActive": true,
+    "itemType": "equipment",
+    "filterSchema": "equipment"
+  },
+  {
+    "id": "accessories/transport",
+    "slug": "transport",
+    "name": "Transport & Storage",
+    "parentId": "accessories",
+    "ancestorIds": [
+      "accessories"
+    ],
+    "level": 1,
+    "sortOrder": 0,
+    "isActive": true,
+    "itemType": "equipment",
+    "filterSchema": "equipment"
+  },
+  {
+    "id": "accessories/transport/bike-covers",
+    "slug": "bike-covers",
+    "name": "Bike Covers",
+    "parentId": "accessories/transport",
+    "ancestorIds": [
+      "accessories",
+      "accessories/transport"
+    ],
+    "level": 2,
+    "sortOrder": 0,
+    "isActive": true,
+    "itemType": "equipment",
+    "filterSchema": "equipment"
+  },
+  {
+    "id": "accessories/transport/tie-down-straps",
+    "slug": "tie-down-straps",
+    "name": "Tie-down Straps",
+    "parentId": "accessories/transport",
+    "ancestorIds": [
+      "accessories",
+      "accessories/transport"
+    ],
+    "level": 2,
+    "sortOrder": 1,
+    "isActive": true,
+    "itemType": "equipment",
+    "filterSchema": "equipment"
+  },
+  {
+    "id": "accessories/transport/loading-ramps",
+    "slug": "loading-ramps",
+    "name": "Loading Ramps",
+    "parentId": "accessories/transport",
+    "ancestorIds": [
+      "accessories",
+      "accessories/transport"
+    ],
+    "level": 2,
+    "sortOrder": 2,
+    "isActive": true,
+    "itemType": "equipment",
+    "filterSchema": "equipment"
+  },
+  {
+    "id": "accessories/transport/bike-transport-accessories",
+    "slug": "bike-transport-accessories",
+    "name": "Bike Transport Accessories",
+    "parentId": "accessories/transport",
+    "ancestorIds": [
+      "accessories",
+      "accessories/transport"
+    ],
+    "level": 2,
+    "sortOrder": 3,
+    "isActive": true,
+    "itemType": "equipment",
+    "filterSchema": "equipment"
+  },
+  {
+    "id": "accessories/transport/motorcycle-luggage",
+    "slug": "motorcycle-luggage",
+    "name": "Motorcycle Luggage",
+    "parentId": "accessories/transport",
+    "ancestorIds": [
+      "accessories",
+      "accessories/transport"
+    ],
+    "level": 2,
+    "sortOrder": 4,
+    "isActive": true,
+    "itemType": "equipment",
+    "filterSchema": "equipment"
+  },
+  {
+    "id": "accessories/riding",
+    "slug": "riding",
+    "name": "Riding & Pit Equipment",
+    "parentId": "accessories",
+    "ancestorIds": [
+      "accessories"
+    ],
+    "level": 1,
+    "sortOrder": 1,
+    "isActive": true,
+    "itemType": "equipment",
+    "filterSchema": "equipment"
+  },
+  {
+    "id": "accessories/riding/off-road-riding-accessories",
+    "slug": "off-road-riding-accessories",
+    "name": "Off-Road Riding Accessories",
+    "parentId": "accessories/riding",
+    "ancestorIds": [
+      "accessories",
+      "accessories/riding"
+    ],
+    "level": 2,
+    "sortOrder": 0,
+    "isActive": true,
+    "itemType": "equipment",
+    "filterSchema": "equipment"
+  },
+  {
+    "id": "accessories/riding/pit-equipment",
+    "slug": "pit-equipment",
+    "name": "Pit Equipment",
+    "parentId": "accessories/riding",
+    "ancestorIds": [
+      "accessories",
+      "accessories/riding"
+    ],
+    "level": 2,
+    "sortOrder": 1,
+    "isActive": true,
+    "itemType": "equipment",
+    "filterSchema": "equipment"
+  },
+  {
+    "id": "accessories/riding/hydration-accessories",
+    "slug": "hydration-accessories",
+    "name": "Hydration Accessories",
+    "parentId": "accessories/riding",
+    "ancestorIds": [
+      "accessories",
+      "accessories/riding"
+    ],
+    "level": 2,
+    "sortOrder": 2,
+    "isActive": true,
+    "itemType": "equipment",
+    "filterSchema": "equipment"
+  },
+  {
+    "id": "accessories/riding/camping-trail-accessories",
+    "slug": "camping-trail-accessories",
+    "name": "Camping / Trail Accessories",
+    "parentId": "accessories/riding",
+    "ancestorIds": [
+      "accessories",
+      "accessories/riding"
+    ],
+    "level": 2,
+    "sortOrder": 3,
+    "isActive": true,
+    "itemType": "equipment",
+    "filterSchema": "equipment"
+  },
+  {
+    "id": "accessories/riding/other-equipment",
+    "slug": "other-equipment",
+    "name": "Other Equipment",
+    "parentId": "accessories/riding",
+    "ancestorIds": [
+      "accessories",
+      "accessories/riding"
+    ],
+    "level": 2,
+    "sortOrder": 4,
+    "isActive": true,
+    "itemType": "equipment",
+    "filterSchema": "equipment"
+  },
+  {
+    "id": "tools",
+    "slug": "tools",
+    "name": "Tools & Workshop",
+    "parentId": null,
+    "ancestorIds": [],
+    "level": 0,
+    "sortOrder": 5,
+    "isActive": true,
+    "itemType": "tool",
+    "filterSchema": "tool"
+  },
+  {
+    "id": "tools/tools",
+    "slug": "tools",
+    "name": "Specialist Motorcycle Tools",
+    "parentId": "tools",
+    "ancestorIds": [
+      "tools"
+    ],
+    "level": 1,
+    "sortOrder": 0,
+    "isActive": true,
+    "itemType": "tool",
+    "filterSchema": "tool"
+  },
+  {
+    "id": "tools/tools/general-motorcycle-tools",
+    "slug": "general-motorcycle-tools",
+    "name": "General Motorcycle Tools",
+    "parentId": "tools/tools",
+    "ancestorIds": [
+      "tools",
+      "tools/tools"
+    ],
+    "level": 2,
+    "sortOrder": 0,
+    "isActive": true,
+    "itemType": "tool",
+    "filterSchema": "tool"
+  },
+  {
+    "id": "tools/tools/engine-tools",
+    "slug": "engine-tools",
+    "name": "Engine Tools",
+    "parentId": "tools/tools",
+    "ancestorIds": [
+      "tools",
+      "tools/tools"
+    ],
+    "level": 2,
+    "sortOrder": 1,
+    "isActive": true,
+    "itemType": "tool",
+    "filterSchema": "tool"
+  },
+  {
+    "id": "tools/tools/flywheel-pullers",
+    "slug": "flywheel-pullers",
+    "name": "Flywheel Pullers",
+    "parentId": "tools/tools",
+    "ancestorIds": [
+      "tools",
+      "tools/tools"
+    ],
+    "level": 2,
+    "sortOrder": 2,
+    "isActive": true,
+    "itemType": "tool",
+    "filterSchema": "tool"
+  },
+  {
+    "id": "tools/tools/bearing-tools",
+    "slug": "bearing-tools",
+    "name": "Bearing Tools",
+    "parentId": "tools/tools",
+    "ancestorIds": [
+      "tools",
+      "tools/tools"
+    ],
+    "level": 2,
+    "sortOrder": 3,
+    "isActive": true,
+    "itemType": "tool",
+    "filterSchema": "tool"
+  },
+  {
+    "id": "tools/tools/torque-wrenches",
+    "slug": "torque-wrenches",
+    "name": "Torque Wrenches",
+    "parentId": "tools/tools",
+    "ancestorIds": [
+      "tools",
+      "tools/tools"
+    ],
+    "level": 2,
+    "sortOrder": 4,
+    "isActive": true,
+    "itemType": "tool",
+    "filterSchema": "tool"
+  },
+  {
+    "id": "tools/tools/carburettor-tools",
+    "slug": "carburettor-tools",
+    "name": "Carburettor Tools",
+    "parentId": "tools/tools",
+    "ancestorIds": [
+      "tools",
+      "tools/tools"
+    ],
+    "level": 2,
+    "sortOrder": 5,
+    "isActive": true,
+    "itemType": "tool",
+    "filterSchema": "tool"
+  },
+  {
+    "id": "tools/tools/tyre-changing-tools",
+    "slug": "tyre-changing-tools",
+    "name": "Tyre Changing Tools",
+    "parentId": "tools/tools",
+    "ancestorIds": [
+      "tools",
+      "tools/tools"
+    ],
+    "level": 2,
+    "sortOrder": 6,
+    "isActive": true,
+    "itemType": "tool",
+    "filterSchema": "tool"
+  },
+  {
+    "id": "tools/tools/suspension-tools",
+    "slug": "suspension-tools",
+    "name": "Suspension Tools",
+    "parentId": "tools/tools",
+    "ancestorIds": [
+      "tools",
+      "tools/tools"
+    ],
+    "level": 2,
+    "sortOrder": 7,
+    "isActive": true,
+    "itemType": "tool",
+    "filterSchema": "tool"
+  },
+  {
+    "id": "tools/tools/diagnostic-equipment",
+    "slug": "diagnostic-equipment",
+    "name": "Diagnostic Equipment",
+    "parentId": "tools/tools",
+    "ancestorIds": [
+      "tools",
+      "tools/tools"
+    ],
+    "level": 2,
+    "sortOrder": 8,
+    "isActive": true,
+    "itemType": "tool",
+    "filterSchema": "tool"
+  },
+  {
+    "id": "tools/tools/other-workshop-tools",
+    "slug": "other-workshop-tools",
+    "name": "Other Workshop Tools",
+    "parentId": "tools/tools",
+    "ancestorIds": [
+      "tools",
+      "tools/tools"
+    ],
+    "level": 2,
+    "sortOrder": 9,
+    "isActive": true,
+    "itemType": "tool",
+    "filterSchema": "tool"
+  },
+  {
+    "id": "tools/workshop",
+    "slug": "workshop",
+    "name": "Workshop Equipment",
+    "parentId": "tools",
+    "ancestorIds": [
+      "tools"
+    ],
+    "level": 1,
+    "sortOrder": 1,
+    "isActive": true,
+    "itemType": "tool",
+    "filterSchema": "tool"
+  },
+  {
+    "id": "tools/workshop/bike-workshop-stands",
+    "slug": "bike-workshop-stands",
+    "name": "Bike / Workshop Stands",
+    "parentId": "tools/workshop",
+    "ancestorIds": [
+      "tools",
+      "tools/workshop"
+    ],
+    "level": 2,
+    "sortOrder": 0,
+    "isActive": true,
+    "itemType": "tool",
+    "filterSchema": "tool"
+  },
+  {
+    "id": "tools/workshop/lifts",
+    "slug": "lifts",
+    "name": "Lifts",
+    "parentId": "tools/workshop",
+    "ancestorIds": [
+      "tools",
+      "tools/workshop"
+    ],
+    "level": 2,
+    "sortOrder": 1,
+    "isActive": true,
+    "itemType": "tool",
+    "filterSchema": "tool"
+  },
+  {
+    "id": "tools/workshop/maintenance-equipment",
+    "slug": "maintenance-equipment",
+    "name": "Maintenance Equipment",
+    "parentId": "tools/workshop",
+    "ancestorIds": [
+      "tools",
+      "tools/workshop"
+    ],
+    "level": 2,
+    "sortOrder": 2,
+    "isActive": true,
+    "itemType": "tool",
+    "filterSchema": "tool"
+  },
+  {
+    "id": "accessories/other-accessories",
+    "slug": "other-accessories",
+    "name": "Other accessories",
+    "parentId": "accessories",
+    "ancestorIds": [
+      "accessories"
+    ],
+    "level": 1,
+    "sortOrder": 99,
+    "isActive": true,
+    "itemType": "equipment",
+    "filterSchema": "equipment"
+  },
+  {
+    "id": "riding-gear/other-riding-gear",
+    "slug": "other-riding-gear",
+    "name": "Other riding gear",
+    "parentId": "riding-gear",
+    "ancestorIds": [
+      "riding-gear"
+    ],
+    "level": 1,
+    "sortOrder": 99,
+    "isActive": true,
+    "itemType": "gear",
+    "filterSchema": "gear"
+  },
+  {
+    "id": "tools/other-workshop-items",
+    "slug": "other-workshop-items",
+    "name": "Other workshop items",
+    "parentId": "tools",
+    "ancestorIds": [
+      "tools"
+    ],
+    "level": 1,
+    "sortOrder": 99,
+    "isActive": true,
+    "itemType": "tool",
+    "filterSchema": "tool"
+  }
+]
