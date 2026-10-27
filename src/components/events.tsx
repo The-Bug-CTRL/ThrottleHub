@@ -1,83 +1,96 @@
 "use client";
-import { LoadingState } from "@/components/ui/primitives";
 import Link from "next/link";
 import { useState } from "react";
-import { Event, eventTypes } from "@/lib/community-models";
-import { usePageQuery } from "./use-page-query";
-import { Empty } from "./empty";
-import { brand } from "@/lib/config";
+import { provinces } from "@/lib/marketplace";
+import type { ImportedRace } from "@/lib/imported-content";
+import { useImportedFeed, ImportedRaceCard, FeedState } from "./imported-feed";
 export function Events() {
-  const [type, setType] = useState(""),
-    [past, setPast] = useState(false),
-    [cutoff] = useState(() => String(Date.now()));
-  const feed = usePageQuery<Event>(
-    "events",
-    { type, ...(past ? { _endsBefore: cutoff } : { _endsAfter: cutoff }) },
-    "endsAt",
-    past ? "desc" : "asc",
-  );
-  const items = feed.items;
+  const [country, setCountry] = useState("za"),
+    [province, setProvince] = useState(""),
+    [discipline, setDiscipline] = useState(""),
+    [level, setLevel] = useState(""),
+    [past, setPast] = useState(false);
+  const feed = useImportedFeed<ImportedRace>("races", {
+    country,
+    province,
+    discipline,
+    level,
+    past: String(past),
+  });
   return (
     <section className="wrap section">
       <div className="eyebrow">RIDING TOGETHER</div>
       <h1>A date with the dirt.</h1>
       <p>
-        Race meetings, training and community rides published by the{" "}
-        {brand.name}
-        team.
+        Race dates from official calendars. Check the official source before
+        travelling.
       </p>
       <div className="inline-search">
         <select
-          aria-label="Event type"
-          value={type}
-          onChange={(e) => setType(e.target.value)}
+          aria-label="Country"
+          value={country}
+          onChange={(e) => {
+            setCountry(e.target.value);
+            setProvince("");
+          }}
         >
-          <option value="">All event types</option>
-          {eventTypes.map((t) => (
-            <option key={t}>{t}</option>
+          <option value="za">South African events</option>
+          <option value="">All events</option>
+          <option value="international">International events</option>
+        </select>
+        <select
+          aria-label="Province"
+          value={province}
+          onChange={(e) => setProvince(e.target.value)}
+        >
+          <option value="">All provinces</option>
+          {Object.entries(provinces).map(([key, name]) => (
+            <option key={key} value={name}>
+              {name}
+            </option>
           ))}
         </select>
-        <button onClick={() => setPast(!past)}>
+        <select
+          aria-label="Discipline"
+          value={discipline}
+          onChange={(e) => setDiscipline(e.target.value)}
+        >
+          <option value="">All disciplines</option>
+          {[
+            "Motocross",
+            "Enduro",
+            "Cross-country",
+            "Trials",
+            "Supermoto",
+            "Road racing",
+            "Off-road",
+            "Other",
+          ].map((x) => (
+            <option key={x}>{x}</option>
+          ))}
+        </select>
+        <select
+          aria-label="Race level"
+          value={level}
+          onChange={(e) => setLevel(e.target.value)}
+        >
+          <option value="">All levels</option>
+          {["National", "Regional", "Club", "International"].map((x) => (
+            <option key={x}>{x}</option>
+          ))}
+        </select>
+        <button aria-pressed={past} onClick={() => setPast(!past)}>
           {past ? "Show upcoming events" : "Show past events"}
         </button>
       </div>
-      {feed.error && <p className="notice error">{feed.error}</p>}
-      {feed.busy && <LoadingState label="Loading events…" />}
       <div className="article-grid">
-        {items.map((e) => (
-          <article className="event-card" key={e.id}>
-            <time>{new Date(e.startsAt).toLocaleString("en-ZA")}</time>
-            <h2>
-              <Link href={`/events/${e.id}`}>{e.title}</Link>
-            </h2>
-            <p>
-              {e.city}, {e.country} · {e.type}
-            </p>
-            <small>{e.organizer}</small>
-          </article>
+        {feed.items.map((e) => (
+          <ImportedRaceCard key={e.id} event={e} />
         ))}
       </div>
-      {!feed.busy && !feed.error && !items.length && (
-        <Empty
-          title={
-            past
-              ? "No past events in this page."
-              : "No upcoming events in this page."
-          }
-          description={
-            feed.more
-              ? "Load the next page to continue through the calendar."
-              : "Published events will appear here once organizers confirm the details."
-          }
-        />
-      )}
-      {feed.more && (
-        <button onClick={feed.loadMore} disabled={feed.busy}>
-          Load next calendar page
-        </button>
-      )}
+      <FeedState feed={feed} label="events" />
       <Link className="text-button" href="/admin/events">
-        Events workspace →
+        Events workspace
       </Link>
     </section>
   );

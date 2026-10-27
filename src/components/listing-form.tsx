@@ -5,9 +5,11 @@ import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { collection, doc, getDoc } from "firebase/firestore";
+import { RunningVideoUpload } from "./running-video-upload";
+import { accountTypeOf } from "@/lib/seller-account";
+import type { RunningVideo } from "@/lib/running-video";
 import { changeListing } from "@/lib/listing-client";
-import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-import { db, storage } from "@/lib/firebase";
+import { db } from "@/lib/firebase";
 import { brand } from "@/lib/config";
 import {
   ListingInput,
@@ -48,6 +50,9 @@ export function ListingForm() {
   const edit = params.get("edit");
   const [id, setId] = useState("");
   const [stage, setStage] = useState(0);
+  const [relistOnly, setRelistOnly] = useState(false);
+  const [runningVideo, setRunningVideo] = useState<RunningVideo | null>(null);
+  const [videoBusy, setVideoBusy] = useState(false);
   const [images, setImages] = useState<string[]>([]);
   const [notice, setNotice] = useState("");
   const [progress, setProgress] = useState<number | null>(null);
@@ -182,6 +187,13 @@ export function ListingForm() {
         .then((d) => {
           if (d.exists() && d.data().ownerId === user.uid) {
             const old = d.data();
+            setRelistOnly(
+              ["expired", "on-hold"].includes(old.status) &&
+                categoryById[
+                  old.categoryId ||
+                    legacyCategory(old.category, old.subcategory)
+                ]?.itemType === "motorcycle",
+            );
             const cat =
               old.categoryId || legacyCategory(old.category, old.subcategory);
             reset({
@@ -196,10 +208,30 @@ export function ListingForm() {
                 "This advert is outside the South African launch. It remains private to you; only change its location if the item is actually in South Africa.",
               );
             setImages(d.data().images || []);
+            setRunningVideo(d.data().runningVideo || null);
           } else setNotice("Listing unavailable or not yours.");
         })
         .catch(() => setNotice("Unable to load listing."));
   }, [edit, user, reset, getValues]);
+  useEffect(() => {
+    if (!user || edit) return;
+    let cancelled = false;
+    getDoc(doc(db, "profiles", user.uid))
+      .then((profile) => {
+        if (!cancelled)
+          setValue(
+            "details.sellerType",
+            accountTypeOf(profile.data()) === "business" ? "dealer" : "private",
+          );
+      })
+      .catch(() => {
+        if (!cancelled)
+          setNotice("Unable to load your seller profile. Please retry.");
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [user, edit, setValue]);
   async function save(values: ListingInput, status: "draft" | "published") {
     if (!user) return;
     let normalized = {
@@ -224,12 +256,22 @@ export function ListingForm() {
       setNotice("Add at least one photo before publishing.");
       return;
     }
+    if (
+      videoBusy ||
+      (status === "published" && itemType === "motorcycle" && !runningVideo)
+    ) {
+      setNotice(
+        "Upload and validate a running video before publishing this motorcycle.",
+      );
+      return;
+    }
     setSaving(true);
     try {
       const result = await changeListing(user, id, {
         action: "save",
         values: normalized,
         images,
+        runningVideoId: runningVideo?.id || "",
         status,
       });
       setSavedSlug(result.slug);
@@ -258,6 +300,54 @@ export function ListingForm() {
         </Link>
       </div>
     );
+  if (relistOnly && !success)
+    return (
+      <section className="form-panel">
+        <h1>Add a running video and relist</h1>
+        <p>
+          Your historical advert stays unchanged until you reactivate it. Its
+          original URL, price history and seller information are preserved.
+        </p>
+        <RunningVideoUpload
+          user={user}
+          listingId={id}
+          value={runningVideo}
+          onChange={setRunningVideo}
+          onBusy={setVideoBusy}
+          petrolRequired={["two-stroke", "four-stroke"].includes(
+            watch("details.engineType"),
+          )}
+        />
+        {notice && (
+          <p role="alert" className="notice">
+            {notice}
+          </p>
+        )}
+        <button
+          type="button"
+          className="button"
+          disabled={!runningVideo || videoBusy || saving}
+          onClick={async () => {
+            setSaving(true);
+            try {
+              const result = await changeListing(user, id, {
+                action: "status",
+                status: "published",
+                runningVideoId: runningVideo?.id,
+              });
+              setSavedSlug(result.slug);
+              setSuccess("published");
+            } catch (e) {
+              setNotice(e instanceof Error ? e.message : "Unable to relist");
+            } finally {
+              setSaving(false);
+            }
+          }}
+        >
+          Reactivate with this video
+        </button>
+      </section>
+    );
   if (success)
     return (
       <section className="auth-panel publish-success">
@@ -274,10 +364,7 @@ export function ListingForm() {
             : "Your listing is safely saved to your account. Return to your garage whenever you’re ready to finish it."}
         </p>
         {success === "published" && (
-          <Link
-            className="button"
-            href={`/listing/${id}/${savedSlug}`}
-          >
+          <Link className="button" href={`/listing/${id}/${savedSlug}`}>
             View your listing
           </Link>
         )}
@@ -427,28 +514,23 @@ export function ListingForm() {
                           "Unsupported image type or file over 10 MB.",
                         );
                       const blob = await compress(file);
-                      const target = ref(
-                        storage,
-                        `listing-images/${user.uid}/${id}/${crypto.randomUUID()}.jpg`,
+                      const response = await fetch(
+                        "/api/listings/" + encodeURIComponent(id) + "/photos",
+                        {
+                          method: "POST",
+                          headers: {
+                            Authorization:
+                              "Bearer " + (await user.getIdToken()),
+                            "Content-Type": "image/jpeg",
+                          },
+                          body: blob,
+                        },
                       );
-                      const task = uploadBytesResumable(target, blob, {
-                        contentType: "image/jpeg",
-                        cacheControl: "public, max-age=300",
-                      });
-                      await new Promise<void>((resolve, reject) =>
-                        task.on(
-                          "state_changed",
-                          (s) =>
-                            setProgress(
-                              Math.round(
-                                (100 * s.bytesTransferred) / s.totalBytes,
-                              ),
-                            ),
-                          reject,
-                          () => resolve(),
-                        ),
-                      );
-                      const url = await getDownloadURL(target);
+                      const result = await response.json();
+                      if (!response.ok)
+                        throw new Error(result.error || "Photo upload failed.");
+                      const url = result.url;
+                      setProgress(100);
                       setImages((old) => [...old, url]);
                     }
                   } catch (e) {
@@ -463,6 +545,18 @@ export function ListingForm() {
             </label>
             {progress !== null && (
               <LoadingState size={64} label={`Uploading ${progress}%`} />
+            )}
+            {itemType === "motorcycle" && (
+              <RunningVideoUpload
+                user={user}
+                listingId={id}
+                value={runningVideo}
+                onChange={setRunningVideo}
+                onBusy={setVideoBusy}
+                petrolRequired={["two-stroke", "four-stroke"].includes(
+                  watch("details.engineType"),
+                )}
+              />
             )}
             <div className="upload-previews">
               {images.map((src, i) => (

@@ -60,7 +60,10 @@ export function CategoryDropdowns() {
               onClick={() => setOpen(open === category.id ? null : category.id)}
             >
               {category.id !== "all" && (
-                <CategoryIcon category={category.id} size={44} />
+                <CategoryIcon
+                  category={category.id}
+                  size={category.id === "electronics" ? 56 : 44}
+                />
               )}
               {category.name}
               <ChevronDown size={14} />

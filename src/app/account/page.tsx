@@ -1,4 +1,16 @@
 "use client";
+import { publicPhone } from "@/lib/public-phone";
+import {
+  AccountTypePicker,
+  BusinessProfileFields,
+} from "@/components/seller-account-fields";
+import {
+  accountTypeOf,
+  emptyBusiness,
+  businessSchema,
+  type AccountType,
+} from "@/lib/seller-account";
+import { accountProfile } from "@/lib/profile-client";
 import { MemberAvatar } from "@/components/member-avatar";
 import { FollowControls } from "@/components/follow-controls";
 import { confirmAction } from "@/components/ui/dialogs";
@@ -13,7 +25,6 @@ import {
   getDocs,
   doc,
   getDoc,
-  setDoc,
   orderBy,
   documentId,
   startAfter,
@@ -42,6 +53,7 @@ import {
 import { useRole } from "@/components/use-role";
 import { Empty } from "@/components/empty";
 import { LoadingState } from "@/components/ui/primitives";
+import { SellerListingStats } from "@/components/seller-listing-stats";
 import { RatingBadge } from "@/components/member-reviews";
 import { provinces } from "@/lib/marketplace";
 import { brand } from "@/lib/config";
@@ -61,11 +73,16 @@ export default function Account() {
   const [bio, setBio] = useState("");
   const [listingsReady, setListingsReady] = useState(false),
     [favouritesReady, setFavouritesReady] = useState(false);
+  const [accountType, setAccountType] = useState<AccountType>("personal");
+  const [business, setBusiness] = useState({ ...emptyBusiness });
+  const [profileReady, setProfileReady] = useState(false);
   const [profileInfo, setProfileInfo] = useState({
     region: "",
     city: "",
     country: "ZA",
     sellerType: "private",
+    photoURL: "",
+    contactPhone: "",
     createdAt: Date.now(),
   });
   useEffect(() => {
@@ -74,6 +91,8 @@ export default function Account() {
   }, []);
   useEffect(() => {
     if (!user) return;
+    let active = true;
+    setProfileReady(false);
     getDocs(
       query(
         collection(db, "listings"),
@@ -83,24 +102,42 @@ export default function Account() {
       ),
     )
       .then((s) => {
+        if (!active) return;
         setItems(s.docs.map((d) => ({ ...d.data(), id: d.id }) as Listing));
         setLastListingId(s.docs.at(-1)?.id || "");
         setMoreListings(s.docs.length === 40);
         setListingsReady(true);
       })
       .catch(() => setNotice("Unable to load listings. Please retry."));
-    getDoc(doc(db, "profiles", user.uid)).then((d) => {
-      setName(d.data()?.displayName || user.displayName || "");
-      setBio(d.data()?.bio || "");
-      if (d.exists())
+
+    accountProfile(user)
+      .then((result) => {
+        if (!active) return;
+        if (result.needsSetup) {
+          setNotice(
+            "Your sign-in worked. Finish setting up your profile to continue.",
+          );
+          return;
+        }
+        const p = result.profile;
+        setProfileReady(true);
+        setAccountType(accountTypeOf(p));
+        setBusiness({ ...emptyBusiness, ...p.business });
+        setName(p.displayName || user.displayName || "");
+        setBio(p.bio || "");
         setProfileInfo({
-          region: d.data().region || "",
-          city: d.data().city || "",
-          country: d.data().country || "ZA",
-          sellerType: d.data().sellerType || "private",
-          createdAt: d.data().createdAt,
+          region: p.region || "",
+          city: p.city || "",
+          country: p.country || "ZA",
+          sellerType: p.sellerType || "private",
+          photoURL: p.photoURL || "",
+          contactPhone: p.contactPhone || "",
+          createdAt: p.createdAt,
         });
-    });
+      })
+      .catch((error) => {
+        if (active) setNotice(error.message);
+      });
     getDocs(query(collection(db, "users", user.uid, "favourites"), limit(40)))
       .then(async (s) => {
         const docs = await Promise.all(
@@ -108,6 +145,7 @@ export default function Account() {
             getDoc(doc(db, "listings", d.id)).catch(() => null),
           ),
         );
+        if (!active) return;
         setFavourites(
           docs
             .filter((d): d is NonNullable<typeof d> =>
@@ -122,6 +160,9 @@ export default function Account() {
         setFavouritesReady(true);
       })
       .catch(() => setNotice("Some saved listings are no longer public."));
+    return () => {
+      active = false;
+    };
   }, [user]);
   if (loading)
     return (
@@ -283,6 +324,9 @@ export default function Account() {
                       ) : (
                         <Card listing={l} />
                       )}
+                      {l.status !== "removed" && (
+                        <SellerListingStats id={l.id} user={user} />
+                      )}
                       <div className="manage-row">
                         <span>{statusLabel(l.status)}</span>
                         {isPublicListing(l) && (
@@ -292,7 +336,9 @@ export default function Account() {
                               : "View listing"}
                           </Link>
                         )}
-                        {["draft", "published"].includes(l.status) && (
+                        {(["draft", "published"].includes(l.status) ||
+                          (l.primaryCategoryId === "motorcycles" &&
+                            ["expired", "on-hold"].includes(l.status))) && (
                           <Link href={`/sell?edit=${l.id}`}>Edit</Link>
                         )}
                         {(
@@ -445,16 +491,36 @@ export default function Account() {
               className="profile-form"
               onSubmit={async (e) => {
                 e.preventDefault();
+                if (!profileReady) {
+                  setNotice("Wait for your profile to load before saving.");
+                  return;
+                }
+                if (
+                  profileInfo.contactPhone.trim() &&
+                  !publicPhone({ contactPhone: profileInfo.contactPhone })
+                ) {
+                  setNotice(
+                    "Enter a phone number with 7–15 digits, optionally starting with +.",
+                  );
+                  return;
+                }
                 try {
-                  await setDoc(
-                    doc(db, "profiles", user.uid),
+                  await accountProfile(
+                    user,
                     {
                       displayName: name.slice(0, 80),
                       bio: bio.slice(0, 600),
-                      ...profileInfo,
-                      photoURL: user.photoURL || "",
+                      region: profileInfo.region,
+                      city: profileInfo.city,
+                      country: profileInfo.country,
+                      photoURL: profileInfo.photoURL,
+                      contactPhone: profileInfo.contactPhone,
+                      accountType,
+                      ...(accountType === "business"
+                        ? { business: businessSchema.parse(business) }
+                        : {}),
                     },
-                    { merge: true },
+                    true,
                   );
                   setNotice("Public profile saved.");
                 } catch {
@@ -463,6 +529,26 @@ export default function Account() {
               }}
             >
               <h2>A little about you.</h2>
+              <AccountTypePicker
+                value={accountType}
+                onChange={setAccountType}
+              />
+              {accountType === "business" && (
+                <BusinessProfileFields
+                  value={business}
+                  onChange={setBusiness}
+                />
+              )}
+              <label>
+                Public profile photo URL (HTTPS)
+                <input
+                  type="url"
+                  value={profileInfo.photoURL}
+                  onChange={(e) =>
+                    setProfileInfo((p) => ({ ...p, photoURL: e.target.value }))
+                  }
+                />
+              </label>
               <p>
                 Your profile is public. Your email address and account details
                 stay private.
@@ -525,16 +611,15 @@ export default function Account() {
               <label>
                 Seller type
                 <select
-                  value={profileInfo.sellerType}
+                  value={accountType === "business" ? "dealer" : "private"}
                   onChange={(e) =>
-                    setProfileInfo((p) => ({
-                      ...p,
-                      sellerType: e.target.value,
-                    }))
+                    setAccountType(
+                      e.target.value === "dealer" ? "business" : "personal",
+                    )
                   }
                 >
                   <option value="private">Private seller</option>
-                  <option value="dealer">Dealership</option>
+                  <option value="dealer">Business Seller</option>
                 </select>
                 <small>
                   This is a self-declared seller type, not a verification badge.
@@ -548,7 +633,28 @@ export default function Account() {
                   onChange={(e) => setBio(e.target.value)}
                 />
               </label>
-              <button className="button">Save profile</button>
+              <label>
+                Public phone number (optional)
+                <input
+                  type="tel"
+                  maxLength={40}
+                  value={profileInfo.contactPhone}
+                  onChange={(e) =>
+                    setProfileInfo((p) => ({
+                      ...p,
+                      contactPhone: e.target.value,
+                    }))
+                  }
+                  placeholder="e.g. +27 82 123 4567"
+                />
+                <small>
+                  Public on your adverts. Leave blank if you only want messages.
+                  Business accounts can also use their business contact number.
+                </small>
+              </label>
+              <button className="button" disabled={!profileReady}>
+                Save profile
+              </button>
               <p>
                 Private email addresses are never included in public profiles.
               </p>

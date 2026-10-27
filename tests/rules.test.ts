@@ -1022,6 +1022,7 @@ describe("cloud launch privilege boundaries", () => {
     const db = env.authenticatedContext("new-profile-owner").firestore();
     const profile = {
       displayName: "Real member",
+      accountType: "personal",
       bio: "",
       city: "",
       country: "ZA",

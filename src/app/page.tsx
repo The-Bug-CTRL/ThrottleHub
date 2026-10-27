@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Suspense } from "react";
 import { CategoryIcon } from "@/components/category-icon";
 import {
   ArrowRight,
@@ -11,18 +12,19 @@ import {
 import { adminDb, getPublicListings } from "@/lib/server";
 import { categoryHref } from "@/lib/taxonomy";
 import { brand } from "@/lib/config";
-import {
-  Article,
-  Thread,
-  StolenReport,
-  Event,
-  forumCategories,
-} from "@/lib/community-models";
+import { Thread, StolenReport, forumCategories } from "@/lib/community-models";
 import { Card } from "@/components/card";
 import { Empty } from "@/components/empty";
-import { ArticleCard } from "@/components/news";
+import {
+  ImportedArticleCard,
+  CompactRaceCard,
+} from "@/components/imported-feed";
+import { importedFeed } from "@/lib/imported-content-server";
+import { RacingHighlightsCarousel } from "@/components/content-videos";
+import type { ImportedVideo } from "@/lib/imported-video";
+import type { ImportedNews, ImportedRace } from "@/lib/imported-content";
 import { StolenCard } from "@/components/stolen";
-import { SectionHeading } from "@/components/ui/primitives";
+import { SectionHeading, LoadingState } from "@/components/ui/primitives";
 import { dataError } from "@/lib/errors";
 export const dynamic = "force-dynamic";
 const shortcuts = [
@@ -43,9 +45,11 @@ export default async function Home() {
     await Promise.allSettled([
       getPublicListings(undefined, 18),
       recent("forumThreads", "lastReplyAt", 8),
-      recent("newsArticles", "publishedAt", 4),
+      importedFeed(adminDb(), "news").then((p) => p.items.slice(0, 4)),
       recent("stolenReports", "createdAt", 2),
-      upcoming(),
+      importedFeed(adminDb(), "races", { country: "za" }).then((p) =>
+        p.items.slice(0, 8),
+      ),
     ]);
   return (
     <div className="home-hub">
@@ -144,7 +148,7 @@ export default async function Home() {
         ) : articles.value.length ? (
           <div className="article-grid">
             {articles.value.map((a) => (
-              <ArticleCard key={a.id} article={a as Article} />
+              <ImportedArticleCard key={a.id} article={a as ImportedNews} />
             ))}
           </div>
         ) : (
@@ -222,34 +226,10 @@ export default async function Home() {
         {events.status === "rejected" ? (
           <LoadError error={events.reason} />
         ) : events.value.length ? (
-          <div className="home-events">
-            {events.value.map((item) => {
-              const e = item as Event;
-              return (
-                <article className="event-card" key={e.id}>
-                  <div className="event-date">
-                    <CalendarDays size={22} />
-                    <time>
-                      {new Date(e.startsAt).toLocaleDateString("en-ZA", {
-                        day: "numeric",
-                        month: "long",
-                        year: "numeric",
-                      })}
-                    </time>
-                  </div>
-                  <span className="eyebrow">{e.type}</span>
-                  <h3>
-                    <Link href={`/events/${e.id}`}>{e.title}</Link>
-                  </h3>
-                  <p>
-                    {e.city}, {e.country}
-                  </p>
-                  <Link href={`/events/${e.id}`} className="text-button">
-                    Event details <ArrowUpRight size={15} />
-                  </Link>
-                </article>
-              );
-            })}
+          <div className="home-events home-events-compact">
+            {events.value.map((e) => (
+              <CompactRaceCard key={e.id} event={e as ImportedRace} />
+            ))}
           </div>
         ) : (
           <div className="calendar-empty">
@@ -266,6 +246,14 @@ export default async function Home() {
             </Link>
           </div>
         )}
+      </section>
+      <section className="wrap section">
+        <SectionHeading title="Latest Racing Highlights" />
+        <Suspense
+          fallback={<LoadingState label="Loading racing highlights…" />}
+        >
+          <HomeRacingHighlights />
+        </Suspense>
       </section>
       <section className="wrap home-category-section">
         <SectionHeading
@@ -342,18 +330,20 @@ async function recent(name: string, order: string, count: number) {
   const s = await q.orderBy(order, "desc").limit(count).get();
   return s.docs.map((d) => ({ ...d.data(), id: d.id }));
 }
-async function upcoming() {
-  const s = await adminDb()
-    .collection("events")
-    .where("country", "==", "ZA")
-    .where("status", "==", "published")
-    .where("endsAt", ">=", Date.now())
-    .orderBy("endsAt", "asc")
-    .limit(8)
-    .get();
-  return s.docs
-    .map((d) => ({ ...d.data(), id: d.id }))
-    .sort((a, b) => (a as Event).startsAt - (b as Event).startsAt);
+async function HomeRacingHighlights() {
+  try {
+    const feed = await importedFeed(adminDb(), "videos");
+    return feed.items.length ? (
+      <RacingHighlightsCarousel videos={feed.items as ImportedVideo[]} />
+    ) : (
+      <Empty
+        title="The next highlight is on its way."
+        description="Published racing videos will appear here."
+      />
+    );
+  } catch (error) {
+    return <LoadError error={error} />;
+  }
 }
 function LoadError({ error }: { error: unknown }) {
   return (

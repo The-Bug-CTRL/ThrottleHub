@@ -1,20 +1,38 @@
+import { boundedText, RequestBodyError } from "@/lib/request-body";
 import { NextResponse } from "next/server";
 import { adminDb } from "@/lib/server";
 import { queryMarketplace } from "@/lib/marketplace-search";
+import { ZodError } from "zod";
 export async function POST(request: Request) {
   try {
-    const text = await request.text();
+    const text = await boundedText(request, 12000);
     if (text.length > 12000)
       return NextResponse.json(
         { error: "Search request too large." },
         { status: 413 },
       );
-    const { filters, cursor } = JSON.parse(text);
+    const body = JSON.parse(text);
+    if (!body || typeof body !== "object" || Array.isArray(body))
+      return NextResponse.json(
+        { error: "Invalid search request." },
+        { status: 400 },
+      );
+    const { filters, cursor } = body;
     return NextResponse.json(
       await queryMarketplace(adminDb(), filters, cursor),
       { headers: { "Cache-Control": "no-store" } },
     );
   } catch (error) {
+    if (error instanceof RequestBodyError)
+      return NextResponse.json(
+        { error: error.message },
+        { status: error.status },
+      );
+    if (error instanceof SyntaxError || error instanceof ZodError)
+      return NextResponse.json(
+        { error: "Invalid search request." },
+        { status: 400 },
+      );
     const message =
       error instanceof Error ? error.message : "Search unavailable";
     const index = /index|FAILED_PRECONDITION/i.test(message);
@@ -33,7 +51,7 @@ export async function POST(request: Request) {
             ? message
             : "Marketplace search is unavailable. Check the local Firebase connection and try again.",
       },
-      { status: 400 },
+      { status: expected && !index ? 400 : 503 },
     );
   }
 }

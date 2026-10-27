@@ -278,7 +278,7 @@ export function CommunityModeration() {
         <button onClick={() => load(true)}>Load more queue records</button>
       )}
       <section className="private-evidence" id="participant-controls">
-        <h3>Restrict forum participation</h3>
+        <h3>Restrict account participation</h3>
         <p>
           Restricts new topics, replies and edits. Only moderators can change
           these records. It does not disable the authentication identity.

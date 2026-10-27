@@ -23,6 +23,10 @@ it.skipIf(process.env.RUN_FIREBASE_TESTS !== "true")(
         batch.set(ref, {
           ...listing("query-seller", id),
           ...categoryFields("parts/engine/top-end/cylinder-heads"),
+          searchTokens: [
+            ...listing().searchTokens,
+            ...(i < 132 ? ["honda", "cr125"] : ["yamaha", "yz250"]),
+          ],
           make: i < 132 ? "Honda" : "Yamaha",
           model: i < 132 ? "CR125" : "YZ250",
           year: 0,
@@ -54,6 +58,19 @@ it.skipIf(process.env.RUN_FIREBASE_TESTS !== "true")(
         engineType: "two-stroke",
         sort: "oldest",
       };
+      const typed = await queryMarketplace(db, {
+        ...defaultFilters,
+        category: "parts/engine",
+        term: "Yamaha YZ250",
+      });
+      expect(typed.items).toHaveLength(8);
+      expect(typed.items.every((item) => item.make === "Yamaha")).toBe(true);
+      const noMatch = await queryMarketplace(db, {
+        ...defaultFilters,
+        category: "parts/engine",
+        term: "Yamaha helmet",
+      });
+      expect(noMatch.items).toHaveLength(0);
       const first = await queryMarketplace(db, f);
       expect(first.items).toHaveLength(0);
       expect(first.scanned).toBe(128);

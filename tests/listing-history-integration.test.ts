@@ -1,3 +1,4 @@
+import { seedReadyVideo } from "./video-fixture";
 import { beforeAll, afterAll, it, expect } from "vitest";
 import {
   initializeTestEnvironment,
@@ -29,7 +30,7 @@ import {
 } from "firebase/storage";
 import { listing, testProject } from "./fixtures";
 import {
-  mutateListing,
+  mutateListing as mutateListingService,
   validateListingImages,
 } from "../src/lib/listing-lifecycle";
 import { isPublicListing, listingHref } from "../src/lib/listing-history";
@@ -77,6 +78,22 @@ afterAll(async () => {
   await deleteApp(app);
 });
 const seller = { uid: "history-seller" };
+async function mutateListing(...args: Parameters<typeof mutateListingService>) {
+  const [store, id, actor, input] = args;
+  if (input.action === "save" || input.status === "published") {
+    const old = (await store.doc("listings/" + id).get()).data();
+    const uid = old?.ownerId || actor.uid;
+    await seedReadyVideo(
+      store,
+      id,
+      uid,
+      getStorage(app).bucket(`${testProject}.appspot.com`),
+    );
+    args[3] = { ...input, runningVideoId: "test-ready" };
+  }
+  args[5] = getStorage(app).bucket(`${testProject}.appspot.com`);
+  return mutateListingService(...args);
+}
 it("retains IDs, photos, prices and protected history through sold, expired, hold and relisting", async () => {
   const publicDb = env.unauthenticatedContext().firestore();
   for (const status of ["sold", "expired", "on-hold"] as const) {
@@ -85,9 +102,10 @@ it("retains IDs, photos, prices and protected history through sold, expired, hol
     const storage = env
       .authenticatedContext(seller.uid)
       .storage(`gs://${testProject}.appspot.com`);
-    await uploadBytes(ref(storage, photo), new Uint8Array([1, 2, 3]), {
-      contentType: "image/png",
-    });
+    await getStorage(app)
+      .bucket(`${testProject}.appspot.com`)
+      .file(photo)
+      .save(Buffer.from([1, 2, 3]), { metadata: { contentType: "image/png" } });
     const image = `http://127.0.0.1:9298/v0/b/${testProject}.appspot.com/o/${encodeURIComponent(photo)}?alt=media`;
     validateListingImages(
       [image],
@@ -343,9 +361,14 @@ it("revokes token links on restriction and deletes originals, thumbnails and ide
   );
   try {
     for (const path of paths)
-      await uploadBytes(ref(client, path), new Uint8Array([1, 2, 3]), {
-        contentType: "image/png",
-      });
+      await bucket
+        .file(path)
+        .save(Buffer.from([1, 2, 3]), {
+          metadata: {
+            contentType: "image/png",
+            metadata: { firebaseStorageDownloadTokens: crypto.randomUUID() },
+          },
+        });
     const urls = await Promise.all(
       paths.map((path) => getDownloadURL(ref(client, path))),
     );

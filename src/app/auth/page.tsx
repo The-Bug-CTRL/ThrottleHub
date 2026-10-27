@@ -1,6 +1,6 @@
 "use client";
 import { RoostLoader } from "@/components/loading/roost-loader";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
@@ -14,12 +14,23 @@ import {
   updateProfile,
   GoogleAuthProvider,
   signInWithPopup,
+  type User,
 } from "firebase/auth";
-import { doc, setDoc, runTransaction } from "firebase/firestore";
+import { accountProfile } from "@/lib/profile-client";
+import { useSession } from "@/components/session";
 import { Eye, EyeOff, LockKeyhole, ArrowLeft, ArrowRight } from "lucide-react";
-import { auth, db } from "@/lib/firebase";
+import { auth } from "@/lib/firebase";
 import { authReady } from "@/components/session";
 import { firebaseMode } from "@/lib/firebase-settings";
+import {
+  AccountTypePicker,
+  BusinessProfileFields,
+} from "@/components/seller-account-fields";
+import {
+  emptyBusiness,
+  businessSchema,
+  type AccountType,
+} from "@/lib/seller-account";
 import { brand } from "@/lib/config";
 import { dataError } from "@/lib/errors";
 const schema = z.object({
@@ -35,11 +46,32 @@ export default function Auth() {
     [visible, setVisible] = useState(false),
     [resetting, setResetting] = useState(false),
     [googleBusy, setGoogleBusy] = useState(false);
+  const [accountType, setAccountType] = useState<AccountType | "">("");
+  const [business, setBusiness] = useState({ ...emptyBusiness });
+  const [setupUser, setSetupUser] = useState<User | null>(null);
   const router = useRouter();
-  function destination() {
-    const next = new URLSearchParams(window.location.search).get("next") || "";
-    return /^\/seller\/[a-zA-Z0-9_-]{1,128}$/.test(next) ? next : "/account";
-  }
+  const { user: sessionUser, loading: sessionLoading } = useSession();
+  useEffect(() => {
+    if (
+      sessionLoading ||
+      !sessionUser ||
+      new URLSearchParams(window.location.search).get("setup") !== "1"
+    )
+      return;
+    let active = true;
+    accountProfile(sessionUser)
+      .then((result) => {
+        if (!active) return;
+        if (result.needsSetup) setSetupUser(sessionUser);
+        else router.replace("/account");
+      })
+      .catch((error) => {
+        if (active) setMessage(error.message);
+      });
+    return () => {
+      active = false;
+    };
+  }, [sessionUser, sessionLoading, router]);
   const {
     register,
     handleSubmit,
@@ -54,6 +86,28 @@ export default function Auth() {
     setMessage("");
     setSuccess(false);
   }
+  async function completeProfile(user: User, selectedType: AccountType | "") {
+    const result = await accountProfile(user, {
+      ...(selectedType ? { accountType: selectedType } : {}),
+      ...(selectedType === "business"
+        ? { business: businessSchema.parse(business) }
+        : {}),
+      ...(user.displayName?.trim() && user.displayName.trim().length >= 2
+        ? { displayName: user.displayName.trim().slice(0, 80) }
+        : {}),
+      ...(user.photoURL?.startsWith("https://")
+        ? { photoURL: user.photoURL }
+        : {}),
+    });
+    const complete = !result.needsSetup;
+    if (!complete) {
+      setAccountType("");
+      setSetupUser(user);
+      return false;
+    }
+    router.replace("/account");
+    return true;
+  }
   async function googleSignIn() {
     setGoogleBusy(true);
     setMessage("");
@@ -63,33 +117,7 @@ export default function Auth() {
       const provider = new GoogleAuthProvider();
       provider.setCustomParameters({ prompt: "select_account" });
       const { user } = await signInWithPopup(auth, provider);
-      const profile = doc(db, "profiles", user.uid);
-      const needsPhoto = await runTransaction(db, async (tx) => {
-        const existing = await tx.get(profile);
-        if (!existing.exists())
-          tx.set(profile, {
-            displayName:
-              user.displayName && user.displayName.trim().length >= 2
-                ? user.displayName.trim().slice(0, 80)
-                : "Rider",
-            bio: "",
-            city: "",
-            country: "ZA",
-            sellerType: "private",
-            createdAt: Date.now(),
-          });
-        return !existing.exists() || !existing.data().photoURL;
-      });
-      if (needsPhoto && user.photoURL?.startsWith("https://")) {
-        try {
-          await setDoc(profile, { photoURL: user.photoURL }, { merge: true });
-        } catch {
-          console.warn(
-            "Signed in, but the public profile photo could not be synced.",
-          );
-        }
-      }
-      router.push(destination());
+      await completeProfile(user, mode === "register" ? accountType : "");
     } catch (error) {
       const code = (error as { code?: string }).code;
       setMessage(
@@ -129,6 +157,51 @@ export default function Auth() {
       setResetting(false);
     }
   }
+  if (setupUser)
+    return (
+      <section className="auth-panel">
+        <h1>Finish setting up your account</h1>
+        <p>You’re signed in. Choose how you’ll use ThrottleHub.</p>
+        <form
+          onSubmit={async (event) => {
+            event.preventDefault();
+            setMessage("");
+            if (!accountType) {
+              setMessage("Choose Personal or Business to continue.");
+              return;
+            }
+            if (auth.currentUser?.uid !== setupUser.uid) {
+              setSetupUser(null);
+              setMessage(
+                "Please sign in again to finish setting up your account.",
+              );
+              return;
+            }
+            setGoogleBusy(true);
+            try {
+              await completeProfile(setupUser, accountType);
+            } catch (error) {
+              setMessage(dataError(error));
+            } finally {
+              setGoogleBusy(false);
+            }
+          }}
+        >
+          <AccountTypePicker value={accountType} onChange={setAccountType} />
+          {accountType === "business" && (
+            <BusinessProfileFields value={business} onChange={setBusiness} />
+          )}
+          <button className="button" disabled={googleBusy}>
+            {googleBusy ? "Saving…" : "Continue to my account"}
+          </button>
+        </form>
+        {message && (
+          <p role="alert" className="notice error">
+            {message}
+          </p>
+        )}
+      </section>
+    );
   return (
     <section className="auth-panel">
       <div className="eyebrow">Your {brand.name} account</div>
@@ -161,6 +234,18 @@ export default function Auth() {
             Create account
           </button>
         </div>
+      )}
+      {mode === "register" && (
+        <>
+          <AccountTypePicker value={accountType} onChange={setAccountType} />
+          {accountType === "business" && (
+            <BusinessProfileFields value={business} onChange={setBusiness} />
+          )}
+          <small>
+            Choose an account type when registering, including your first Google
+            sign-in. Existing accounts keep their current type.
+          </small>
+        </>
       )}
       {mode !== "reset" && (
         <>
@@ -214,6 +299,12 @@ export default function Auth() {
                 try {
                   await authReady;
                   if (mode === "register") {
+                    if (!accountType)
+                      throw Error(
+                        "Choose Personal or Business before creating your account.",
+                      );
+                    if (accountType === "business")
+                      businessSchema.parse(business);
                     if (values.name.trim().length < 2) {
                       setMessage(
                         "Please enter a display name of at least two characters.",
@@ -228,22 +319,23 @@ export default function Auth() {
                     await updateProfile(user, {
                       displayName: values.name.trim(),
                     });
-                    await setDoc(doc(db, "profiles", user.uid), {
-                      displayName: values.name.trim(),
-                      bio: "",
-                      city: "",
-                      country: "ZA",
-                      sellerType: "private",
-                      createdAt: Date.now(),
-                    });
-                    await sendEmailVerification(user);
-                  } else
-                    await signInWithEmailAndPassword(
+                    const completed = await completeProfile(user, accountType);
+                    if (!completed) return;
+                    try {
+                      await sendEmailVerification(user);
+                    } catch {
+                      // The profile is saved. Verification delivery can be retried from Account.
+                    }
+                  } else {
+                    const { user } = await signInWithEmailAndPassword(
                       auth,
                       values.email,
                       values.password,
                     );
-                  router.push(destination());
+                    await completeProfile(user, "");
+                    return;
+                  }
+                  router.replace("/account");
                 } catch (error) {
                   setMessage(dataError(error));
                 }

@@ -29,7 +29,7 @@ export async function GET(
           { status: 400 },
         );
       const cursor = await collection.doc(after).get();
-      if (!cursor.exists)
+      if (!cursor.exists || cursor.data()?.status !== "published")
         return NextResponse.json(
           { error: "Review cursor expired. Refresh this page." },
           { status: 400 },

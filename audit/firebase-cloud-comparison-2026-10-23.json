@@ -1,0 +1,31 @@
+{
+  "project": "throttlehub-9d6b9",
+  "bucket": "throttlehub-9d6b9.firebasestorage.app",
+  "checkedAt": "2026-10-23T19:26:27.694Z",
+  "backupComplete": true,
+  "backup": ".secrets\\security-backups\\2026-10-23T19-26-23.165Z",
+  "backupCopyHashVerified": true,
+  "cloudIndexes": 0,
+  "preparedIndexes": 160,
+  "authProviders": "HTTP403: unverified",
+  "policies": [
+    {
+      "kind": "firestore",
+      "release": "projects/throttlehub-9d6b9/releases/cloud.firestore",
+      "ruleset": "projects/throttlehub-9d6b9/rulesets/33340794-75b8-4b25-ab75-e5b34adbf5b0",
+      "cloudSHA256": "ecf30f940747dcc3c5ba4993093e9a11ac9fc5df7e14b2a1512d2446923d84eb",
+      "localSHA256": "6f62037d4d762b55f5e83797170ad64641b966efe36198069a56ea8eb9d09a6a",
+      "equal": false,
+      "cloudPolicy": "deny all reads and writes"
+    },
+    {
+      "kind": "storage",
+      "release": "projects/throttlehub-9d6b9/releases/firebase.storage/throttlehub-9d6b9.firebasestorage.app",
+      "ruleset": "projects/throttlehub-9d6b9/rulesets/f463e4f7-49c4-4701-aeb0-78a39b8674fa",
+      "cloudSHA256": "e656d238ee388d951268ca38d1eca2dbf2f5fdc55ef4b20e22911413d36c935b",
+      "localSHA256": "0fc50f1a2132984a7c3e0d0513decd504071bc007fa823f0b8c258947df99b5c",
+      "equal": false,
+      "cloudPolicy": "deny all reads and writes"
+    }
+  ]
+}

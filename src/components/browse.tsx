@@ -1,10 +1,10 @@
 "use client";
+import { MarketplaceFilterFields } from "./marketplace-filter-fields";
 import { RoostLoader } from "@/components/loading/roost-loader";
 import { useEffect, useState, useRef } from "react";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { useSearchDraft } from "./search-draft";
 import Link from "next/link";
-import { motorcycleCatalogue } from "@/lib/marketplace";
 import { categoryById } from "@/lib/taxonomy";
 import { provinces } from "@/lib/marketplace";
 import { Listing } from "@/lib/models";
@@ -33,13 +33,34 @@ export function Browse({ categoryId = "" }: { categoryId?: string }) {
   const [busy, setBusy] = useState(true);
   const [error, setError] = useState("");
   const [applied, setApplied] = useState(filters);
+  const filterPanel = useRef<HTMLDetailsElement>(null);
   const [refinementsOpen, setRefinementsOpen] = useState(false);
   useEffect(() => {
     const media = window.matchMedia("(min-width: 901px)");
-    const update = () => setRefinementsOpen(media.matches);
+    const reveal = () => {
+      setRefinementsOpen(true);
+      requestAnimationFrame(() => {
+        filterPanel.current?.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+        filterPanel.current
+          ?.querySelector<HTMLElement>("input,select")
+          ?.focus({ preventScroll: true });
+      });
+    };
+    const update = () =>
+      setRefinementsOpen(
+        media.matches || window.location.hash === "#marketplace-filters",
+      );
+    window.addEventListener("throttlehub:open-filters", reveal);
     update();
     media.addEventListener("change", update);
-    return () => media.removeEventListener("change", update);
+    if (window.location.hash === "#marketplace-filters") reveal();
+    return () => {
+      media.removeEventListener("change", update);
+      window.removeEventListener("throttlehub:open-filters", reveal);
+    };
   }, []);
   const activeQuery = useRef(applied);
   activeQuery.current = applied;
@@ -76,55 +97,11 @@ export function Browse({ categoryId = "" }: { categoryId?: string }) {
       active = false;
     };
   }, [applied]);
-  const change = (key: keyof Filters, value: string) =>
-    setFilters((f) => ({ ...f, [key]: value }));
   const apply = (next: Filters) => {
     setFilters(next);
     setApplied(next);
     router.replace(filtersUrl(next), { scroll: false });
   };
-  const type = categoryById[filters.category]?.itemType;
-  const mechanical = !type || type === "motorcycle" || type === "part";
-  const select = (
-    key: keyof Filters,
-    label: string,
-    values: string[] | Record<string, string>,
-  ) => (
-    <label>
-      {label}
-      <select
-        value={filters[key]}
-        onChange={(e) => change(key, e.target.value)}
-      >
-        <option value="">Any</option>
-        {(Array.isArray(values)
-          ? values.map((v) => [v, v])
-          : Object.entries(values)
-        ).map(([v, n]) => (
-          <option key={v} value={v}>
-            {n}
-          </option>
-        ))}
-      </select>
-    </label>
-  );
-  const input = (key: keyof Filters, label: string, number = false) => (
-    <label>
-      {label}
-      <input
-        type={number ? "number" : "text"}
-        min={number ? 0 : undefined}
-        maxLength={key === "term" ? 20 : undefined}
-        pattern={key === "term" ? "[A-Za-z0-9]{1,20}" : undefined}
-        title={
-          key === "term" ? "One word, such as piston or helmet" : undefined
-        }
-        placeholder={key === "term" ? "e.g. piston" : undefined}
-        value={filters[key]}
-        onChange={(e) => change(key, e.target.value)}
-      />
-    </label>
-  );
   return (
     <section className="wrap section browse">
       <div className="eyebrow">SOUTH AFRICAN MARKETPLACE</div>
@@ -132,6 +109,8 @@ export function Browse({ categoryId = "" }: { categoryId?: string }) {
       <div className="browse-layout">
         <details
           className="marketplace-refinements"
+          id="marketplace-filters"
+          ref={filterPanel}
           open={refinementsOpen}
           onToggle={(event) => setRefinementsOpen(event.currentTarget.open)}
         >
@@ -143,101 +122,7 @@ export function Browse({ categoryId = "" }: { categoryId?: string }) {
               apply(filters);
             }}
           >
-            <div className="filter-fields">
-              {input("term", "Keyword (optional)")}
-              <div className="field-row">
-                {input("min", "Min price (R)", true)}
-                {input("max", "Max price (R)", true)}
-              </div>
-              {select("condition", "Condition", [
-                "New",
-                "Excellent",
-                "Good",
-                "Used",
-              ])}
-              {mechanical && (
-                <>
-                  {filters.make &&
-                    select(
-                      "model",
-                      "Model",
-                      [...(motorcycleCatalogue[filters.make] || [])].sort(
-                        (a, b) => a.localeCompare(b, "en-ZA"),
-                      ),
-                    )}
-                  <div className="field-row">
-                    {input("yearFrom", "Year from", true)}
-                    {input("yearTo", "Year to", true)}
-                  </div>
-                </>
-              )}
-              <details
-                className="advanced-filters"
-                open={[
-                  applied.year,
-                  applied.engineType,
-                  applied.displacement,
-                  applied.maxHours,
-                  applied.fuelSystem,
-                  applied.origin,
-                  applied.vintage,
-                  applied.size,
-                  applied.sizeSystem,
-                  applied.sellerType,
-                  applied.shipping,
-                  applied.city,
-                ].some(Boolean)}
-              >
-                <summary>More filters</summary>
-                <div className="advanced-filter-fields">
-                  {mechanical && (
-                    <>
-                      {input("year", "Exact model year", true)}
-                      {select("engineType", "Engine", {
-                        "two-stroke": "Two-stroke",
-                        "four-stroke": "Four-stroke",
-                      })}
-                      {input("displacement", "Engine size (cc)", true)}
-                      {type !== "part" &&
-                        input("maxHours", "Max riding hours", true)}
-                      {select("fuelSystem", "Fuel system", {
-                        carburettor: "Carburettor",
-                        "fuel-injection": "Fuel injection",
-                      })}
-                      {type !== "motorcycle" &&
-                        select("origin", "Part type", ["OEM", "aftermarket"])}
-                      {select("vintage", "Vintage items", {
-                        true: "Vintage only",
-                      })}
-                    </>
-                  )}
-                  {mechanical &&
-                    type !== "motorcycle" &&
-                    input("brand", "Part / equipment brand")}
-                  {(!type || type === "gear") && (
-                    <>
-                      {input("size", "Size")}
-                      {select("sizeSystem", "Sizing", [
-                        "UK",
-                        "US",
-                        "EU",
-                        "alpha",
-                        "cm",
-                      ])}
-                    </>
-                  )}
-                  {input("city", "Town or city")}
-                  {select("sellerType", "Seller", {
-                    private: "Private seller",
-                    dealer: "Dealership",
-                  })}
-                  {select("shipping", "Delivery", [
-                    "Collection only",
-                    "Domestic shipping",
-                  ])}
-                </div>
-              </details>
-            </div>
+            <MarketplaceFilterFields filters={filters} onChange={setFilters} />
             <div className="filter-actions">
               <button className="button" type="submit">
                 Apply filters

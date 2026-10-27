@@ -1,9 +1,13 @@
 rules_version = '2';
+// Canonical normal-operation policy. Trusted media validation remains mandatory.
 service firebase.storage {
  match /b/{bucket}/o {
   function admin(){return request.auth != null && request.auth.token.get('admin',false) == true;}
   function moderator(){return admin() || (request.auth != null && request.auth.token.get('moderator',false) == true);}
   function owner(uid){return request.auth != null && request.auth.uid == uid;}
+  function active(){return request.auth != null && (!firestore.exists(/databases/(default)/documents/restrictions/$(request.auth.uid)) || firestore.get(/databases/(default)/documents/restrictions/$(request.auth.uid)).data.suspended == false);}
+  function sameMetadata(){return request.resource.metadata == resource.metadata && request.resource.contentType == resource.contentType;}
+  function editableReport(uid,id){return !firestore.exists(/databases/(default)/documents/stolenReports/$(id)) || (firestore.get(/databases/(default)/documents/stolenReports/$(id)).data.ownerId == uid && firestore.get(/databases/(default)/documents/stolenReports/$(id)).data.status in ['pending','rejected']);}
   function image(){return request.resource.size > 0 && request.resource.size <= 5*1024*1024 && request.resource.contentType.matches('image/(jpeg|png|webp)');}
   // Owners may stage uploads before saving their advert, but never under another owner's existing advert.
   function listingOwner(uid,id){return !firestore.exists(/databases/(default)/documents/listings/$(id)) || firestore.get(/databases/(default)/documents/listings/$(id)).data.ownerId == uid;}
@@ -12,9 +16,8 @@ service firebase.storage {
   function draftListing(uid,id){return !firestore.exists(/databases/(default)/documents/listings/$(id)) || (firestore.get(/databases/(default)/documents/listings/$(id)).data.ownerId == uid && firestore.get(/databases/(default)/documents/listings/$(id)).data.status == 'draft');}
   match /listing-images/{uid}/{listingId}/{filename} {
    allow read: if owner(uid) || admin() || (firestore.get(/databases/(default)/documents/listings/$(listingId)).data.status in ['published','sold','expired','on-hold'] && firestore.get(/databases/(default)/documents/listings/$(listingId)).data.ownerId == uid && firestore.get(/databases/(default)/documents/listings/$(listingId)).data.country == 'ZA' && firestore.get(/databases/(default)/documents/listings/$(listingId)).data.currency == 'ZAR');
-   allow create: if owner(uid) && editableListing(uid,listingId) && image();
-   allow update: if owner(uid) && draftListing(uid,listingId) && image();
-   allow delete: if (owner(uid) && draftListing(uid,listingId)) || admin();
+   // Listing photos must pass the bounded, quota-controlled trusted decoder.
+   allow write: if false;
   }
   match /news-images/{articleId}/{filename} {
    allow read: if admin() || firestore.get(/databases/(default)/documents/newsArticles/$(articleId)).data.status == 'published';
@@ -23,13 +26,27 @@ service firebase.storage {
   }
   match /stolen-images/{uid}/{reportId}/{filename} {
    allow read: if owner(uid) || moderator() || (firestore.get(/databases/(default)/documents/stolenReports/$(reportId)).data.status in ['published','recovered'] && firestore.get(/databases/(default)/documents/stolenReports/$(reportId)).data.ownerId == uid && firestore.get(/databases/(default)/documents/stolenReports/$(reportId)).data.country == 'ZA');
-   allow create,update: if owner(uid) && reportOwner(uid,reportId) && image();
-   allow delete: if owner(uid) || moderator();
+   allow create: if active() && owner(uid) && editableReport(uid,reportId) && image();
+   allow update: if active() && owner(uid) && editableReport(uid,reportId) && image() && sameMetadata();
+   allow delete: if (active() && owner(uid) && editableReport(uid,reportId)) || moderator();
   }
   match /stolen-evidence/{uid}/{reportId}/{filename} {
    allow read: if owner(uid) || moderator();
-   allow create,update: if owner(uid) && reportOwner(uid,reportId) && request.resource.size > 0 && request.resource.size <= 5*1024*1024 && request.resource.contentType.matches('(image/(jpeg|png)|application/pdf)');
+   allow create: if active() && owner(uid) && editableReport(uid,reportId) && request.resource.size > 0 && request.resource.size <= 5*1024*1024 && request.resource.contentType.matches('(image/(jpeg|png)|application/pdf)');
+   allow update: if active() && owner(uid) && editableReport(uid,reportId) && sameMetadata() && request.resource.size > 0 && request.resource.size <= 5*1024*1024 && request.resource.contentType.matches('(image/(jpeg|png)|application/pdf)');
    allow delete: if owner(uid) || moderator();
+  }
+  match /listing-video-uploads/{uid}/{listingId}/{filename} {
+   function slot(){return firestore.get(/databases/(default)/documents/listings/$(listingId)/videos/$(filename.replace('.mp4',''))).data;}
+   function eligibleParent(){return !firestore.exists(/databases/(default)/documents/listings/$(listingId)) || (firestore.get(/databases/(default)/documents/listings/$(listingId)).data.ownerId == uid && firestore.get(/databases/(default)/documents/listings/$(listingId)).data.status in ['draft','published','expired','on-hold']);}
+   allow read: if owner(uid);
+   allow create: if resource == null && owner(uid) && active() && eligibleParent() && filename.matches('[a-zA-Z0-9_-]+[.]mp4') && slot().uploaderId == uid && slot().listingId == listingId && slot().status == 'uploading' && slot().expiresAt > request.time.toMillis() && request.resource.size > 0 && request.resource.size <= 100*1024*1024 && request.resource.contentType == 'video/mp4';
+   allow update: if false;
+   allow delete: if owner(uid) && slot().status in ['uploading','failed','discarded'];
+  }
+  match /listing-videos/{uid}/{listingId}/{filename} {
+   allow read: if owner(uid) || admin() || (firestore.get(/databases/(default)/documents/listings/$(listingId)).data.ownerId == uid && firestore.get(/databases/(default)/documents/listings/$(listingId)).data.runningVideo.path == 'listing-videos/'+uid+'/'+listingId+'/'+filename && firestore.get(/databases/(default)/documents/listings/$(listingId)).data.status in ['published','sold','expired','on-hold'] && firestore.get(/databases/(default)/documents/listings/$(listingId)).data.country == 'ZA' && firestore.get(/databases/(default)/documents/listings/$(listingId)).data.currency == 'ZAR');
+   allow write: if false;
   }
   match /{allPaths=**} { allow read,write: if false; }
  }

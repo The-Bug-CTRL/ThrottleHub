@@ -47,7 +47,8 @@ export async function createReply(
   const batch = writeBatch(db);
   const now = Date.now();
   const profile = await getDoc(doc(db, "profiles", user.uid));
-  batch.set(doc(collection(db, "forumThreads", threadId, "replies")), {
+  const reply = doc(collection(db, "forumThreads", threadId, "replies"));
+  batch.set(reply, {
     ...data,
     ownerId: user.uid,
     authorName: profile.data()?.displayName || user.displayName || "Member",
@@ -58,7 +59,10 @@ export async function createReply(
   batch.set(doc(db, "postingLimits", user.uid), {
     lastPostAt: serverTimestamp(),
   });
-  batch.update(doc(db, "forumThreads", threadId), { lastReplyAt: now });
+  batch.update(doc(db, "forumThreads", threadId), {
+    lastReplyAt: now,
+    lastReplyId: reply.id,
+  });
   await batch.commit();
 }
 export async function reportContent(

@@ -159,7 +159,13 @@ export function displayDetails(details?: ListingInput["details"]) {
       ([key, value]) =>
         [
           detailLabels[key] || key,
-          value === true ? "Yes" : String(value).replaceAll("-", " "),
+          key === "sellerType"
+            ? value === "dealer"
+              ? "Business Seller"
+              : "Private Seller"
+            : value === true
+              ? "Yes"
+              : String(value).replaceAll("-", " "),
         ] as [string, string],
     );
 }
@@ -178,6 +184,9 @@ const listingDraftSchema = listingBaseSchema
 export const parseListingDraft = (value: ListingInput) =>
   listingDraftSchema.safeParse(value);
 export type Listing = ListingInput & {
+  sellerAccountType?: "personal" | "business";
+  runningVideoId?: string;
+  runningVideo?: import("./running-video").RunningVideo | null;
   id: string;
   ownerId: string;
   slug: string;

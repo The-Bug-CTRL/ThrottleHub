@@ -1,4 +1,6 @@
 "use client";
+import { sellerLabel } from "@/lib/seller-account";
+import { ListingAge } from "./listing-age";
 import Link from "next/link";
 import { Heart, MapPin, ArrowUpRight } from "lucide-react";
 import { provinces } from "@/lib/marketplace";
@@ -89,6 +91,12 @@ export function Card({ listing: l }: { listing: Listing }) {
           <ArrowUpRight size={15} />
         </div>
         <h3>{l.title}</h3>
+        {isPublicListing(l) && (
+          <small><ListingAge publishedAt={l.publishedAt || l.createdAt} /></small>
+        )}
+        <span className="seller-kind-badge">
+          {sellerLabel(l.sellerAccountType || l.details?.sellerType)}
+        </span>
         {l.status !== "published" && (
           <span className="notice">{statusLabel(l.status)}</span>
         )}

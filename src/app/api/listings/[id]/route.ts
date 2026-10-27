@@ -1,3 +1,4 @@
+import { boundedText, RequestBodyError } from "@/lib/request-body";
 import { finishListingMedia } from "@/lib/listing-media";
 import { NextRequest, NextResponse } from "next/server";
 import { getAuth } from "firebase-admin/auth";
@@ -34,7 +35,7 @@ export async function POST(
     }
     if (Number(request.headers.get("content-length") || 0) > 50000)
       throw new ListingError("Request too large.", 413);
-    const raw = await request.text();
+    const raw = await boundedText(request, 50000);
     if (raw.length > 50000) throw new ListingError("Request too large.", 413);
     let input: Record<string, unknown>;
     try {
@@ -63,6 +64,8 @@ export async function POST(
         moderator: token.moderator === true,
       },
       input,
+      Date.now(),
+      getStorage().bucket(bucketName),
     );
     try {
       await finishListingMedia(db, id, getStorage().bucket(bucketName));
@@ -73,14 +76,14 @@ export async function POST(
           ...result,
           cleanupPending: true,
           warning:
-            "The listing update is saved. Photo cleanup needs a retry; use Retry media cleanup or contact support.",
+            "The listing update is saved. Media cleanup needs a retry; use Retry media cleanup or contact support.",
         },
         { status: 202, headers },
       );
     }
     return NextResponse.json(result, { headers });
   } catch (error) {
-    if (error instanceof ListingError)
+    if (error instanceof ListingError || error instanceof RequestBodyError)
       return NextResponse.json(
         { error: error.message },
         { status: error.status, headers },

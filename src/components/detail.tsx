@@ -1,19 +1,31 @@
 "use client";
+import { trackListing } from "@/lib/listing-engagement-client";
+import { publicPhone } from "@/lib/public-phone";
+import { ListingAge } from "./listing-age";
+import { RunningVideoPlayer } from "./running-video-player";
+import { sellerLabel } from "@/lib/seller-account";
 import { RatingBadge } from "./member-reviews";
 import { requestText } from "@/components/ui/dialogs";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import {
   MapPin,
   MessageCircle,
+  Phone,
   Share2,
   Flag,
   Truck,
   Check,
 } from "lucide-react";
-import { addDoc, collection, doc, runTransaction } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  doc,
+  runTransaction,
+  getDoc,
+} from "firebase/firestore";
 import { Listing, money, displayDetails } from "@/lib/models";
 import { db } from "@/lib/firebase";
 import { useSession } from "./session";
@@ -31,13 +43,49 @@ export function ListingDetail({
   similar: Listing[];
 }) {
   const [notice, setNotice] = useState("");
-  const { user } = useSession();
+  const { user, loading } = useSession();
+  const [phoneAvailable, setPhoneAvailable] = useState(false),
+    [phone, setPhone] = useState(""),
+    [phoneBusy, setPhoneBusy] = useState(false);
+  useEffect(() => {
+    let active = true;
+    setPhoneAvailable(false);
+    setPhone("");
+    if (loading || !l.ownerId) return;
+    getDoc(doc(db, "profiles", l.ownerId))
+      .then((p) => {
+        if (active) setPhoneAvailable(!!publicPhone(p.data()));
+      })
+      .catch(() => {});
+    return () => {
+      active = false;
+    };
+  }, [l.ownerId, loading, user?.uid]);
+  useEffect(() => {
+    if (loading || user?.uid === l.ownerId) return;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const schedule = () => {
+      clearTimeout(timer);
+      if (document.visibilityState === "visible")
+        timer = setTimeout(() => {
+          void trackListing(l.id, "view", user).catch(() => {});
+        }, 1500);
+    };
+    schedule();
+    document.addEventListener("visibilitychange", schedule);
+    return () => {
+      clearTimeout(timer);
+      document.removeEventListener("visibilitychange", schedule);
+    };
+  }, [l.id, l.ownerId, user, loading]);
   const router = useRouter();
   async function contact() {
     if (l.status !== "published") {
       setNotice("This advert is no longer accepting enquiries.");
       return;
     }
+    if (user?.uid !== l.ownerId)
+      void trackListing(l.id, "message", user).catch(() => {});
     if (!user) {
       router.push("/auth");
       return;
@@ -51,15 +99,25 @@ export function ListingDetail({
       const ref = doc(db, "conversations", id);
       await runTransaction(db, async (tx) => {
         const existing = await tx.get(ref);
-        if (!existing.exists())
+        if (!existing.exists()) {
+          const current = await tx.get(doc(db, "listings", l.id));
+          if (
+            !current.exists() ||
+            current.data().status !== "published" ||
+            current.data().ownerId !== l.ownerId
+          )
+            throw new Error(
+              "This advert has changed. Refresh it before contacting the seller.",
+            );
           tx.set(ref, {
             listingId: l.id,
-            listingTitle: l.title,
+            listingTitle: current.data().title,
             buyerId: user.uid,
             sellerId: l.ownerId,
             participants: [user.uid, l.ownerId],
             createdAt: Date.now(),
           });
+        }
       });
       router.push(`/messages?conversation=${id}`);
     } catch (e) {
@@ -93,6 +151,16 @@ export function ListingDetail({
       <div className="detail-grid">
         <div>
           <Gallery images={l.images} title={l.title} />
+          <span className="seller-kind-badge">
+            {sellerLabel(l.sellerAccountType || l.details?.sellerType)}
+          </span>
+          {l.primaryCategoryId === "motorcycles" && (
+            <RunningVideoPlayer
+              listingId={l.id}
+              poster={l.images[0]}
+              available={!!l.runningVideo}
+            />
+          )}
           <div className="detail-section">
             <div className="eyebrow">THE DETAILS</div>
             <h2>
@@ -177,8 +245,7 @@ export function ListingDetail({
             {l.country}
           </p>
           <small>
-            Listed{" "}
-            {new Date(l.publishedAt || l.createdAt).toLocaleDateString("en-ZA")}{" "}
+            <ListingAge publishedAt={l.publishedAt || l.createdAt} />{" "}
             · Ref {l.id}
           </small>
           {isHistorical(l) && (
@@ -211,6 +278,40 @@ export function ListingDetail({
           >
             <MessageCircle size={18} /> Message seller
           </button>
+          {l.status === "published" &&
+            phoneAvailable &&
+            (phone ? (
+              <a
+                className="button-secondary listing-phone"
+                href={"tel:" + phone}
+              >
+                <Phone size={18} />
+                {phone}
+              </a>
+            ) : (
+              <button
+                className="button-secondary listing-phone"
+                disabled={phoneBusy}
+                onClick={async () => {
+                  setPhoneBusy(true);
+                  try {
+                    const result = await trackListing(l.id, "phone", user);
+                    setPhone(result.phone || "");
+                  } catch (error) {
+                    setNotice(
+                      error instanceof Error
+                        ? error.message
+                        : "Unable to show number. Please message the seller.",
+                    );
+                  } finally {
+                    setPhoneBusy(false);
+                  }
+                }}
+              >
+                <Phone size={18} />
+                {phoneBusy ? "Getting number�" : "Show phone number"}
+              </button>
+            ))}
           <div className="detail-actions">
             <Favourite listing={l} />
             <button

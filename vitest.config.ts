@@ -13,6 +13,13 @@ export default defineConfig({
         ? []
         : [
             "tests/rules.test.ts",
+            "tests/security-audit.test.ts",
+            "tests/seller-video.test.ts",
+            "tests/photo-security.test.ts",
+            "tests/listing-engagement.test.ts",
+            "tests/normal-registration.test.ts",
+            "tests/content-profile-integration.test.ts",
+            "tests/imported-video-integration.test.ts",
             "tests/workflows.test.ts",
             "tests/listing-history-integration.test.ts",
           ]),

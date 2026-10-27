@@ -1,6 +1,11 @@
 import { it, expect, vi } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
-import { chooseSearchCategory } from "../src/lib/search-controls";
+import {
+  chooseSearchCategory,
+  chooseSearchEngine,
+  searchModels,
+  alphabeticalMakes,
+} from "../src/lib/search-controls";
 import {
   defaultFilters,
   validateFilters,
@@ -70,13 +75,18 @@ it("renders alphabetical brands, the extensive category path and selected provin
       <MarketplaceSearchBar />
     </SearchDraftProvider>,
   );
-  expect(html.indexOf('value="Beta"')).toBeLessThan(
-    html.indexOf('value="Honda"'),
+  expect(alphabeticalMakes.indexOf("Beta")).toBeLessThan(
+    alphabeticalMakes.indexOf("Honda"),
   );
-  expect(html.indexOf('value="Honda"')).toBeLessThan(
-    html.indexOf('value="Yamaha"'),
+  expect(alphabeticalMakes.indexOf("Honda")).toBeLessThan(
+    alphabeticalMakes.indexOf("Yamaha"),
   );
-  expect(html).toContain('value="Yamaha" selected=""');
+  expect(html).toContain("Search make, model or keyword");
+  expect(html).toContain("Yamaha");
+  expect(html).toContain("Filters");
+  expect(html.indexOf("search-category-menu")).toBeLessThan(
+    html.indexOf("make-model-search"),
+  );
   expect(html).toContain('value="ZA-WC" selected=""');
   expect(html).toContain("Main Bearings");
   expect(html).toContain("Narrow your category");
@@ -97,4 +107,33 @@ it("uses the real account photo where available and readable initials otherwise"
   );
   expect(fallback).toContain("SR");
   expect(fallback).not.toContain("<img");
+});
+
+it("narrows Yamaha models by engine without hiding ambiguous model years", () => {
+  expect(searchModels("Yamaha", "two-stroke")).toContain("YZ250");
+  expect(searchModels("Yamaha", "two-stroke")).not.toContain("YZ250F");
+  expect(searchModels("Yamaha", "four-stroke")).toContain("YZ250F");
+  expect(searchModels("Yamaha", "four-stroke")).not.toContain("YZ250");
+  expect(searchModels("Kawasaki", "two-stroke")).toContain("KX250");
+  expect(searchModels("Kawasaki", "four-stroke")).toContain("KX250");
+});
+it("changing engine clears stale models and widens an incompatible engine-only category", () => {
+  const f = chooseSearchEngine(
+    {
+      ...defaultFilters,
+      make: "Yamaha",
+      model: "YZ250",
+      engineType: "two-stroke",
+      category: "motorcycles/motocross/two-stroke-motocross",
+      region: "ZA-WC",
+      max: "40000",
+    },
+    "four-stroke",
+  );
+  expect(f.model).toBe("");
+  expect(f.engineType).toBe("four-stroke");
+  expect(f.category).not.toBe("motorcycles/motocross/two-stroke-motocross");
+  expect(f.region).toBe("ZA-WC");
+  expect(f.max).toBe("40000");
+  expect(() => validateFilters(f)).not.toThrow();
 });

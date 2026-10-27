@@ -229,7 +229,10 @@ describe("V2 query predicates and saved criteria", () => {
   it("rejects unsupported text and invalid ranges without dropping criteria", () => {
     expect(() =>
       validateFilters({ ...defaultFilters, term: "Yamaha YZ250" }),
-    ).toThrow("one keyword");
+    ).not.toThrow();
+    expect(() =>
+      validateFilters({ ...defaultFilters, term: "a b c d e f g" }),
+    ).toThrow("six");
     expect(() =>
       validateFilters({ ...defaultFilters, min: "200", max: "100" }),
     ).toThrow();
@@ -244,4 +247,17 @@ describe("V2 query predicates and saved criteria", () => {
       validateFilters({ ...defaultFilters, country: "global" }),
     ).toThrow();
   });
+});
+
+it("matches every typed search word rather than only the first", () => {
+  const advert = { ...listing(), searchTokens: ["yamaha", "yz250", "piston"] };
+  expect(
+    matchesListing(advert, { ...defaultFilters, term: "Yamaha YZ250" }),
+  ).toBe(true);
+  expect(
+    matchesListing(advert, { ...defaultFilters, term: "Yamaha helmet" }),
+  ).toBe(false);
+  expect(
+    matchesListing(advert, { ...defaultFilters, term: "  Yamaha   piston  " }),
+  ).toBe(true);
 });

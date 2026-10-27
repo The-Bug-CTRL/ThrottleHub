@@ -121,13 +121,7 @@ export function ListingDetailsFields({
             </label>
           </div>
         )}
-        <label>
-          Seller type (self-declared)
-          <select {...register("details.sellerType")}>
-            <option value="private">Private seller</option>
-            <option value="dealer">Dealership</option>
-          </select>
-        </label>
+        <p>Your seller label comes from your account settings and is saved with the advert.</p>
       </fieldset>
     </details>
   );

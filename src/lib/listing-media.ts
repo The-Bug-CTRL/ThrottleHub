@@ -15,6 +15,18 @@ export async function finishListingMedia(
       throw new Error("Invalid media owner.");
     const prefix = `listing-images/${owner}/${id}/`;
     const restrictedPrefix = `listing-restricted/${owner}/${id}/`;
+    // Restriction/removal revokes public video token URLs by deleting accepted originals.
+    // Video records are private and retained only while the ordinary advert remains public/draft.
+    await bucket.deleteFiles({
+      prefix: `listing-videos/${owner}/${id}/`,
+      force: true,
+    });
+    await bucket.deleteFiles({
+      prefix: `listing-video-uploads/${owner}/${id}/`,
+      force: true,
+    });
+    await db.recursiveDelete(ref.collection("videos"));
+    await db.recursiveDelete(ref.collection("photos"));
     if (pending.data()!.mode === "restrict") {
       const [files] = await bucket.getFiles({ prefix });
       for (const file of files) {

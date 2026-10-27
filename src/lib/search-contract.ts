@@ -78,10 +78,12 @@ export function validateFilters(input: unknown): Filters {
     throw Error("Choose a supported sort.");
   if (f.region && !provinceCode(f.region))
     throw Error("Choose a South African province.");
-  if (f.term && !/^[a-z0-9]{1,20}$/i.test(f.term.trim()))
-    throw Error(
-      "Use one keyword or prefix (up to 20 letters/numbers). Combine it with category, make, model and year filters for specific searches.",
-    );
+  f.term = f.term.trim().replace(/\s+/g, " ");
+  if (
+    f.term &&
+    !/^[a-z0-9]{1,20}(?:[\s-]+[a-z0-9]{1,20}){0,5}$/i.test(f.term.trim())
+  )
+    throw Error("Use up to six short search words, such as Yamaha YZ250.");
   for (const key of [
     "year",
     "yearFrom",
@@ -149,7 +151,10 @@ export function matchesListing(l: Listing, f: Filters) {
     if (f[key] && !same(l[key], f[key])) return false;
   if (f.region && provinceCode(l.region) !== provinceCode(f.region))
     return false;
-  if (f.term && !l.searchTokens.includes(f.term.trim().toLowerCase()))
+  if (
+    f.term &&
+    !searchWords(f.term).every((word) => l.searchTokens.includes(word))
+  )
     return false;
   if ((f.min && l.price < +f.min) || (f.max && l.price > +f.max)) return false;
   const d = l.details;
@@ -184,4 +189,11 @@ export function matchesListing(l: Listing, f: Filters) {
   if (f.maxHours && (!d?.hours || d.hours > +f.maxHours)) return false;
   if (f.vintage && !d?.vintage) return false;
   return true;
+}
+export function searchWords(term: string) {
+  return term
+    .trim()
+    .toLowerCase()
+    .split(/[\s-]+/)
+    .filter(Boolean);
 }

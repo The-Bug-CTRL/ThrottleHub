@@ -58,7 +58,8 @@ for (const category of [false, true])
       "DESCENDING",
       search,
     );
-for (const field of ["country", "make", "model", "year", "region", "city"])
+// Public stolen queries always include country; old country-less filter indexes had no callers.
+for (const field of ["country"])
   add("stolenReports", ["status", field], "createdAt");
 for (const field of ["make", "model", "year", "region", "city", "searchTokens"])
   add(
@@ -70,6 +71,13 @@ for (const field of ["make", "model", "year", "region", "city", "searchTokens"])
   );
 add("stolenReports", ["status"], "createdAt");
 add("stolenReports", ["ownerId"], "createdAt");
+// The directory can combine all five filters; the emulator does not enforce indexes.
+const stolenFilters = ["make", "model", "year", "region", "city"];
+for (let mask = 0; mask < 1 << stolenFilters.length; mask++) {
+  const selected = stolenFilters.filter((_, bit) => mask & (1 << bit));
+  if (selected.length >= 2)
+    add("stolenReports", ["status", "country", ...selected], "createdAt");
+}
 for (const hasType of [false, true])
   for (const direction of ["ASCENDING", "DESCENDING"])
     add(
@@ -161,7 +169,6 @@ indexes.push({
 });
 // Public detail lookups filter before reading, including in development render traces.
 for (const [collectionGroup, equalities] of [
-  ["listings", ["status", "country", "currency"]],
   ["stolenReports", ["status", "country"]],
   ["events", ["status", "country"]],
 ])
@@ -174,7 +181,42 @@ for (const [collectionGroup, equalities] of [
     ],
   });
 add("replies", ["status"], "createdAt", "DESCENDING");
+// Trusted maintenance scans private nested video records; clients have no group-query permission.
+indexes.push({
+  collectionGroup: "videos",
+  queryScope: "COLLECTION_GROUP",
+  fields: [
+    { fieldPath: "status", order: "ASCENDING" },
+    { fieldPath: "createdAt", order: "ASCENDING" },
+  ],
+});
+// Trusted photo orphan scan, sharing the video's status/date pagination contract.
+indexes.push({
+  collectionGroup: "photos",
+  queryScope: "COLLECTION_GROUP",
+  fields: [
+    { fieldPath: "status", order: "ASCENDING" },
+    { fieldPath: "createdAt", order: "ASCENDING" },
+  ],
+});
 fs.writeFileSync(
   "firestore.indexes.json",
-  JSON.stringify({ indexes, fieldOverrides: [] }, null, 2),
+  JSON.stringify(
+    {
+      indexes,
+      fieldOverrides: [
+        {
+          collectionGroup: "favourites",
+          fieldPath: "listingId",
+          indexes: [
+            { order: "ASCENDING", queryScope: "COLLECTION" },
+            { order: "DESCENDING", queryScope: "COLLECTION" },
+            { order: "ASCENDING", queryScope: "COLLECTION_GROUP" },
+          ],
+        },
+      ],
+    },
+    null,
+    2,
+  ),
 );

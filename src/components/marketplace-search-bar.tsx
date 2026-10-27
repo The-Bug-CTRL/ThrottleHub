@@ -1,10 +1,14 @@
 "use client";
-import { useEffect, useRef, useId } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSearchDraft } from "./search-draft";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, SlidersHorizontal } from "lucide-react";
 import { CategoryPicker } from "./category-navigation";
 import { categoryById, categoryPath } from "@/lib/taxonomy";
+import { CategoryIcon } from "./category-icon";
+import { MarketplaceFiltersDialog } from "./marketplace-filters-dialog";
+import { MakeModelSearch } from "./make-model-search";
+import { categoryChildren } from "@/lib/taxonomy";
 import { provinces } from "@/lib/marketplace";
 import {
   defaultFilters,
@@ -12,11 +16,7 @@ import {
   filtersUrl,
   type Filters,
 } from "@/lib/search-contract";
-import {
-  alphabeticalMakes,
-  chooseSearchCategory,
-  suggestedItemBrands,
-} from "@/lib/search-controls";
+import { chooseSearchCategory } from "@/lib/search-controls";
 
 export function MarketplaceSearchBar() {
   const params = useSearchParams();
@@ -39,11 +39,11 @@ function SearchControls({
   scope: string;
 }) {
   const [filters, setFilters] = useSearchDraft(initial, scope);
+  const [filtersOpen, setFiltersOpen] = useState(false);
   const router = useRouter();
   const bar = useRef<HTMLDivElement>(null);
   const categories = useRef<HTMLDetailsElement>(null);
   const summary = useRef<HTMLElement>(null);
-  const brandList = useId();
   const type = categoryById[filters.category]?.itemType;
   const mechanical = !type || type === "motorcycle" || type === "part";
   const categoryLabel =
@@ -83,46 +83,6 @@ function SearchControls({
           router.push(filtersUrl(filters));
         }}
       >
-        <label className="market-search-field">
-          <span>Brand</span>
-          {mechanical ? (
-            <select
-              aria-label="Motorcycle brand"
-              value={filters.make}
-              onChange={(event) =>
-                setFilters((f) => ({
-                  ...f,
-                  make: event.target.value,
-                  model: "",
-                }))
-              }
-            >
-              <option value="">All brands</option>
-              {alphabeticalMakes.map((make) => (
-                <option key={make} value={make}>
-                  {make}
-                </option>
-              ))}
-            </select>
-          ) : (
-            <>
-              <input
-                aria-label="Item brand"
-                list={brandList}
-                placeholder="Any brand"
-                value={filters.brand}
-                onChange={(event) =>
-                  setFilters((f) => ({ ...f, brand: event.target.value }))
-                }
-              />
-              <datalist id={brandList}>
-                {suggestedItemBrands.map((brand) => (
-                  <option key={brand} value={brand} />
-                ))}
-              </datalist>
-            </>
-          )}
-        </label>
         <details
           className="search-category-menu"
           ref={categories}
@@ -144,7 +104,7 @@ function SearchControls({
             <span className="market-search-field">
               <span>Category</span>
               <span className="selected-category" title={categoryLabel}>
-                {categoryLabel}
+                {categoryById[filters.category]?.name || "All categories"}
               </span>
             </span>
             <ChevronDown size={16} />
@@ -169,6 +129,24 @@ function SearchControls({
                 All categories
               </button>
             </div>
+            <div className="search-category-cards">
+              {categoryChildren(null).map((c) => (
+                <button
+                  type="button"
+                  key={c.id}
+                  aria-pressed={
+                    filters.category === c.id ||
+                    filters.category.startsWith(c.id + "/")
+                  }
+                  onClick={() =>
+                    setFilters((f) => chooseSearchCategory(f, c.id))
+                  }
+                >
+                  <CategoryIcon category={c.id} size={36} />
+                  <span>{c.name}</span>
+                </button>
+              ))}
+            </div>
             <CategoryPicker
               value={filters.category}
               onChange={(id) => setFilters((f) => chooseSearchCategory(f, id))}
@@ -185,6 +163,11 @@ function SearchControls({
             </button>
           </div>
         </details>
+        <MakeModelSearch
+          filters={filters}
+          onChange={setFilters}
+          mechanical={mechanical}
+        />
         <label className="market-search-field">
           <span>Location</span>
           <select
@@ -208,10 +191,35 @@ function SearchControls({
               ))}
           </select>
         </label>
+        <button
+          type="button"
+          className="market-search-filters"
+          aria-haspopup="dialog"
+          aria-expanded={filtersOpen}
+          onClick={() => {
+            if (categories.current) categories.current.open = false;
+            setFiltersOpen(true);
+          }}
+        >
+          <SlidersHorizontal size={18} />
+          <span>Filters</span>
+        </button>
         <button className="button market-search-submit" type="submit">
           Search
         </button>
       </form>
+      {filtersOpen && (
+        <MarketplaceFiltersDialog
+          filters={filters}
+          onChange={setFilters}
+          onClose={() => setFiltersOpen(false)}
+          onApply={(next) => {
+            setFilters(next);
+            setFiltersOpen(false);
+            router.push(filtersUrl(next));
+          }}
+        />
+      )}
     </div>
   );
 }

@@ -1,3 +1,4 @@
+import { publicListing } from "./public-listing";
 import { FieldPath, Firestore, Query } from "firebase-admin/firestore";
 import { createHash } from "node:crypto";
 import { categoryById } from "./taxonomy";
@@ -6,6 +7,7 @@ import {
   matchesListing,
   SearchCursor,
   validateFilters,
+  searchWords,
 } from "./search-contract";
 import type { Listing } from "./models";
 // Indexed candidates with bounded server refinement; sparse matches may need another page.
@@ -42,11 +44,7 @@ export async function queryMarketplace(
       f.category,
     );
   if (f.term)
-    base = base.where(
-      "searchTokens",
-      "array-contains",
-      f.term.trim().toLowerCase(),
-    );
+    base = base.where("searchTokens", "array-contains", searchWords(f.term)[0]);
   if (field === "price") {
     if (f.min) base = base.where("price", ">=", +f.min);
     if (f.max) base = base.where("price", "<=", +f.max);
@@ -72,7 +70,7 @@ export async function queryMarketplace(
       cursor = { value: l[field], id: doc.id, fingerprint };
       scanned++;
       processed++;
-      if (matchesListing(l, f)) items.push(l);
+      if (matchesListing(l, f)) items.push(publicListing(doc.data(), doc.id));
       if (items.length === 8 || scanned === 128) break;
     }
     more = processed < snap.size || snap.size === 32;

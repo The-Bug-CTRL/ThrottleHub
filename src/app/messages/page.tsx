@@ -89,7 +89,7 @@ export default function Messages() {
               [c.id]: { ...s.docs[0].data(), id: s.docs[0].id } as Message,
             }));
         },
-        () => {},
+        (error) => setNotice(dataError(error)),
       ),
     );
     let cancelled = false;
@@ -101,7 +101,9 @@ export default function Messages() {
           if (!cancelled && d.exists())
             setNames((old) => ({ ...old, [uid]: d.data().displayName }));
         })
-        .catch(() => {});
+        .catch((error) => {
+          if (!cancelled) setNotice(dataError(error));
+        });
     return () => {
       cancelled = true;
       stops.forEach((stop) => stop());

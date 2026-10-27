@@ -1,0 +1,991 @@
+{
+  "checkedAt": "2026-10-23T19:47:53.758Z",
+  "source": "Google Cloud Billing Catalog API; Firestore EE2C-7FAC-5E08",
+  "skus": [
+    {
+      "name": "services/EE2C-7FAC-5E08/skus/10A7-9D70-35BA",
+      "skuId": "10A7-9D70-35BA",
+      "description": "Cloud Firestore Backup Restore Operation (with free tier) Johannesburg",
+      "category": {
+        "serviceDisplayName": "Cloud Firestore",
+        "resourceFamily": "ApplicationServices",
+        "resourceGroup": "FirestoreRestoreOps",
+        "usageType": "OnDemand"
+      },
+      "serviceRegions": [
+        "global"
+      ],
+      "pricingInfo": [
+        {
+          "summary": "",
+          "pricingExpression": {
+            "usageUnit": "GiBy",
+            "displayQuantity": 1,
+            "tieredRates": [
+              {
+                "startUsageAmount": 0,
+                "unitPrice": {
+                  "currencyCode": "USD",
+                  "units": "0",
+                  "nanos": 208000000
+                }
+              }
+            ],
+            "usageUnitDescription": "gibibyte",
+            "baseUnit": "By",
+            "baseUnitDescription": "byte",
+            "baseUnitConversionFactor": 1073741824
+          },
+          "currencyConversionRate": 1,
+          "effectiveTime": "2026-10-23T07:00:00Z"
+        }
+      ],
+      "serviceProviderName": "Google",
+      "geoTaxonomy": {
+        "type": "REGIONAL",
+        "regions": [
+          "africa-south1"
+        ]
+      }
+    },
+    {
+      "name": "services/EE2C-7FAC-5E08/skus/10AE-E69E-1005",
+      "skuId": "10AE-E69E-1005",
+      "description": "Cloud Firestore TTL Deletes (with free tier) Johannesburg",
+      "category": {
+        "serviceDisplayName": "Cloud Firestore",
+        "resourceFamily": "ApplicationServices",
+        "resourceGroup": "FirestoreTtlDeleteOps",
+        "usageType": "OnDemand"
+      },
+      "serviceRegions": [
+        "global"
+      ],
+      "pricingInfo": [
+        {
+          "summary": "",
+          "pricingExpression": {
+            "usageUnit": "count",
+            "displayQuantity": 100000,
+            "tieredRates": [
+              {
+                "startUsageAmount": 0,
+                "unitPrice": {
+                  "currencyCode": "USD",
+                  "units": "0",
+                  "nanos": 100
+                }
+              }
+            ],
+            "usageUnitDescription": "count",
+            "baseUnit": "count",
+            "baseUnitDescription": "count",
+            "baseUnitConversionFactor": 1
+          },
+          "currencyConversionRate": 1,
+          "effectiveTime": "2026-10-23T07:00:00Z"
+        }
+      ],
+      "serviceProviderName": "Google",
+      "geoTaxonomy": {
+        "type": "REGIONAL",
+        "regions": [
+          "africa-south1"
+        ]
+      }
+    },
+    {
+      "name": "services/EE2C-7FAC-5E08/skus/1E90-8551-0A06",
+      "skuId": "1E90-8551-0A06",
+      "description": "Cloud Firestore Backup Restore Operation Johannesburg",
+      "category": {
+        "serviceDisplayName": "Cloud Firestore",
+        "resourceFamily": "ApplicationServices",
+        "resourceGroup": "FirestoreRestoreOps",
+        "usageType": "OnDemand"
+      },
+      "serviceRegions": [
+        "global"
+      ],
+      "pricingInfo": [
+        {
+          "summary": "",
+          "pricingExpression": {
+            "usageUnit": "GiBy",
+            "displayQuantity": 1,
+            "tieredRates": [
+              {
+                "startUsageAmount": 0,
+                "unitPrice": {
+                  "currencyCode": "USD",
+                  "units": "0",
+                  "nanos": 208000000
+                }
+              }
+            ],
+            "usageUnitDescription": "gibibyte",
+            "baseUnit": "By",
+            "baseUnitDescription": "byte",
+            "baseUnitConversionFactor": 1073741824
+          },
+          "currencyConversionRate": 1,
+          "effectiveTime": "2026-10-23T07:00:00Z"
+        }
+      ],
+      "serviceProviderName": "Google",
+      "geoTaxonomy": {
+        "type": "REGIONAL",
+        "regions": [
+          "africa-south1"
+        ]
+      }
+    },
+    {
+      "name": "services/EE2C-7FAC-5E08/skus/24E4-2964-E814",
+      "skuId": "24E4-2964-E814",
+      "description": "Cloud Firestore Storage (with free tier) Johannesburg",
+      "category": {
+        "serviceDisplayName": "Cloud Firestore",
+        "resourceFamily": "ApplicationServices",
+        "resourceGroup": "FirestoreStorage",
+        "usageType": "OnDemand"
+      },
+      "serviceRegions": [
+        "global"
+      ],
+      "pricingInfo": [
+        {
+          "summary": "",
+          "pricingExpression": {
+            "usageUnit": "GiBy.mo",
+            "displayQuantity": 1,
+            "tieredRates": [
+              {
+                "startUsageAmount": 0,
+                "unitPrice": {
+                  "currencyCode": "USD",
+                  "units": "0",
+                  "nanos": 0
+                }
+              },
+              {
+                "startUsageAmount": 0.03225806451612903,
+                "unitPrice": {
+                  "currencyCode": "USD",
+                  "units": "0",
+                  "nanos": 156000000
+                }
+              }
+            ],
+            "usageUnitDescription": "gibibyte month",
+            "baseUnit": "By.s",
+            "baseUnitDescription": "byte second",
+            "baseUnitConversionFactor": 2875910101401600
+          },
+          "aggregationInfo": {
+            "aggregationLevel": "PROJECT",
+            "aggregationInterval": "DAILY",
+            "aggregationCount": 1
+          },
+          "currencyConversionRate": 1,
+          "effectiveTime": "2026-10-23T07:00:00Z"
+        }
+      ],
+      "serviceProviderName": "Google",
+      "geoTaxonomy": {
+        "type": "REGIONAL",
+        "regions": [
+          "africa-south1"
+        ]
+      }
+    },
+    {
+      "name": "services/EE2C-7FAC-5E08/skus/2521-063A-15A9",
+      "skuId": "2521-063A-15A9",
+      "description": "Cloud Firestore Storage Johannesburg",
+      "category": {
+        "serviceDisplayName": "Cloud Firestore",
+        "resourceFamily": "ApplicationServices",
+        "resourceGroup": "FirestoreStorage",
+        "usageType": "OnDemand"
+      },
+      "serviceRegions": [
+        "global"
+      ],
+      "pricingInfo": [
+        {
+          "summary": "",
+          "pricingExpression": {
+            "usageUnit": "GiBy.mo",
+            "displayQuantity": 1,
+            "tieredRates": [
+              {
+                "startUsageAmount": 0,
+                "unitPrice": {
+                  "currencyCode": "USD",
+                  "units": "0",
+                  "nanos": 156000000
+                }
+              }
+            ],
+            "usageUnitDescription": "gibibyte month",
+            "baseUnit": "By.s",
+            "baseUnitDescription": "byte second",
+            "baseUnitConversionFactor": 2875910101401600
+          },
+          "currencyConversionRate": 1,
+          "effectiveTime": "2026-10-23T07:00:00Z"
+        }
+      ],
+      "serviceProviderName": "Google",
+      "geoTaxonomy": {
+        "type": "REGIONAL",
+        "regions": [
+          "africa-south1"
+        ]
+      }
+    },
+    {
+      "name": "services/EE2C-7FAC-5E08/skus/2E1D-BF7E-F579",
+      "skuId": "2E1D-BF7E-F579",
+      "description": "Cloud Firestore Point-in-time Recovery Storage Johannesburg",
+      "category": {
+        "serviceDisplayName": "Cloud Firestore",
+        "resourceFamily": "ApplicationServices",
+        "resourceGroup": "FirestorePITRStorage",
+        "usageType": "OnDemand"
+      },
+      "serviceRegions": [
+        "global"
+      ],
+      "pricingInfo": [
+        {
+          "summary": "",
+          "pricingExpression": {
+            "usageUnit": "GiBy.mo",
+            "displayQuantity": 1,
+            "tieredRates": [
+              {
+                "startUsageAmount": 0,
+                "unitPrice": {
+                  "currencyCode": "USD",
+                  "units": "0",
+                  "nanos": 156000000
+                }
+              }
+            ],
+            "usageUnitDescription": "gibibyte month",
+            "baseUnit": "By.s",
+            "baseUnitDescription": "byte second",
+            "baseUnitConversionFactor": 2875910101401600
+          },
+          "currencyConversionRate": 1,
+          "effectiveTime": "2026-10-23T07:00:00Z"
+        }
+      ],
+      "serviceProviderName": "Google",
+      "geoTaxonomy": {
+        "type": "REGIONAL",
+        "regions": [
+          "africa-south1"
+        ]
+      }
+    },
+    {
+      "name": "services/EE2C-7FAC-5E08/skus/43DA-C967-9A7B",
+      "skuId": "43DA-C967-9A7B",
+      "description": "Cloud Firestore Zonal Backup Storage (with free tier) Johannesburg",
+      "category": {
+        "serviceDisplayName": "Cloud Firestore",
+        "resourceFamily": "ApplicationServices",
+        "resourceGroup": "FirestoreZonalBackupStorage",
+        "usageType": "OnDemand"
+      },
+      "serviceRegions": [
+        "global"
+      ],
+      "pricingInfo": [
+        {
+          "summary": "",
+          "pricingExpression": {
+            "usageUnit": "GiBy.mo",
+            "displayQuantity": 1,
+            "tieredRates": [
+              {
+                "startUsageAmount": 0,
+                "unitPrice": {
+                  "currencyCode": "USD",
+                  "units": "0",
+                  "nanos": 31000000
+                }
+              }
+            ],
+            "usageUnitDescription": "gibibyte month",
+            "baseUnit": "By.s",
+            "baseUnitDescription": "byte second",
+            "baseUnitConversionFactor": 2875910101401600
+          },
+          "currencyConversionRate": 1,
+          "effectiveTime": "2026-10-23T07:00:00Z"
+        }
+      ],
+      "serviceProviderName": "Google",
+      "geoTaxonomy": {
+        "type": "REGIONAL",
+        "regions": [
+          "africa-south1"
+        ]
+      }
+    },
+    {
+      "name": "services/EE2C-7FAC-5E08/skus/590A-8A83-1A1C",
+      "skuId": "590A-8A83-1A1C",
+      "description": "Cloud Firestore Clone Johannesburg (with free tier)",
+      "category": {
+        "serviceDisplayName": "Cloud Firestore",
+        "resourceFamily": "ApplicationServices",
+        "resourceGroup": "DatastoreOps",
+        "usageType": "OnDemand"
+      },
+      "serviceRegions": [
+        "africa-south1"
+      ],
+      "pricingInfo": [
+        {
+          "summary": "",
+          "pricingExpression": {
+            "usageUnit": "GiBy",
+            "displayQuantity": 1,
+            "tieredRates": [
+              {
+                "startUsageAmount": 0,
+                "unitPrice": {
+                  "currencyCode": "USD",
+                  "units": "0",
+                  "nanos": 220200000
+                }
+              }
+            ],
+            "usageUnitDescription": "gibibyte",
+            "baseUnit": "By",
+            "baseUnitDescription": "byte",
+            "baseUnitConversionFactor": 1073741824
+          },
+          "currencyConversionRate": 1,
+          "effectiveTime": "2026-10-23T07:00:00Z"
+        }
+      ],
+      "serviceProviderName": "Google",
+      "geoTaxonomy": {
+        "type": "REGIONAL",
+        "regions": [
+          "africa-south1"
+        ]
+      }
+    },
+    {
+      "name": "services/EE2C-7FAC-5E08/skus/6D34-6ACC-76C2",
+      "skuId": "6D34-6ACC-76C2",
+      "description": "Cloud Firestore Read Ops Johannesburg",
+      "category": {
+        "serviceDisplayName": "Cloud Firestore",
+        "resourceFamily": "ApplicationServices",
+        "resourceGroup": "FirestoreReadOps",
+        "usageType": "OnDemand"
+      },
+      "serviceRegions": [
+        "global"
+      ],
+      "pricingInfo": [
+        {
+          "summary": "",
+          "pricingExpression": {
+            "usageUnit": "count",
+            "displayQuantity": 100000,
+            "tieredRates": [
+              {
+                "startUsageAmount": 0,
+                "unitPrice": {
+                  "currencyCode": "USD",
+                  "units": "0",
+                  "nanos": 310
+                }
+              }
+            ],
+            "usageUnitDescription": "count",
+            "baseUnit": "count",
+            "baseUnitDescription": "count",
+            "baseUnitConversionFactor": 1
+          },
+          "currencyConversionRate": 1,
+          "effectiveTime": "2026-10-23T07:00:00Z"
+        }
+      ],
+      "serviceProviderName": "Google",
+      "geoTaxonomy": {
+        "type": "REGIONAL",
+        "regions": [
+          "africa-south1"
+        ]
+      }
+    },
+    {
+      "name": "services/EE2C-7FAC-5E08/skus/6E97-9DB3-97EC",
+      "skuId": "6E97-9DB3-97EC",
+      "description": "Cloud Firestore Entity Deletes (with free tier) Johannesburg",
+      "category": {
+        "serviceDisplayName": "Cloud Firestore",
+        "resourceFamily": "ApplicationServices",
+        "resourceGroup": "FirestoreEntityDeleteOps",
+        "usageType": "OnDemand"
+      },
+      "serviceRegions": [
+        "global"
+      ],
+      "pricingInfo": [
+        {
+          "summary": "",
+          "pricingExpression": {
+            "usageUnit": "count",
+            "displayQuantity": 100000,
+            "tieredRates": [
+              {
+                "startUsageAmount": 0,
+                "unitPrice": {
+                  "currencyCode": "USD",
+                  "units": "0",
+                  "nanos": 0
+                }
+              },
+              {
+                "startUsageAmount": 20000,
+                "unitPrice": {
+                  "currencyCode": "USD",
+                  "units": "0",
+                  "nanos": 100
+                }
+              }
+            ],
+            "usageUnitDescription": "count",
+            "baseUnit": "count",
+            "baseUnitDescription": "count",
+            "baseUnitConversionFactor": 1
+          },
+          "aggregationInfo": {
+            "aggregationLevel": "PROJECT",
+            "aggregationInterval": "DAILY",
+            "aggregationCount": 1
+          },
+          "currencyConversionRate": 1,
+          "effectiveTime": "2026-10-23T07:00:00Z"
+        }
+      ],
+      "serviceProviderName": "Google",
+      "geoTaxonomy": {
+        "type": "REGIONAL",
+        "regions": [
+          "africa-south1"
+        ]
+      }
+    },
+    {
+      "name": "services/EE2C-7FAC-5E08/skus/8377-3F2B-DCAD",
+      "skuId": "8377-3F2B-DCAD",
+      "description": "Cloud Firestore Clone Johannesburg",
+      "category": {
+        "serviceDisplayName": "Cloud Firestore",
+        "resourceFamily": "ApplicationServices",
+        "resourceGroup": "DatastoreOps",
+        "usageType": "OnDemand"
+      },
+      "serviceRegions": [
+        "africa-south1"
+      ],
+      "pricingInfo": [
+        {
+          "summary": "",
+          "pricingExpression": {
+            "usageUnit": "GiBy",
+            "displayQuantity": 1,
+            "tieredRates": [
+              {
+                "startUsageAmount": 0,
+                "unitPrice": {
+                  "currencyCode": "USD",
+                  "units": "0",
+                  "nanos": 262000000
+                }
+              }
+            ],
+            "usageUnitDescription": "gibibyte",
+            "baseUnit": "By",
+            "baseUnitDescription": "byte",
+            "baseUnitConversionFactor": 1073741824
+          },
+          "currencyConversionRate": 1,
+          "effectiveTime": "2026-10-23T07:00:00Z"
+        }
+      ],
+      "serviceProviderName": "Google",
+      "geoTaxonomy": {
+        "type": "REGIONAL",
+        "regions": [
+          "africa-south1"
+        ]
+      }
+    },
+    {
+      "name": "services/EE2C-7FAC-5E08/skus/8C06-7274-6572",
+      "skuId": "8C06-7274-6572",
+      "description": "Cloud Firestore Entity Deletes Johannesburg",
+      "category": {
+        "serviceDisplayName": "Cloud Firestore",
+        "resourceFamily": "ApplicationServices",
+        "resourceGroup": "FirestoreEntityDeleteOps",
+        "usageType": "OnDemand"
+      },
+      "serviceRegions": [
+        "global"
+      ],
+      "pricingInfo": [
+        {
+          "summary": "",
+          "pricingExpression": {
+            "usageUnit": "count",
+            "displayQuantity": 100000,
+            "tieredRates": [
+              {
+                "startUsageAmount": 0,
+                "unitPrice": {
+                  "currencyCode": "USD",
+                  "units": "0",
+                  "nanos": 100
+                }
+              }
+            ],
+            "usageUnitDescription": "count",
+            "baseUnit": "count",
+            "baseUnitDescription": "count",
+            "baseUnitConversionFactor": 1
+          },
+          "currencyConversionRate": 1,
+          "effectiveTime": "2026-10-23T07:00:00Z"
+        }
+      ],
+      "serviceProviderName": "Google",
+      "geoTaxonomy": {
+        "type": "REGIONAL",
+        "regions": [
+          "africa-south1"
+        ]
+      }
+    },
+    {
+      "name": "services/EE2C-7FAC-5E08/skus/8EB7-573A-8380",
+      "skuId": "8EB7-573A-8380",
+      "description": "Cloud Firestore TTL Deletes Johannesburg",
+      "category": {
+        "serviceDisplayName": "Cloud Firestore",
+        "resourceFamily": "ApplicationServices",
+        "resourceGroup": "FirestoreTtlDeleteOps",
+        "usageType": "OnDemand"
+      },
+      "serviceRegions": [
+        "global"
+      ],
+      "pricingInfo": [
+        {
+          "summary": "",
+          "pricingExpression": {
+            "usageUnit": "count",
+            "displayQuantity": 100000,
+            "tieredRates": [
+              {
+                "startUsageAmount": 0,
+                "unitPrice": {
+                  "currencyCode": "USD",
+                  "units": "0",
+                  "nanos": 100
+                }
+              }
+            ],
+            "usageUnitDescription": "count",
+            "baseUnit": "count",
+            "baseUnitDescription": "count",
+            "baseUnitConversionFactor": 1
+          },
+          "currencyConversionRate": 1,
+          "effectiveTime": "2026-10-23T07:00:00Z"
+        }
+      ],
+      "serviceProviderName": "Google",
+      "geoTaxonomy": {
+        "type": "REGIONAL",
+        "regions": [
+          "africa-south1"
+        ]
+      }
+    },
+    {
+      "name": "services/EE2C-7FAC-5E08/skus/9654-18C8-3350",
+      "skuId": "9654-18C8-3350",
+      "description": "Cloud Firestore Entity Writes (with free tier) Johannesburg",
+      "category": {
+        "serviceDisplayName": "Cloud Firestore",
+        "resourceFamily": "ApplicationServices",
+        "resourceGroup": "FirestoreEntityPutOps",
+        "usageType": "OnDemand"
+      },
+      "serviceRegions": [
+        "global"
+      ],
+      "pricingInfo": [
+        {
+          "summary": "",
+          "pricingExpression": {
+            "usageUnit": "count",
+            "displayQuantity": 100000,
+            "tieredRates": [
+              {
+                "startUsageAmount": 0,
+                "unitPrice": {
+                  "currencyCode": "USD",
+                  "units": "0",
+                  "nanos": 0
+                }
+              },
+              {
+                "startUsageAmount": 20000,
+                "unitPrice": {
+                  "currencyCode": "USD",
+                  "units": "0",
+                  "nanos": 940
+                }
+              }
+            ],
+            "usageUnitDescription": "count",
+            "baseUnit": "count",
+            "baseUnitDescription": "count",
+            "baseUnitConversionFactor": 1
+          },
+          "aggregationInfo": {
+            "aggregationLevel": "PROJECT",
+            "aggregationInterval": "DAILY",
+            "aggregationCount": 1
+          },
+          "currencyConversionRate": 1,
+          "effectiveTime": "2026-10-23T07:00:00Z"
+        }
+      ],
+      "serviceProviderName": "Google",
+      "geoTaxonomy": {
+        "type": "REGIONAL",
+        "regions": [
+          "africa-south1"
+        ]
+      }
+    },
+    {
+      "name": "services/EE2C-7FAC-5E08/skus/A01D-C38F-FD6C",
+      "skuId": "A01D-C38F-FD6C",
+      "description": "Cloud Firestore Small Ops (with free tier) Johannesburg",
+      "category": {
+        "serviceDisplayName": "Cloud Firestore",
+        "resourceFamily": "ApplicationServices",
+        "resourceGroup": "FirestoreSmallOps",
+        "usageType": "OnDemand"
+      },
+      "serviceRegions": [
+        "global"
+      ],
+      "pricingInfo": [
+        {
+          "summary": "",
+          "pricingExpression": {
+            "usageUnit": "count",
+            "displayQuantity": 100000,
+            "tieredRates": [
+              {
+                "startUsageAmount": 0,
+                "unitPrice": {
+                  "currencyCode": "USD",
+                  "units": "0",
+                  "nanos": 0
+                }
+              },
+              {
+                "startUsageAmount": 50000,
+                "unitPrice": {
+                  "currencyCode": "USD",
+                  "units": "0",
+                  "nanos": 0
+                }
+              }
+            ],
+            "usageUnitDescription": "count",
+            "baseUnit": "count",
+            "baseUnitDescription": "count",
+            "baseUnitConversionFactor": 1
+          },
+          "aggregationInfo": {
+            "aggregationLevel": "PROJECT",
+            "aggregationInterval": "DAILY",
+            "aggregationCount": 1
+          },
+          "currencyConversionRate": 1,
+          "effectiveTime": "2026-10-23T07:00:00Z"
+        }
+      ],
+      "serviceProviderName": "Google",
+      "geoTaxonomy": {
+        "type": "REGIONAL",
+        "regions": [
+          "africa-south1"
+        ]
+      }
+    },
+    {
+      "name": "services/EE2C-7FAC-5E08/skus/B031-C246-F299",
+      "skuId": "B031-C246-F299",
+      "description": "Cloud Firestore Entity Writes Johannesburg",
+      "category": {
+        "serviceDisplayName": "Cloud Firestore",
+        "resourceFamily": "ApplicationServices",
+        "resourceGroup": "FirestoreEntityPutOps",
+        "usageType": "OnDemand"
+      },
+      "serviceRegions": [
+        "global"
+      ],
+      "pricingInfo": [
+        {
+          "summary": "",
+          "pricingExpression": {
+            "usageUnit": "count",
+            "displayQuantity": 100000,
+            "tieredRates": [
+              {
+                "startUsageAmount": 0,
+                "unitPrice": {
+                  "currencyCode": "USD",
+                  "units": "0",
+                  "nanos": 940
+                }
+              }
+            ],
+            "usageUnitDescription": "count",
+            "baseUnit": "count",
+            "baseUnitDescription": "count",
+            "baseUnitConversionFactor": 1
+          },
+          "currencyConversionRate": 1,
+          "effectiveTime": "2026-10-23T07:00:00Z"
+        }
+      ],
+      "serviceProviderName": "Google",
+      "geoTaxonomy": {
+        "type": "REGIONAL",
+        "regions": [
+          "africa-south1"
+        ]
+      }
+    },
+    {
+      "name": "services/EE2C-7FAC-5E08/skus/B766-444C-0271",
+      "skuId": "B766-444C-0271",
+      "description": "Cloud Firestore Point-in-time Recovery Storage (with free tier) Johannesburg",
+      "category": {
+        "serviceDisplayName": "Cloud Firestore",
+        "resourceFamily": "ApplicationServices",
+        "resourceGroup": "FirestorePITRStorage",
+        "usageType": "OnDemand"
+      },
+      "serviceRegions": [
+        "global"
+      ],
+      "pricingInfo": [
+        {
+          "summary": "",
+          "pricingExpression": {
+            "usageUnit": "GiBy.mo",
+            "displayQuantity": 1,
+            "tieredRates": [
+              {
+                "startUsageAmount": 0,
+                "unitPrice": {
+                  "currencyCode": "USD",
+                  "units": "0",
+                  "nanos": 156000000
+                }
+              }
+            ],
+            "usageUnitDescription": "gibibyte month",
+            "baseUnit": "By.s",
+            "baseUnitDescription": "byte second",
+            "baseUnitConversionFactor": 2875910101401600
+          },
+          "currencyConversionRate": 1,
+          "effectiveTime": "2026-10-23T07:00:00Z"
+        }
+      ],
+      "serviceProviderName": "Google",
+      "geoTaxonomy": {
+        "type": "REGIONAL",
+        "regions": [
+          "africa-south1"
+        ]
+      }
+    },
+    {
+      "name": "services/EE2C-7FAC-5E08/skus/C805-65F4-1A58",
+      "skuId": "C805-65F4-1A58",
+      "description": "Cloud Firestore Zonal Backup Storage Johannesburg",
+      "category": {
+        "serviceDisplayName": "Cloud Firestore",
+        "resourceFamily": "ApplicationServices",
+        "resourceGroup": "FirestoreZonalBackupStorage",
+        "usageType": "OnDemand"
+      },
+      "serviceRegions": [
+        "global"
+      ],
+      "pricingInfo": [
+        {
+          "summary": "",
+          "pricingExpression": {
+            "usageUnit": "GiBy.mo",
+            "displayQuantity": 1,
+            "tieredRates": [
+              {
+                "startUsageAmount": 0,
+                "unitPrice": {
+                  "currencyCode": "USD",
+                  "units": "0",
+                  "nanos": 31000000
+                }
+              }
+            ],
+            "usageUnitDescription": "gibibyte month",
+            "baseUnit": "By.s",
+            "baseUnitDescription": "byte second",
+            "baseUnitConversionFactor": 2875910101401600
+          },
+          "currencyConversionRate": 1,
+          "effectiveTime": "2026-10-23T07:00:00Z"
+        }
+      ],
+      "serviceProviderName": "Google",
+      "geoTaxonomy": {
+        "type": "REGIONAL",
+        "regions": [
+          "africa-south1"
+        ]
+      }
+    },
+    {
+      "name": "services/EE2C-7FAC-5E08/skus/D685-EC69-6227",
+      "skuId": "D685-EC69-6227",
+      "description": "Cloud Firestore Small Ops Johannesburg",
+      "category": {
+        "serviceDisplayName": "Cloud Firestore",
+        "resourceFamily": "ApplicationServices",
+        "resourceGroup": "FirestoreSmallOps",
+        "usageType": "OnDemand"
+      },
+      "serviceRegions": [
+        "global"
+      ],
+      "pricingInfo": [
+        {
+          "summary": "",
+          "pricingExpression": {
+            "usageUnit": "count",
+            "displayQuantity": 100000,
+            "tieredRates": [
+              {
+                "startUsageAmount": 0,
+                "unitPrice": {
+                  "currencyCode": "USD",
+                  "units": "0",
+                  "nanos": 0
+                }
+              }
+            ],
+            "usageUnitDescription": "count",
+            "baseUnit": "count",
+            "baseUnitDescription": "count",
+            "baseUnitConversionFactor": 1
+          },
+          "currencyConversionRate": 1,
+          "effectiveTime": "2026-10-23T07:00:00Z"
+        }
+      ],
+      "serviceProviderName": "Google",
+      "geoTaxonomy": {
+        "type": "REGIONAL",
+        "regions": [
+          "africa-south1"
+        ]
+      }
+    },
+    {
+      "name": "services/EE2C-7FAC-5E08/skus/F7AB-1CEA-D9C3",
+      "skuId": "F7AB-1CEA-D9C3",
+      "description": "Cloud Firestore Read Ops (with free tier) Johannesburg",
+      "category": {
+        "serviceDisplayName": "Cloud Firestore",
+        "resourceFamily": "ApplicationServices",
+        "resourceGroup": "FirestoreReadOps",
+        "usageType": "OnDemand"
+      },
+      "serviceRegions": [
+        "global"
+      ],
+      "pricingInfo": [
+        {
+          "summary": "",
+          "pricingExpression": {
+            "usageUnit": "count",
+            "displayQuantity": 100000,
+            "tieredRates": [
+              {
+                "startUsageAmount": 0,
+                "unitPrice": {
+                  "currencyCode": "USD",
+                  "units": "0",
+                  "nanos": 0
+                }
+              },
+              {
+                "startUsageAmount": 50000,
+                "unitPrice": {
+                  "currencyCode": "USD",
+                  "units": "0",
+                  "nanos": 310
+                }
+              }
+            ],
+            "usageUnitDescription": "count",
+            "baseUnit": "count",
+            "baseUnitDescription": "count",
+            "baseUnitConversionFactor": 1
+          },
+          "aggregationInfo": {
+            "aggregationLevel": "PROJECT",
+            "aggregationInterval": "DAILY",
+            "aggregationCount": 1
+          },
+          "currencyConversionRate": 1,
+          "effectiveTime": "2026-10-23T07:00:00Z"
+        }
+      ],
+      "serviceProviderName": "Google",
+      "geoTaxonomy": {
+        "type": "REGIONAL",
+        "regions": [
+          "africa-south1"
+        ]
+      }
+    }
+  ]
+}

@@ -1,3 +1,4 @@
+import { publicListing } from "./public-listing";
 import "server-only";
 import { getApps, initializeApp, applicationDefault } from "firebase-admin/app";
 import { getFirestore, Query, FieldPath } from "firebase-admin/firestore";
@@ -49,48 +50,7 @@ export async function getListing(id: string): Promise<Listing | null> {
   if (!/^[a-zA-Z0-9_-]{1,128}$/.test(id)) return null;
   const snap = await adminDb().collection("listings").doc(id).get();
   if (!snap.exists || !isPublicListing(snap.data() as Listing)) return null;
-  // Explicit projection: Admin bypasses rules; never spread unknown private fields.
-  const data = snap.data()!;
-  const keys = [
-    "ownerId",
-    "slug",
-    "title",
-    "description",
-    "category",
-    "subcategory",
-    "make",
-    "model",
-    "year",
-    "price",
-    "currency",
-    "country",
-    "region",
-    "city",
-    "condition",
-    "shipping",
-    "specs",
-    "images",
-    "status",
-    "createdAt",
-    "updatedAt",
-    "categoryId",
-    "primaryCategoryId",
-    "categoryAncestorIds",
-    "categoryPath",
-    "details",
-    "publishedAt",
-    "soldAt",
-    "expiredAt",
-    "lastStatusChangeAt",
-    "originalAskingPrice",
-    "sellerAnonymised",
-  ];
-  return {
-    ...Object.fromEntries(
-      keys.filter((k) => data[k] !== undefined).map((k) => [k, data[k]]),
-    ),
-    id: snap.id,
-  } as Listing;
+  return publicListing(snap.data()!, snap.id);
 }
 export async function getPublicListings(
   category?: string,
@@ -106,7 +66,7 @@ export async function getPublicListings(
     .orderBy("createdAt", "desc")
     .limit(count ?? (category ? 5 : 4))
     .get();
-  return s.docs.map((d) => ({ ...d.data(), id: d.id }) as Listing);
+  return s.docs.map((d) => publicListing(d.data(), d.id));
 }
 export async function publicDocument(
   collection: string,
@@ -125,6 +85,7 @@ export async function publicDocument(
     statuses.some((status) => !allowed[collection].includes(status))
   )
     throw new Error("Unsupported public content request.");
+  if (!/^[a-zA-Z0-9_-]{1,128}$/.test(id)) return null;
   let q: Query = adminDb()
     .collection(collection)
     .where(FieldPath.documentId(), "==", id)

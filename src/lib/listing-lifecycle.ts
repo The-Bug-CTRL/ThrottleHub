@@ -1,4 +1,5 @@
 import type { Firestore } from "firebase-admin/firestore";
+import type { Bucket } from "@google-cloud/storage";
 import { categoryFields } from "./taxonomy";
 import {
   listingSchema,
@@ -8,6 +9,9 @@ import {
   type ListingInput,
 } from "./models";
 import { canTransition } from "./listing-history";
+import { categoryById } from "./taxonomy";
+import { accountTypeOf } from "./seller-account";
+import { videoIsReady } from "./running-video";
 
 export class ListingError extends Error {
   constructor(
@@ -44,9 +48,14 @@ export function validateListingImages(
       url.origin === "https://firebasestorage.googleapis.com" ||
       (emulator && url.origin === "http://127.0.0.1:9298") ||
       (emulator && url.origin === "http://127.0.0.1:9199");
-    const object = url.pathname.startsWith(prefix)
-      ? decodeURIComponent(url.pathname.slice(prefix.length))
-      : "";
+    let object = "";
+    try {
+      object = url.pathname.startsWith(prefix)
+        ? decodeURIComponent(url.pathname.slice(prefix.length))
+        : "";
+    } catch {
+      throw new ListingError("Invalid photo URL.");
+    }
     if (
       !hostAllowed ||
       !object.startsWith(`listing-images/${uid}/${id}/`) ||
@@ -63,13 +72,83 @@ export async function mutateListing(
   actor: ListingActor,
   input: Record<string, unknown>,
   now = Date.now(),
+  bucket?: Bucket,
 ) {
   if (!/^[a-zA-Z0-9_-]{1,128}$/.test(id))
     throw new ListingError("Invalid listing ID.");
   const ref = db.collection("listings").doc(id);
   return db.runTransaction(async (tx) => {
     const snap = await tx.get(ref);
+    const restriction = await tx.get(
+      db.collection("restrictions").doc(actor.uid),
+    );
+    if (restriction.data()?.suspended === true)
+      throw new ListingError(
+        "This account is restricted from changing listings.",
+        403,
+      );
     const old = snap.data();
+    const profile = await tx.get(
+      db.collection("profiles").doc(old?.ownerId || actor.uid),
+    );
+    const sellerAccountType =
+      old && old.status !== "draft"
+        ? old.sellerAccountType ||
+          (old.details?.sellerType === "dealer" ? "business" : "personal")
+        : accountTypeOf(profile.data());
+    const requestedVideo =
+      input.runningVideoId === undefined
+        ? old?.runningVideoId
+        : input.runningVideoId;
+    if (
+      requestedVideo &&
+      (typeof requestedVideo !== "string" ||
+        !/^[a-zA-Z0-9_-]{1,128}$/.test(requestedVideo))
+    )
+      throw new ListingError("Invalid video ID.");
+    const readyVideo = requestedVideo
+      ? (await tx.get(ref.collection("videos").doc(requestedVideo))).data()
+      : undefined;
+    // New trusted photo IDs are generation-bound. Legacy photos remain readable;
+    // migration/inspection of pre-existing objects is a separate release task.
+    const photos = input.action === "save" ? input.images : old?.images;
+    const acceptedPhotos = [];
+    if (
+      (input.action === "save" ||
+        (input.action === "status" && input.status === "published")) &&
+      Array.isArray(photos)
+    )
+      for (const url of photos) {
+        if (typeof url !== "string") continue;
+        const match =
+          /\/([a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12})[.]jpg$/.exec(
+            (() => {
+              try {
+                return decodeURIComponent(new URL(url).pathname);
+              } catch {
+                return "";
+              }
+            })(),
+          );
+        if (match) {
+          const photo = (
+            await tx.get(ref.collection("photos").doc(match[1]))
+          ).data();
+          if (
+            !photo ||
+            photo.status !== "ready" ||
+            photo.uploaderId !== (old?.ownerId || actor.uid) ||
+            photo.listingId !== id ||
+            photo.path !==
+              `listing-images/${old?.ownerId || actor.uid}/${id}/${match[1]}.jpg`
+          )
+            throw new ListingError(
+              "Photo is unavailable. Upload it again.",
+              409,
+            );
+          acceptedPhotos.push(photo);
+        }
+      }
     const pending = old
       ? (await tx.get(ref.collection("mediaCleanup").doc("pending"))).data()
       : undefined;
@@ -78,6 +157,18 @@ export async function mutateListing(
     if (old && old.ownerId !== actor.uid && !staff)
       throw new ListingError("This listing is not yours.", 403);
     const action = input.action;
+    // Staff may restrict adverts; editing, selling and relisting still belong to their owner.
+    if (
+      old &&
+      old.ownerId !== actor.uid &&
+      !actor.admin &&
+      !(
+        actor.moderator &&
+        action === "status" &&
+        ["hidden", "rejected"].includes(String(input.status))
+      )
+    )
+      throw new ListingError("Only the seller can perform this action.", 403);
     if (action === "cleanup" && old)
       return { status: old.status, slug: old.slug };
     if (action === "save") {
@@ -100,12 +191,36 @@ export async function mutateListing(
           parsed.error.issues.map((i) => i.message).join("; "),
         );
       const v = parsed.data;
+      const motorcycle = categoryById[v.categoryId]?.itemType === "motorcycle";
+      if (
+        status === "published" &&
+        motorcycle &&
+        ["two-stroke", "four-stroke"].includes(v.details.engineType) &&
+        (readyVideo?.demonstration !== "petrol" ||
+          readyVideo?.hasAudio !== true)
+      )
+        throw new ListingError(
+          "Petrol motorcycles need a running video with sound.",
+        );
+      if (
+        status === "published" &&
+        motorcycle &&
+        !videoIsReady(readyVideo, old?.ownerId || actor.uid, id)
+      )
+        throw new ListingError(
+          "Upload and validate the motorcycle running video before publishing.",
+        );
       if (
         !Array.isArray(input.images) ||
         input.images.length > 8 ||
         (status === "published" && !input.images.length)
       )
         throw new ListingError("Add a photo before publishing.");
+      if (status === "published" && motorcycle)
+        await requireVideoObject(bucket, readyVideo!);
+      if (status === "published")
+        for (const photo of acceptedPhotos)
+          await requirePhotoObject(bucket, photo);
       const firstPublish =
         status === "published" &&
         (!old || old.status === "draft") &&
@@ -114,10 +229,23 @@ export async function mutateListing(
         ...old,
         ...v,
         ...categoryFields(v.categoryId),
+        details: {
+          ...v.details,
+          sellerType: sellerAccountType === "business" ? "dealer" : "private",
+        },
         id,
         ownerId: old?.ownerId || actor.uid,
         slug: slugify(v.title) || "item",
         images: input.images,
+        runningVideoId:
+          motorcycle && videoIsReady(readyVideo, old?.ownerId || actor.uid, id)
+            ? requestedVideo
+            : "",
+        runningVideo:
+          motorcycle && videoIsReady(readyVideo, old?.ownerId || actor.uid, id)
+            ? readyVideo
+            : null,
+        sellerAccountType: sellerAccountType,
         status,
         createdAt: old?.createdAt ?? now,
         updatedAt: now,
@@ -167,6 +295,8 @@ export async function mutateListing(
         specs: "",
         city: "",
         images: [],
+        runningVideo: null,
+        runningVideoId: "",
         details: {},
         searchTokens: [],
         updatedAt: now,
@@ -183,9 +313,29 @@ export async function mutateListing(
     if (!canTransition(old.status, input.status, staff))
       throw new ListingError("This status change is not allowed.", 409);
     if (input.status === "published") {
+      if (
+        categoryById[old.categoryId]?.itemType === "motorcycle" &&
+        ["two-stroke", "four-stroke"].includes(old.details?.engineType) &&
+        (readyVideo?.demonstration !== "petrol" ||
+          readyVideo?.hasAudio !== true)
+      )
+        throw new ListingError(
+          "Petrol motorcycles need a running video with sound.",
+        );
+      if (
+        categoryById[old.categoryId]?.itemType === "motorcycle" &&
+        !videoIsReady(readyVideo, old.ownerId, id)
+      )
+        throw new ListingError(
+          "Add a validated running video before relisting. Edit and save the draft first.",
+        );
       const valid = listingSchema.safeParse(old);
       if (!valid.success || !old.images?.length)
         throw new ListingError("Complete the advert before publishing.");
+      if (categoryById[old.categoryId]?.itemType === "motorcycle")
+        await requireVideoObject(bucket, readyVideo!);
+      for (const photo of acceptedPhotos)
+        await requirePhotoObject(bucket, photo);
     }
     if (input.status === "removed") {
       // Drop all public content. Retain owner only until media cleanup completes, for safe retry.
@@ -203,6 +353,13 @@ export async function mutateListing(
     } else {
       tx.update(ref, {
         status: input.status,
+        ...(input.status === "published"
+          ? {
+              runningVideoId: requestedVideo || "",
+              runningVideo: readyVideo || null,
+              sellerAccountType: sellerAccountType,
+            }
+          : {}),
         updatedAt: now,
         lastStatusChangeAt: now,
         ...(input.status === "published" &&
@@ -229,4 +386,54 @@ export async function mutateListing(
       });
     return { status: input.status, slug: old.slug };
   });
+}
+
+async function requirePhotoObject(
+  bucket: Bucket | undefined,
+  photo: FirebaseFirestore.DocumentData,
+) {
+  if (!bucket) throw new ListingError("Photo storage is unavailable.", 503);
+  let metadata;
+  try {
+    [metadata] = await bucket.file(photo.path).getMetadata();
+  } catch (error) {
+    if ((error as { code?: number }).code === 404)
+      throw new ListingError("Photo is missing. Upload it again.", 409);
+    throw error;
+  }
+  if (
+    String(metadata.generation) !== photo.generation ||
+    Number(metadata.size) !== photo.size ||
+    metadata.contentType !== "image/jpeg"
+  )
+    throw new ListingError("Photo has changed. Upload it again.", 409);
+}
+
+// Run while the transaction holds the ready-record version. Cleanup claims that
+// record transactionally before deleting; accepted objects are never client writable.
+async function requireVideoObject(
+  bucket: Bucket | undefined,
+  video: NonNullable<Parameters<typeof videoIsReady>[0]>,
+) {
+  if (!bucket) throw new ListingError("Video storage is unavailable.", 503);
+  let metadata;
+  try {
+    [metadata] = await bucket.file(video.path!).getMetadata();
+  } catch (error) {
+    if ((error as { code?: number }).code === 404)
+      throw new ListingError(
+        "Running video is missing. Upload and validate it again.",
+        409,
+      );
+    throw error;
+  }
+  if (
+    String(metadata.generation) !== video.generation ||
+    Number(metadata.size) !== video.size ||
+    metadata.contentType !== "video/mp4"
+  )
+    throw new ListingError(
+      "Running video has changed. Upload and validate it again.",
+      409,
+    );
 }

@@ -1,4 +1,5 @@
-﻿import { NextResponse } from "next/server";
+import { boundedText, RequestBodyError } from "@/lib/request-body";
+import { NextResponse } from "next/server";
 import { getAuth } from "firebase-admin/auth";
 import { adminDb } from "@/lib/server";
 import { notificationFeed } from "@/lib/notification-feed";
@@ -15,6 +16,11 @@ async function identity(request: Request) {
   }
 }
 function failure(error: unknown) {
+  if (error instanceof RequestBodyError)
+    return NextResponse.json(
+      { error: error.message },
+      { status: error.status },
+    );
   if (error instanceof Error && error.message === "unauthenticated")
     return NextResponse.json(
       { error: "Sign in to see your notifications." },
@@ -39,7 +45,7 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   try {
     const { db, uid } = await identity(request);
-    const body = await request.text();
+    const body = await boundedText(request, 1000);
     if (body.length > 1000)
       return NextResponse.json(
         { error: "Request too large." },

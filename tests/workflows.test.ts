@@ -1,4 +1,5 @@
-import { mutateListing } from "../src/lib/listing-lifecycle";
+import { seedReadyVideo } from "./video-fixture";
+import { mutateListing as mutateListingService } from "../src/lib/listing-lifecycle";
 import { it, expect } from "vitest";
 import { initializeApp, deleteApp } from "firebase/app";
 import {
@@ -36,6 +37,7 @@ import {
   initializeApp as initializeAdmin,
   deleteApp as deleteAdmin,
 } from "firebase-admin/app";
+import { getStorage as adminStorage } from "firebase-admin/storage";
 import { getAuth as adminAuth } from "firebase-admin/auth";
 import { getFirestore as adminFirestore } from "firebase-admin/firestore";
 import { listing, article, thread, stolen, testProject } from "./fixtures";
@@ -65,6 +67,10 @@ it("runs independent Auth, marketplace, messaging, news, forum and stolen-report
   );
   const authAdmin = adminAuth(admin),
     store = adminFirestore(admin);
+  function mutateListing(...args: Parameters<typeof mutateListingService>) {
+    args[5] = adminStorage(admin).bucket();
+    return mutateListingService(...args);
+  }
   const uids: string[] = [],
     objects: string[] = [];
   const password = crypto.randomUUID() + "!";
@@ -86,6 +92,7 @@ it("runs independent Auth, marketplace, messaging, news, forum and stolen-report
       city: "",
       country: "ZA",
       sellerType: "private",
+      accountType: "personal",
       createdAt: Date.now(),
     });
     await signOut(auth);
@@ -113,6 +120,8 @@ it("runs independent Auth, marketplace, messaging, news, forum and stolen-report
       status: "draft",
       images: [],
     });
+    await seedReadyVideo(store, id, seller.uid, adminStorage(admin).bucket());
+    objects.push(`listing-videos/${seller.uid}/${id}/test-ready.mp4`);
     const imagePath = `listing-images/${seller.uid}/${id}/test.png`;
     objects.push(imagePath);
     await expect(
@@ -127,14 +136,14 @@ it("runs independent Auth, marketplace, messaging, news, forum and stolen-report
         { contentType: "text/plain" },
       ),
     ).rejects.toThrow();
-    await uploadBytes(ref(storage, imagePath), png, {
-      contentType: "image/png",
-    });
-    await uploadBytes(
-      ref(storage, `listing-images/${seller.uid}/draft-private/test.png`),
-      png,
-      { contentType: "image/png" },
-    );
+    await adminStorage(admin)
+      .bucket()
+      .file(imagePath)
+      .save(Buffer.from(png), { metadata: { contentType: "image/png" } });
+    await adminStorage(admin)
+      .bucket()
+      .file(`listing-images/${seller.uid}/draft-private/test.png`)
+      .save(Buffer.from(png), { metadata: { contentType: "image/png" } });
     objects.push(`listing-images/${seller.uid}/draft-private/test.png`);
     await expect(
       uploadBytes(
@@ -150,6 +159,7 @@ it("runs independent Auth, marketplace, messaging, news, forum and stolen-report
       { uid: seller.uid },
       {
         action: "save",
+        runningVideoId: "test-ready",
         status: "published",
         values: { ...listing(seller.uid, id), price: 500 },
         images: [url],
@@ -190,6 +200,7 @@ it("runs independent Auth, marketplace, messaging, news, forum and stolen-report
       city: "",
       country: "ZA",
       sellerType: "private",
+      accountType: "personal",
       createdAt: Date.now(),
     });
     await setDoc(doc(db, "users", buyer.uid, "favourites", id), {
@@ -215,7 +226,7 @@ it("runs independent Auth, marketplace, messaging, news, forum and stolen-report
       if (!existing.exists())
         transaction.set(target, {
           listingId: id,
-          listingTitle: "Temporary item",
+          listingTitle: listing().title,
           buyerId: buyer.uid,
           sellerId: seller.uid,
           participants: [buyer.uid, seller.uid],
@@ -261,9 +272,10 @@ it("runs independent Auth, marketplace, messaging, news, forum and stolen-report
     await signOut(auth);
     expect(auth.currentUser).toBeNull();
     await signInWithEmailAndPassword(auth, email, password);
-    await uploadBytes(ref(storage, foreignPath), png, {
-      contentType: "image/png",
-    });
+    await adminStorage(admin)
+      .bucket()
+      .file(foreignPath)
+      .save(Buffer.from(png), { metadata: { contentType: "image/png" } });
     await signOut(auth);
     await expect(getBytes(ref(storage, foreignPath))).rejects.toThrow();
     await expect(
@@ -291,10 +303,15 @@ it("runs independent Auth, marketplace, messaging, news, forum and stolen-report
       status: "published",
       updatedAt: Date.now(),
     });
-    await updateDoc(doc(db, "listings", id), {
-      status: "hidden",
-      updatedAt: Date.now(),
-    });
+    await mutateListing(
+      store,
+      id,
+      { uid: buyer.uid, admin: true },
+      {
+        action: "status",
+        status: "hidden",
+      },
+    );
     await addDoc(collection(db, "communityActions"), {
       actorId: buyer.uid,
       targetCollection: "stolenReports",
