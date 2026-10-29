@@ -1,4 +1,5 @@
 import { publicListing } from "./public-listing";
+import { firestoreQuery } from "./firestore-diagnostics";
 import "server-only";
 import { getApps, initializeApp, applicationDefault } from "firebase-admin/app";
 import { getFirestore, Query, FieldPath } from "firebase-admin/firestore";
@@ -9,6 +10,11 @@ import {
 } from "./firebase-settings";
 import { Listing } from "./models";
 import { isPublicListing } from "./listing-history";
+import {
+  activeBumps,
+  organicRanking,
+  rankedPublicListing,
+} from "./promotion-readers";
 export function adminDb() {
   if (configurationError) throw new Error(configurationError);
   if (
@@ -62,11 +68,49 @@ export async function getPublicListings(
     .where("country", "==", "ZA")
     .where("currency", "==", "ZAR");
   q = category ? q.where("category", "==", category) : q;
-  const s = await q
-    .orderBy("createdAt", "desc")
-    .limit(count ?? (category ? 5 : 4))
-    .get();
-  return s.docs.map((d) => publicListing(d.data(), d.id));
+  const s = await firestoreQuery(
+    `latest listings: listings status=published country=ZA currency=ZAR category=${category ?? "all"} order=createdAt DESC`,
+    () =>
+      q
+        .orderBy("createdAt", "desc")
+        .limit(Math.max(32, count ?? 4))
+        .get(),
+  );
+  const bumps = await activeBumps(adminDb(), undefined, 64);
+  const rows = new Map(
+    (
+      await firestoreQuery(
+        "latest listings: hydrate organic promotion ranks",
+        () =>
+          organicRanking(
+            adminDb(),
+            s.docs.map((d) => publicListing(d.data(), d.id)),
+          ),
+      )
+    ).map((r) => [r.id, { listing: r.listing, rank: r.value }]),
+  );
+  for (const bump of bumps.items)
+    if (
+      bump.listing &&
+      (!category || bump.listing.category === category) &&
+      (!rows.has(bump.id) || rows.get(bump.id)!.rank < bump.value)
+    )
+      rows.set(bump.id, {
+        listing: rankedPublicListing(bump.listing),
+        rank: bump.value,
+      });
+  return [...rows.values()]
+    .sort(
+      (a, b) =>
+        b.rank - a.rank ||
+        (a.listing.id === b.listing.id
+          ? 0
+          : a.listing.id < b.listing.id
+            ? 1
+            : -1),
+    )
+    .slice(0, count ?? (category ? 5 : 4))
+    .map((r) => r.listing);
 }
 export async function publicDocument(
   collection: string,

@@ -4,16 +4,18 @@ export function RunningVideoPlayer({
   listingId,
   poster,
   available,
+  motorcycle = true,
 }: {
   listingId: string;
   poster?: string;
   available: boolean;
+  motorcycle?: boolean;
 }) {
   const [play, setPlay] = useState(false),
     [failed, setFailed] = useState(false);
   return (
     <section className="running-video-player">
-      <h2>Watch this motorcycle running</h2>
+      <h2>{motorcycle ? "Watch this motorcycle running" : "Seller video"}</h2>
       <p>Seller-supplied footage, not an independent mechanical inspection.</p>
       {!available ? (
         <p>
@@ -39,7 +41,8 @@ export function RunningVideoPlayer({
           className="button-secondary"
           onClick={() => setPlay(true)}
         >
-          Watch running video — uses mobile data
+          {motorcycle ? "Watch running video" : "Watch seller video"} — uses
+          mobile data
         </button>
       )}
       <p>

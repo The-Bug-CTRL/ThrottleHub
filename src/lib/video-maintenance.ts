@@ -1,6 +1,6 @@
 import { FieldPath, type Firestore } from "firebase-admin/firestore";
 import type { Bucket } from "@google-cloud/storage";
-import { categoryById, legacyCategory } from "./taxonomy";
+import { requiresRunningVideo, legacyCategory } from "./taxonomy";
 import { videoIsReady } from "./running-video";
 export async function auditLegacyMotorcycleVideos(db: Firestore) {
   const base = db
@@ -19,7 +19,7 @@ export async function auditLegacyMotorcycleVideos(db: Firestore) {
       const category =
         v.categoryId || legacyCategory(v.category, v.subcategory);
       if (
-        categoryById[category]?.itemType === "motorcycle" &&
+        requiresRunningVideo(category) &&
         !videoIsReady(v.runningVideo, v.ownerId, snapshot.id)
       )
         missing.push(snapshot.id);

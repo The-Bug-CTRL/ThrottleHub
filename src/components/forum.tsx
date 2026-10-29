@@ -1,7 +1,7 @@
 "use client";
 import { RoostLoader } from "@/components/loading/roost-loader";
 import { LoadingState } from "@/components/ui/primitives";
-import { confirmAction, requestText } from "@/components/ui/dialogs";
+import { confirmAction } from "@/components/ui/dialogs";
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
@@ -16,19 +16,10 @@ import {
 } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { dataError } from "@/lib/errors";
-import {
-  forumCategories,
-  Thread,
-  Reply,
-  threadSchema,
-} from "@/lib/community-models";
-import {
-  createThread,
-  createReply,
-  reportContent,
-  moderateContent,
-} from "@/lib/community";
-import { tokens } from "@/lib/models";
+import { forumCategories, Thread, Reply } from "@/lib/community-models";
+import { reportContent, moderateContent } from "@/lib/community";
+import { ForumComposer, ForumMedia } from "./forum-media";
+import type { ForumAttachment } from "@/lib/forum-media-model";
 import { useSession } from "./session";
 import { usePageQuery } from "./use-page-query";
 import { ContentText } from "./content-text";
@@ -173,83 +164,24 @@ export function Forum() {
 export function NewThread() {
   const { user, loading } = useSession();
   const router = useRouter();
-  const [notice, setNotice] = useState(""),
-    [busy, setBusy] = useState(false);
-  if (loading)
-    return (
-      <section className="wrap section">
-        <LoadingState label="Loading account…" />
-      </section>
-    );
+  const [id] = useState(() => crypto.randomUUID());
+  if (loading) return <LoadingState label="Loading account" />;
   if (!user)
     return (
       <div className="auth-panel">
         <h1>Join the conversation.</h1>
-        <Link className="button" href="/auth">
-          Sign in to start a discussion
-        </Link>
+        <Link href="/auth">Sign in to start a discussion</Link>
       </div>
     );
   return (
     <section className="form-panel">
       <div className="eyebrow">COMMUNITY FORUM</div>
       <h1>Start a discussion.</h1>
-      <form
-        onSubmit={async (e) => {
-          e.preventDefault();
-          setBusy(true);
-          try {
-            const d = Object.fromEntries(new FormData(e.currentTarget));
-            const id = await createThread(user, d);
-            router.push(`/forum/${id}`);
-          } catch (error) {
-            setNotice(dataError(error));
-          } finally {
-            setBusy(false);
-          }
-        }}
-      >
-        <label>
-          Category
-          <select name="category">
-            {Object.entries(forumCategories).map(([id, [label]]) => (
-              <option key={id} value={id}>
-                {label}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label>
-          Title
-          <input name="title" required minLength={8} maxLength={140} />
-        </label>
-        <label>
-          Your discussion
-          <textarea
-            name="body"
-            rows={10}
-            required
-            minLength={20}
-            maxLength={12000}
-          />
-        </label>
-        <p className="muted">
-          Share a YouTube or Vimeo link in your post to add a video.
-        </p>
-        <p className="muted">
-          Respect other riders. Keep personal contact details private. No spam,
-          harassment or unsupported accusations.
-        </p>
-        <button className="button" disabled={busy}>
-          {busy && <RoostLoader size={40} label="Publishing discussion" />}{" "}
-          Publish discussion
-        </button>
-        {notice && (
-          <p role="alert" className="notice error">
-            {notice}
-          </p>
-        )}
-      </form>
+      <ForumComposer
+        user={user}
+        threadId={id}
+        onSaved={() => router.push("/forum/" + id)}
+      />
     </section>
   );
 }
@@ -258,8 +190,12 @@ export function ThreadPage({ thread: initial }: { thread: Thread }) {
   const { user } = useSession();
   const [canModerate, setCanModerate] = useState(false),
     [notice, setNotice] = useState(""),
-    [busy, setBusy] = useState(false),
-    [body, setBody] = useState("");
+    [editing, setEditing] = useState<{
+      id?: string;
+      body: string;
+      attachments: ForumAttachment[];
+    } | null>(null),
+    [replyId, setReplyId] = useState(() => crypto.randomUUID());
   const replies = usePageQuery<Reply>(
     `forumThreads/${thread.id}/replies`,
     {},
@@ -278,28 +214,12 @@ export function ThreadPage({ thread: initial }: { thread: Thread }) {
         setCanModerate(t.claims.admin === true || t.claims.moderator === true),
       );
   }, [user]);
-  async function editPost(id?: string, current = thread.body) {
-    const body = await requestText("Edit your post", current);
-    if (body === null) return;
-    try {
-      if (id) {
-        await updateDoc(doc(db, "forumThreads", thread.id, "replies", id), {
-          body: body.trim(),
-          updatedAt: Date.now(),
-        });
-        replies.refresh();
-      } else {
-        threadSchema.parse({ ...thread, body });
-        await updateDoc(doc(db, "forumThreads", thread.id), {
-          body,
-          searchTokens: tokens(`${thread.title} ${body}`),
-          updatedAt: Date.now(),
-        });
-        setThread({ ...thread, body });
-      }
-    } catch (e) {
-      setNotice(dataError(e));
-    }
+  function editPost(
+    id?: string,
+    current = thread.body,
+    attachments = thread.attachments || [],
+  ) {
+    setEditing({ id, body: current, attachments });
   }
   async function removePost(id?: string) {
     if (
@@ -309,16 +229,33 @@ export function ThreadPage({ thread: initial }: { thread: Thread }) {
     )
       return;
     try {
-      await updateDoc(
-        id
-          ? doc(db, "forumThreads", thread.id, "replies", id)
-          : doc(db, "forumThreads", thread.id),
-        {
-          body: "[Post removed]",
-          status: canModerate ? "hidden" : "deleted",
-          updatedAt: Date.now(),
-        },
-      );
+      if (!canModerate && user) {
+        const response = await fetch("/api/forum/posts", {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${await user.getIdToken()}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            threadId: thread.id,
+            ...(id ? { replyId: id } : {}),
+          }),
+        });
+        if (!response.ok)
+          throw Error(
+            (await response.json()).error || "Could not remove post.",
+          );
+      } else
+        await updateDoc(
+          id
+            ? doc(db, "forumThreads", thread.id, "replies", id)
+            : doc(db, "forumThreads", thread.id),
+          {
+            body: "[Post removed]",
+            status: canModerate ? "hidden" : "deleted",
+            updatedAt: Date.now(),
+          },
+        );
       if (id) replies.refresh();
       else location.href = "/forum";
     } catch (e) {
@@ -338,6 +275,7 @@ export function ThreadPage({ thread: initial }: { thread: Thread }) {
         {new Date(thread.createdAt).toLocaleString("en-ZA")}
       </p>
       <ContentText text={thread.body} />
+      <ForumMedia attachments={thread.attachments} />
       <div className="manage-row">
         {user?.uid === thread.ownerId && (
           <button onClick={() => editPost()}>Edit original post</button>
@@ -393,9 +331,14 @@ export function ThreadPage({ thread: initial }: { thread: Thread }) {
             <time>{new Date(r.createdAt).toLocaleString("en-ZA")}</time>
           </div>
           <ContentText text={r.body} />
+          <ForumMedia attachments={r.attachments} />
           <div className="manage-row">
             {user?.uid === r.ownerId && (
-              <button onClick={() => editPost(r.id, r.body)}>Edit</button>
+              <button
+                onClick={() => editPost(r.id, r.body, r.attachments || [])}
+              >
+                Edit
+              </button>
             )}
             {(user?.uid === r.ownerId || canModerate) && (
               <button onClick={() => removePost(r.id)}>Remove</button>
@@ -420,40 +363,46 @@ export function ThreadPage({ thread: initial }: { thread: Thread }) {
           Older to newer: load next replies
         </button>
       )}
+      {editing && user && (
+        <div className="forum-edit-panel">
+          <h2>Edit post</h2>
+          <ForumComposer
+            key={editing.id || thread.id}
+            user={user}
+            threadId={thread.id}
+            replyId={editing.id}
+            mode="edit"
+            initialBody={editing.body}
+            initialAttachments={editing.attachments}
+            onCancel={() => setEditing(null)}
+            onSaved={(value) => {
+              if (editing.id) replies.refresh();
+              else
+                setThread({
+                  ...thread,
+                  body: value.body,
+                  attachments: value.attachments,
+                });
+              setEditing(null);
+              setNotice("Post updated.");
+            }}
+          />
+        </div>
+      )}
       {thread.locked ? (
         <p className="notice">This discussion is locked.</p>
       ) : user ? (
-        <form
-          onSubmit={async (e) => {
-            e.preventDefault();
-            setBusy(true);
-            try {
-              await createReply(user, thread.id, { body });
-              setBody("");
-              replies.refresh();
-              setNotice("Reply published.");
-            } catch (error) {
-              setNotice(dataError(error));
-            } finally {
-              setBusy(false);
-            }
+        <ForumComposer
+          key={replyId}
+          user={user}
+          threadId={thread.id}
+          replyId={replyId}
+          onSaved={() => {
+            setReplyId(crypto.randomUUID());
+            replies.refresh();
+            setNotice("Reply published.");
           }}
-        >
-          <label>
-            Join the discussion (YouTube and Vimeo links work here too)
-            <textarea
-              rows={5}
-              required
-              minLength={2}
-              maxLength={6000}
-              value={body}
-              onChange={(e) => setBody(e.target.value)}
-            />
-          </label>
-          <button className="button" disabled={busy}>
-            {busy && <RoostLoader size={40} label="Posting reply" />} Post reply
-          </button>
-        </form>
+        />
       ) : (
         <Link className="button" href="/auth">
           Sign in to reply

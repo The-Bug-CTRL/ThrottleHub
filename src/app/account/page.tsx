@@ -1,4 +1,5 @@
 "use client";
+import { AdministratorTools, CustomerSupportSettings } from "@/components/support-notifications";
 import { publicPhone } from "@/lib/public-phone";
 import {
   AccountTypePicker,
@@ -47,19 +48,21 @@ import {
   Heart,
   UserRound,
   MessageCircle,
-  ShieldCheck,
+  LifeBuoy,
+  Megaphone,
   LogOut,
 } from "lucide-react";
-import { useRole } from "@/components/use-role";
+
 import { Empty } from "@/components/empty";
 import { LoadingState } from "@/components/ui/primitives";
 import { SellerListingStats } from "@/components/seller-listing-stats";
+import { PromotionManager } from "@/components/promote-listing";
 import { RatingBadge } from "@/components/member-reviews";
 import { provinces } from "@/lib/marketplace";
 import { brand } from "@/lib/config";
 export default function Account() {
   const { user, loading, logout } = useSession();
-  const { admin, moderator } = useRole();
+
   const [items, setItems] = useState<Listing[]>([]);
   const [favourites, setFavourites] = useState<Listing[]>([]);
   const [notice, setNotice] = useState("");
@@ -76,6 +79,7 @@ export default function Account() {
   const [accountType, setAccountType] = useState<AccountType>("personal");
   const [business, setBusiness] = useState({ ...emptyBusiness });
   const [profileReady, setProfileReady] = useState(false);
+  const [profileOwner, setProfileOwner] = useState("");
   const [profileInfo, setProfileInfo] = useState({
     region: "",
     city: "",
@@ -83,6 +87,8 @@ export default function Account() {
     sellerType: "private",
     photoURL: "",
     contactPhone: "",
+    contactPhonePublic: false,
+    businessContactsPublic: false,
     createdAt: Date.now(),
   });
   useEffect(() => {
@@ -90,6 +96,15 @@ export default function Account() {
     if (requested === "favourites") setTab(requested);
   }, []);
   useEffect(() => {
+    setProfileReady(false);
+    setProfileOwner("");
+    setBusiness({ ...emptyBusiness });
+    setProfileInfo((p) => ({
+      ...p,
+      contactPhone: "",
+      contactPhonePublic: false,
+      businessContactsPublic: false,
+    }));
     if (!user) return;
     let active = true;
     setProfileReady(false);
@@ -120,6 +135,7 @@ export default function Account() {
           return;
         }
         const p = result.profile;
+        setProfileOwner(user.uid);
         setProfileReady(true);
         setAccountType(accountTypeOf(p));
         setBusiness({ ...emptyBusiness, ...p.business });
@@ -132,6 +148,8 @@ export default function Account() {
           sellerType: p.sellerType || "private",
           photoURL: p.photoURL || "",
           contactPhone: p.contactPhone || "",
+          contactPhonePublic: p.contactPhonePublic === true,
+          businessContactsPublic: p.businessContactsPublic === true,
           createdAt: p.createdAt,
         });
       })
@@ -202,8 +220,7 @@ export default function Account() {
         <div>
           <h1>Your garage, organised.</h1>
           <p>
-            Welcome back, {name || user.displayName || "rider"}. Everything you
-            need for your next chapter.
+            Welcome back, {name || user.displayName || "rider"}.
           </p>
         </div>
       </div>
@@ -224,10 +241,12 @@ export default function Account() {
       )}
       <div className="account-layout">
         <aside className="account-nav" aria-label="Account navigation">
+          <div className="account-nav-links">
+          <h2 className="account-nav-heading">Main account options</h2>
           {[
-            ["listings", "My listings", LayoutGrid],
-            ["favourites", "Saved favourites", Heart],
-            ["profile", "Profile & settings", UserRound],
+            ["listings", "My Listings", LayoutGrid],
+            ["favourites", "Saved Favourites", Heart],
+            ["profile", "Profile & Settings", UserRound],
           ].map(([value, label, Icon]) => {
             const t = String(value);
             const I = Icon as typeof Heart;
@@ -247,24 +266,28 @@ export default function Account() {
             <MessageCircle size={17} />
             Messages
           </Link>
+          <Link href="/account/promotions"><Megaphone size={17} /> Promotion Purchases</Link>
+
+
+
           <Link href={`/seller/${user.uid}`}>
-            <UserRound size={17} /> Public profile &amp; reviews
+            <UserRound size={17} /> Public Profile &amp; Reviews
           </Link>
           <Link href={`/seller/${user.uid}/connections?tab=following`}>
-            <Heart size={17} /> Following &amp; followers
+            <Heart size={17} /> Following &amp; Followers
           </Link>
-          {moderator && (
-            <Link href={admin ? "/admin" : "/admin/community"}>
-              <ShieldCheck size={17} />
-              Moderation
-            </Link>
-          )}
+          </div>
+          <section className="account-nav-section account-nav-links" aria-labelledby="account-help-title"><h2 id="account-help-title" className="account-nav-heading">Help</h2><Link href="/help"><LifeBuoy size={17} /> Help &amp; Support</Link></section>
+          <AdministratorTools />
+          <div className="account-nav-final">
           <button onClick={logout}>
             <LogOut size={17} />
-            Sign out
+            Sign Out
           </button>
+          </div>
         </aside>
         <div>
+          <CustomerSupportSettings />
           {notice && (
             <p className="notice" role="status">
               {notice}
@@ -328,6 +351,11 @@ export default function Account() {
                         <SellerListingStats id={l.id} user={user} />
                       )}
                       <div className="manage-row">
+                        <PromotionManager
+                          user={user}
+                          listingId={l.id}
+                          eligible={l.status === "published"}
+                        />
                         <span>{statusLabel(l.status)}</span>
                         {isPublicListing(l) && (
                           <Link href={listingHref(l)}>
@@ -486,7 +514,11 @@ export default function Account() {
               </div>
             </>
           )}
-          {tab === "profile" && (
+          {tab === "profile" &&
+            (!profileReady || profileOwner !== user.uid) && (
+              <p role="status">Loading your private profile details…</p>
+            )}
+          {tab === "profile" && profileReady && profileOwner === user.uid && (
             <form
               className="profile-form"
               onSubmit={async (e) => {
@@ -497,7 +529,10 @@ export default function Account() {
                 }
                 if (
                   profileInfo.contactPhone.trim() &&
-                  !publicPhone({ contactPhone: profileInfo.contactPhone })
+                  !publicPhone({
+                    contactPhone: profileInfo.contactPhone,
+                    contactPhonePublic: true,
+                  })
                 ) {
                   setNotice(
                     "Enter a phone number with 7–15 digits, optionally starting with +.",
@@ -634,7 +669,7 @@ export default function Account() {
                 />
               </label>
               <label>
-                Public phone number (optional)
+                Contact phone number (private unless you choose to share)
                 <input
                   type="tel"
                   maxLength={40}
@@ -648,10 +683,37 @@ export default function Account() {
                   placeholder="e.g. +27 82 123 4567"
                 />
                 <small>
-                  Public on your adverts. Leave blank if you only want messages.
-                  Business accounts can also use their business contact number.
+                  Kept private by default. Choose below if buyers may see it.
                 </small>
               </label>
+              <label>
+                <input
+                  type="checkbox"
+                  checked={profileInfo.contactPhonePublic}
+                  onChange={(e) =>
+                    setProfileInfo((p) => ({
+                      ...p,
+                      contactPhonePublic: e.target.checked,
+                    }))
+                  }
+                />
+                Show my contact phone publicly on adverts
+              </label>
+              {accountType === "business" && (
+                <label>
+                  <input
+                    type="checkbox"
+                    checked={profileInfo.businessContactsPublic}
+                    onChange={(e) =>
+                      setProfileInfo((p) => ({
+                        ...p,
+                        businessContactsPublic: e.target.checked,
+                      }))
+                    }
+                  />
+                  Show my business phone and email publicly
+                </label>
+              )}
               <button className="button" disabled={!profileReady}>
                 Save profile
               </button>

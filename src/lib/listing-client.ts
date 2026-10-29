@@ -18,6 +18,7 @@ export async function changeListing(
   return result as {
     status: string;
     slug: string;
+    firstPublish?: boolean;
     cleanupPending?: boolean;
     warning?: string;
   };

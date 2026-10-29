@@ -70,7 +70,7 @@ it("atomically creates one canonical Personal/Business profile; repeated and con
   const after = (await db.doc("profiles/profile-personal").get()).data()!;
   expect(after.createdAt).toBe(personal.createdAt);
   expect(after.updatedAt).toBeGreaterThanOrEqual(personal.updatedAt);
-});
+}, 20000); // Five contended SDK transactions may retry past the default 5 seconds.
 it("rejects spoofed UIDs, arbitrary roles and private Auth fields without account approvals", async () => {
   for (const extra of [
     { uid: "other" },

@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
@@ -7,7 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { collection, doc, getDoc } from "firebase/firestore";
 import { RunningVideoUpload } from "./running-video-upload";
 import { accountTypeOf } from "@/lib/seller-account";
-import type { RunningVideo } from "@/lib/running-video";
+import { videoIsReady, type RunningVideo } from "@/lib/running-video";
 import { changeListing } from "@/lib/listing-client";
 import { db } from "@/lib/firebase";
 import { brand } from "@/lib/config";
@@ -20,7 +20,12 @@ import {
 import { useSession } from "./session";
 import { CheckCircle2, ShieldCheck } from "lucide-react";
 import { CategoryPicker } from "./category-navigation";
-import { categoryById, categoryFields, legacyCategory } from "@/lib/taxonomy";
+import {
+  categoryById,
+  categoryFields,
+  legacyCategory,
+  requiresRunningVideo,
+} from "@/lib/taxonomy";
 import {
   motorcycleCatalogue,
   provinces,
@@ -28,14 +33,34 @@ import {
 } from "@/lib/marketplace";
 import { ListingDetailsFields } from "./listing-details-fields";
 import { LoadingState } from "./ui/primitives";
+import { compatibleDelivery, deliveryOptions, deliveryShipping, listingTitleExample } from "@/lib/listing-guidance";
+import { PostPublishOffer } from "./post-publish-offer";
 async function compress(file: File): Promise<Blob> {
-  const bitmap = await createImageBitmap(file);
+  let objectURL = "";
+  let bitmap: ImageBitmap | HTMLImageElement;
+  try {
+    bitmap = await createImageBitmap(file);
+  } catch {
+    objectURL = URL.createObjectURL(file);
+    const image = new Image();
+    image.src = objectURL;
+    try {
+      await image.decode();
+    } catch {
+      URL.revokeObjectURL(objectURL);
+      throw new Error(
+        "Unable to read this photo. Export it as JPEG or PNG first.",
+      );
+    }
+    bitmap = image;
+  }
   const scale = Math.min(1, 1600 / Math.max(bitmap.width, bitmap.height));
   const canvas = document.createElement("canvas");
   canvas.width = Math.round(bitmap.width * scale);
   canvas.height = Math.round(bitmap.height * scale);
   canvas.getContext("2d")!.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
-  bitmap.close();
+  if ("close" in bitmap) bitmap.close();
+  if (objectURL) URL.revokeObjectURL(objectURL);
   return new Promise((resolve, reject) =>
     canvas.toBlob(
       (b) => (b ? resolve(b) : reject(new Error("Unable to process image."))),
@@ -56,9 +81,11 @@ export function ListingForm() {
   const [images, setImages] = useState<string[]>([]);
   const [notice, setNotice] = useState("");
   const [progress, setProgress] = useState<number | null>(null);
+  const [photoLabel, setPhotoLabel] = useState("");
   const [saving, setSaving] = useState(false);
   const [success, setSuccess] = useState<"draft" | "published" | null>(null);
   const [savedSlug, setSavedSlug] = useState("");
+  const [offerPromotion, setOfferPromotion] = useState(false);
   const {
     register,
     handleSubmit,
@@ -101,18 +128,29 @@ export function ListingForm() {
       city: "",
       condition: "Good",
       shipping: "Collection only",
+      deliveryMethods: [],
       specs: "",
     },
   });
   const categoryId = watch("categoryId");
   const itemType = categoryById[categoryId]?.itemType;
+  const videoRequired = requiresRunningVideo(categoryId);
   const make = watch("make");
+  const categoryValues = useRef(new Map<string, ListingInput>());
   function chooseCategory(id: string) {
     if (!id) return;
+    const current = getValues();
+    categoryValues.current.set(current.categoryId, structuredClone(current));
     const fields = categoryFields(id);
     setValue("categoryId", id);
     setValue("category", fields.category);
     setValue("subcategory", fields.subcategory);
+    if (current.deliveryMethods !== undefined) {
+      const methods = compatibleDelivery(id, current.deliveryMethods);
+      setValue("deliveryMethods", methods, { shouldDirty: true });
+      setValue("shipping", deliveryShipping(methods));
+      if (methods.length !== current.deliveryMethods.length) setNotice("Delivery options changed with the category. Please check your selections.");
+    }
     const nextType = categoryById[id].itemType;
     if (nextType !== "gear") {
       setValue("details.size", "");
@@ -149,6 +187,13 @@ export function ListingForm() {
     const engine = categoryById[id].engineTypes?.[0];
     if (engine)
       setValue("details.engineType", engine as "two-stroke" | "four-stroke");
+    const saved = categoryValues.current.get(id);
+    if (saved) {
+      setValue("details", saved.details);
+      setValue("make", saved.make);
+      setValue("model", saved.model);
+      setValue("year", saved.year);
+    }
   }
   async function goToStage(target: number) {
     setNotice("");
@@ -189,16 +234,17 @@ export function ListingForm() {
             const old = d.data();
             setRelistOnly(
               ["expired", "on-hold"].includes(old.status) &&
-                categoryById[
+                requiresRunningVideo(
                   old.categoryId ||
-                    legacyCategory(old.category, old.subcategory)
-                ]?.itemType === "motorcycle",
+                    legacyCategory(old.category, old.subcategory),
+                ),
             );
             const cat =
               old.categoryId || legacyCategory(old.category, old.subcategory);
             reset({
               ...getValues(),
               ...old,
+              deliveryMethods: old.deliveryMethods,
               ...(cat ? categoryFields(cat) : {}),
               region: provinceCode(old.region),
               details: { ...getValues("details"), ...old.details },
@@ -258,7 +304,9 @@ export function ListingForm() {
     }
     if (
       videoBusy ||
-      (status === "published" && itemType === "motorcycle" && !runningVideo)
+      (status === "published" &&
+        requiresRunningVideo(normalized.categoryId) &&
+        !videoIsReady(runningVideo, user.uid, id))
     ) {
       setNotice(
         "Upload and validate a running video before publishing this motorcycle.",
@@ -275,6 +323,7 @@ export function ListingForm() {
         status,
       });
       setSavedSlug(result.slug);
+      setOfferPromotion(result.firstPublish === true);
       setSuccess(status);
     } catch (e) {
       setNotice(e instanceof Error ? e.message : "Unable to save listing.");
@@ -355,7 +404,7 @@ export function ListingForm() {
         <div className="eyebrow">All set</div>
         <h1>
           {success === "published"
-            ? "Your listing is live."
+            ? "Your listing is live!"
             : "Your draft is saved."}
         </h1>
         <p>
@@ -364,9 +413,13 @@ export function ListingForm() {
             : "Your listing is safely saved to your account. Return to your garage whenever you’re ready to finish it."}
         </p>
         {success === "published" && (
+          <>
+          {offerPromotion && <PostPublishOffer user={user} listingId={id} slug={savedSlug} />}
+          {!offerPromotion &&
           <Link className="button" href={`/listing/${id}/${savedSlug}`}>
             View your listing
-          </Link>
+          </Link>}
+          </>
         )}
         <Link className="text-button" href="/account">
           Back to my garage →
@@ -415,7 +468,7 @@ export function ListingForm() {
               Listing title
               <input
                 {...register("title")}
-                placeholder="e.g. 2023 KTM 300 EXC TPI"
+                placeholder={listingTitleExample(categoryId)}
               />
             </label>
             {["motorcycle", "part"].includes(itemType || "") && (
@@ -503,7 +556,10 @@ export function ListingForm() {
                   }
                   setProgress(0);
                   try {
-                    for (const file of files) {
+                    for (const [index, file] of files.entries()) {
+                      setPhotoLabel(
+                        `Photo ${index + 1} of ${files.length}: ${file.name}`,
+                      );
                       if (
                         !["image/jpeg", "image/png", "image/webp"].includes(
                           file.type,
@@ -530,7 +586,9 @@ export function ListingForm() {
                       if (!response.ok)
                         throw new Error(result.error || "Photo upload failed.");
                       const url = result.url;
-                      setProgress(100);
+                      setProgress(
+                        Math.round(((index + 1) / files.length) * 100),
+                      );
                       setImages((old) => [...old, url]);
                     }
                   } catch (e) {
@@ -544,18 +602,25 @@ export function ListingForm() {
               />
             </label>
             {progress !== null && (
-              <LoadingState size={64} label={`Uploading ${progress}%`} />
+              <LoadingState
+                size={64}
+                label={`${photoLabel}. Preparing/uploading. ${progress}% of selected photos completed.`}
+              />
             )}
-            {itemType === "motorcycle" && (
+            {(videoRequired || runningVideo || videoBusy) && (
               <RunningVideoUpload
                 user={user}
                 listingId={id}
                 value={runningVideo}
                 onChange={setRunningVideo}
                 onBusy={setVideoBusy}
-                petrolRequired={["two-stroke", "four-stroke"].includes(
-                  watch("details.engineType"),
-                )}
+                required={videoRequired}
+                petrolRequired={
+                  videoRequired &&
+                  ["two-stroke", "four-stroke"].includes(
+                    watch("details.engineType"),
+                  )
+                }
               />
             )}
             <div className="upload-previews">
@@ -590,7 +655,13 @@ export function ListingForm() {
             <div className="field-row">
               <label>
                 Asking price
-                <input type="number" {...register("price")} />
+                <input
+                  type="number"
+                  inputMode="decimal"
+                  min="0"
+                  step="0.01"
+                  {...register("price")}
+                />
               </label>
               <label>
                 Currency
@@ -633,14 +704,13 @@ export function ListingForm() {
                 </small>
               </label>
             </div>
-            <label>
-              Collection / shipping
-              <select {...register("shipping")}>
-                {["Collection only", "Domestic shipping"].map((s) => (
-                  <option key={s}>{s}</option>
-                ))}
-              </select>
-            </label>
+            <fieldset className="delivery-options">
+              <legend>Delivery &amp; Collection</legend>
+              <p>Choose how you&apos;re willing to get this item to the buyer. You can select more than one option.</p>
+              {watch("deliveryMethods") === undefined && <p>Current preference: {watch("shipping")}. You can keep this existing preference or choose specific methods below.</p>}
+              <div>{deliveryOptions(categoryId).map((method) => <label key={method.id}><input type="checkbox" checked={watch("deliveryMethods")?.includes(method.id) || false} onChange={(event) => { const selected = getValues("deliveryMethods") || []; const next = event.target.checked ? [...selected, method.id] : selected.filter((id) => id !== method.id); setValue("deliveryMethods", next, { shouldDirty: true }); setValue("shipping", deliveryShipping(next)); }} />{method.label}</label>)}</div>
+              <small>Seller preferences, not bookings or guaranteed services. Arrange costs and collection details privately with the buyer. Courier size, weight and coverage restrictions apply. Never add your street address to the advert.</small>
+            </fieldset>
           </>
         )}
         {stage === 2 && (
@@ -679,9 +749,6 @@ export function ListingForm() {
               are accurate. No stolen goods, misleading adverts or unsafe
               content. Buyers and sellers arrange transactions directly.
             </div>
-            <button className="button" disabled={saving || progress !== null}>
-              Publish listing
-            </button>
           </div>
         )}
         {Object.entries(errors).length > 0 && (
@@ -700,6 +767,15 @@ export function ListingForm() {
         )}
         {saving && <LoadingState size={64} label="Saving listing…" />}
         <div className="form-actions">
+          {stage === 2 && (
+            <button
+              type="submit"
+              className="button"
+              disabled={saving || progress !== null || videoBusy}
+            >
+              Publish listing
+            </button>
+          )}
           <button
             type="button"
             className="text-button"

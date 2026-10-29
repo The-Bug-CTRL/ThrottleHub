@@ -1,0 +1,441 @@
+/* Responsive refinements. Existing desktop layout and brand tokens stay authoritative. */
+.mobile-shortcuts {
+  display: none;
+}
+main,
+.listing-card,
+.card-info,
+.detail-aside,
+.account-layout > *,
+.community-layout > *,
+.browse-layout > *,
+.field-row > label {
+  min-width: 0;
+}
+.notice,
+.promotion-order,
+.detail-aside h1,
+.seller-profile-head,
+.conversation-heading,
+.thread-title,
+.article-body {
+  overflow-wrap: anywhere;
+}
+.running-video-upload video,
+.running-video-player video {
+  width: 100%;
+  max-height: 70dvh;
+  object-fit: contain;
+}
+.running-video-upload progress {
+  width: 100%;
+}
+.gallery .detail-photo {
+  touch-action: pan-y pinch-zoom;
+}
+.upload-previews img {
+  max-width: 100%;
+  object-fit: cover;
+}
+dialog {
+  overscroll-behavior: contain;
+}
+button:focus-visible,
+a:focus-visible,
+summary:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid var(--brand);
+  outline-offset: 3px;
+}
+
+@media (max-width: 1024px) {
+  .admin-navigation {
+    flex-wrap: wrap;
+  }
+  .account-nav {
+    position: static;
+  }
+  .promotion-dialog,
+  .gallery-dialog,
+  .content-video-dialog {
+    max-width: calc(100vw - 24px);
+  }
+}
+@media (max-width: 768px) {
+  .field-row > label {
+    min-width: 0;
+  }
+  .section-heading,
+  .manage-row,
+  .form-actions {
+    flex-wrap: wrap;
+  }
+  .section-heading > *,
+  .manage-row > * {
+    min-width: 0;
+  }
+  .section-heading > a {
+    white-space: normal;
+  }
+  .promotion-products {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .promotion-order button {
+    margin: 4px 0;
+  }
+  .promotion-order code {
+    word-break: break-all;
+  }
+  .notification-panel {
+    max-width: calc(100vw - 24px);
+  }
+  .gallery-dialog {
+    padding: 12px;
+  }
+  .gallery-dialog > img {
+    max-width: 100%;
+    max-height: 75dvh;
+    object-fit: contain;
+  }
+}
+@media (max-width: 640px) {
+  body {
+    padding-bottom: calc(68px + env(safe-area-inset-bottom, 0px));
+  }
+  .wrap,
+  .header-inner {
+    width: calc(100% - 24px);
+  }
+  .header-inner {
+    gap: 8px;
+    min-height: 76px;
+  }
+  .header-actions {
+    gap: 2px;
+  }
+  .header-icon,
+  .account-link,
+  .header-sell,
+  .mobile-menu {
+    min-width: 44px;
+    min-height: 44px;
+  }
+  .header-sell {
+    padding: 8px;
+    margin: 0;
+  }
+  .header-sell span {
+    display: none;
+  }
+  .mobile-shortcuts {
+    position: fixed;
+    inset: auto 0 0;
+    z-index: 45;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    padding: 6px max(8px, env(safe-area-inset-left, 0px))
+      calc(6px + env(safe-area-inset-bottom, 0px));
+    border-top: 1px solid var(--line);
+    background: var(--paper);
+    box-shadow: 0 -3px 16px #2727250a;
+  }
+  .mobile-shortcuts a {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    min-height: 48px;
+    font-size: 11px;
+    font-weight: 650;
+  }
+  .mobile-shortcuts a[aria-current="page"] {
+    color: var(--brand);
+    background: var(--stone);
+    border-radius: 8px;
+  }
+  body:has(input:focus, textarea:focus, select:focus, .inbox.has-selected)
+    .mobile-shortcuts {
+    display: none;
+  }
+  .nav-dialog {
+    width: min(400px, 100vw);
+    max-width: 100vw;
+    height: 100dvh;
+    max-height: 100dvh;
+    padding-bottom: max(20px, env(safe-area-inset-bottom, 0px));
+    overflow-y: auto;
+  }
+  .nav-dialog a,
+  .nav-dialog button {
+    min-height: 44px;
+  }
+  .market-nav > .wrap {
+    padding-inline: 12px;
+  }
+  .market-search-form {
+    min-width: 0;
+  }
+  .market-search-form > *,
+  .make-model-input {
+    min-width: 0;
+  }
+  .search-category-panel,
+  .make-model-panel {
+    max-width: calc(100vw - 24px);
+    max-height: 55dvh;
+    overflow-y: auto;
+  }
+  input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
+  select,
+  textarea {
+    font-size: 16px !important;
+    min-height: 44px;
+    max-width: 100%;
+  }
+  button,
+  .button,
+  .button-secondary,
+  .icon-button,
+  summary {
+    min-height: 44px;
+  }
+  .icon-button,
+  .favourite,
+  .gallery-prev,
+  .gallery-next,
+  .gallery-expand {
+    min-width: 44px;
+    min-height: 44px;
+  }
+  .form-panel {
+    width: calc(100% - 24px);
+  }
+  .form-panel > form {
+    padding: 18px 14px;
+  }
+  .form-panel .field-row,
+  .profile-form .field-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+  }
+  .form-panel > .steps {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .form-panel > .steps button {
+    overflow-wrap: anywhere;
+    font-size: 12px;
+  }
+  .form-panel .form-actions {
+    position: sticky;
+    bottom: 0;
+    z-index: 3;
+    background: var(--paper);
+    padding: 12px 0 max(12px, env(safe-area-inset-bottom, 0px));
+    gap: 10px;
+    border-top: 1px solid var(--line);
+  }
+  .form-panel .form-actions > button {
+    flex: 1 1 auto;
+  }
+  .upload-previews {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .running-video-upload .manage-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .running-video-upload .manage-row label {
+    margin: 0;
+  }
+  .filters-dialog-actions {
+    padding-bottom: max(12px, env(safe-area-inset-bottom, 0px));
+  }
+  .filters-dialog-actions button {
+    flex: 1 1 auto;
+  }
+  .filter-actions {
+    bottom: 0;
+    padding-bottom: max(12px, env(safe-area-inset-bottom, 0px));
+  }
+  .results-heading {
+    flex-wrap: wrap;
+  }
+  .inline-search {
+    flex-wrap: wrap;
+  }
+  .inline-search > input,
+  .inline-search > select {
+    min-width: 0;
+    flex: 1 1 160px;
+  }
+  .interaction-dialog {
+    width: calc(100vw - 24px);
+    max-height: calc(100dvh - 24px);
+    overflow-y: auto;
+    padding: 20px 16px;
+  }
+  .dialog-actions {
+    flex-wrap: wrap;
+  }
+  .dialog-actions > button {
+    flex: 1;
+  }
+  .selected-file {
+    overflow-wrap: anywhere;
+  }
+  .results-heading > select {
+    flex: 1 1 140px;
+  }
+  .listing-card h3 {
+    font-size: 14px;
+    overflow-wrap: anywhere;
+  }
+  .listing-card .card-bottom {
+    font-size: 11px;
+  }
+  .listing-card .card-info .eyebrow {
+    font-size: 10px;
+  }
+  .account-layout .listing-grid,
+  .browse-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .account-nav,
+  .admin-navigation {
+    gap: 6px;
+  }
+  .account-nav a,
+  .account-nav button,
+  .admin-navigation a {
+    min-height: 44px;
+    font-size: 13px;
+  }
+  .auth-panel {
+    width: calc(100% - 24px);
+    padding: 22px 16px;
+  }
+  .promotion-dialog {
+    width: calc(100vw - 16px);
+    max-width: calc(100vw - 16px);
+    max-height: calc(100dvh - 16px);
+    padding: 16px;
+  }
+  .promotion-dialog header {
+    gap: 8px;
+  }
+  .promotion-dialog header h2 {
+    font-size: 22px;
+    overflow-wrap: anywhere;
+  }
+  .promotion-products article,
+  .promotion-order {
+    padding: 14px;
+  }
+  .promotion-products .button {
+    width: 100%;
+    white-space: normal;
+  }
+  .community-layout,
+  .community-pair,
+  .article-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .thread-row,
+  .event-row,
+  .manage-row {
+    overflow-wrap: anywhere;
+  }
+  .footer-inner {
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+
+  /* Selected chat uses the visual viewport, including when the keyboard opens. */
+  .messages-page .inbox.has-selected {
+    position: fixed;
+    top: var(--chat-top, 0px);
+    left: 0;
+    width: 100%;
+    height: var(--chat-height, 100dvh);
+    min-height: 0;
+    border-radius: 0;
+    z-index: 60;
+    padding-top: env(safe-area-inset-top, 0px);
+  }
+  .messages-page .conversation {
+    min-height: 0;
+    overflow: hidden;
+  }
+  .messages-page .conversation-heading {
+    flex-shrink: 0;
+    padding: 10px;
+    gap: 8px;
+  }
+  .messages-page .conversation-heading > div {
+    min-width: 0;
+    flex: 1;
+  }
+  .messages-page .conversation-heading .avatar {
+    display: none;
+  }
+  .messages-page .conversation-heading > a {
+    max-width: 70px;
+  }
+  .messages-page .message-list {
+    min-height: 0;
+    max-height: none;
+    flex: 1 1 0;
+    overscroll-behavior: contain;
+    padding: 12px;
+  }
+  .messages-page .conversation form {
+    flex-shrink: 0;
+    padding: 10px 10px max(10px, env(safe-area-inset-bottom, 0px));
+  }
+  .messages-page .conversation textarea {
+    min-width: 0;
+    flex: 1;
+    max-height: 100px;
+  }
+  .messages-page .conversation form .button {
+    flex-shrink: 0;
+    padding: 10px;
+  }
+  .messages-page .conversation > small {
+    flex-shrink: 0;
+    font-size: 10px;
+    padding: 0 10px 8px;
+  }
+}
+@media (max-width: 360px) {
+  .wordmark {
+    width: 80px;
+  }
+  .header-inner {
+    gap: 4px;
+  }
+  .account-link {
+    padding: 6px;
+  }
+  .browse-grid,
+  .account-layout .listing-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .section-heading h2 {
+    font-size: 24px;
+  }
+  .market-search-submit {
+    padding-inline: 10px;
+    font-size: 12px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}

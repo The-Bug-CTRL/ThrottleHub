@@ -81,6 +81,7 @@ export function Card({ listing: l }: { listing: Listing }) {
             src={l.images[0] || "/no-photo.svg"}
             alt={l.title}
             loading="lazy"
+            decoding="async"
           />
         </Link>
         <Favourite listing={l} />
@@ -91,8 +92,16 @@ export function Card({ listing: l }: { listing: Listing }) {
           <ArrowUpRight size={15} />
         </div>
         <h3>{l.title}</h3>
+        {l.promotion && (
+          <span className="promotion-badge">
+            {l.promotion.test ? "TEST " : ""}
+            {l.promotion.featured ? "Featured" : "Promoted"}
+          </span>
+        )}
         {isPublicListing(l) && (
-          <small><ListingAge publishedAt={l.publishedAt || l.createdAt} /></small>
+          <small>
+            <ListingAge publishedAt={l.publishedAt || l.createdAt} />
+          </small>
         )}
         <span className="seller-kind-badge">
           {sellerLabel(l.sellerAccountType || l.details?.sellerType)}

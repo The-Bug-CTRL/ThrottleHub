@@ -59,6 +59,7 @@ export function MarketplaceFilterFields({
       {label}
       <input
         type={number ? "number" : "text"}
+        inputMode={number ? "decimal" : "search"}
         min={number ? 0 : undefined}
         maxLength={key === "term" ? 100 : undefined}
 

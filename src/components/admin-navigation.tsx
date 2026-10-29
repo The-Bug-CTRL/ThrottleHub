@@ -24,6 +24,7 @@ export function AdminNavigation() {
     },
     ...(admin
       ? [
+          { href: "/admin/support", label: "Support", icon: ClipboardList },
           { href: "/admin/editorial", label: "Editorial", icon: Newspaper },
           { href: "/admin/events", label: "Events", icon: CalendarDays },
         ]

@@ -11,11 +11,13 @@ import {
   User,
   X,
   ArrowUpRight,
+  Search,
 } from "lucide-react";
 import { useEffect, useRef, useState, Fragment, Suspense } from "react";
 import { categoryChildren, categoryHref } from "@/lib/taxonomy";
 import { brand } from "@/lib/config";
 import { configurationError } from "@/lib/firebase-settings";
+
 import { Notifications } from "./notifications";
 import { CategoryIcon } from "./category-icon";
 import { CategoryDropdowns } from "./category-dropdowns";
@@ -46,8 +48,18 @@ export function Shell({ children }: { children: React.ReactNode }) {
     setOpen(false);
   }, [pathname]);
   useEffect(() => {
-    if (open) dialog.current?.showModal();
-    else dialog.current?.close();
+    if (!open) {
+      dialog.current?.close();
+      return;
+    }
+    const overflow = document.body.style.overflow;
+    const element = dialog.current;
+    element?.showModal();
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = overflow;
+      element?.close();
+    };
   }, [open]);
   const marketplace =
     pathname === "/" ||
@@ -299,6 +311,36 @@ export function Shell({ children }: { children: React.ReactNode }) {
             </Link>
           </div>
         </dialog>
+        <nav className="mobile-shortcuts" aria-label="Marketplace shortcuts">
+          <Link
+            href="/browse"
+            aria-current={pathname === "/browse" ? "page" : undefined}
+          >
+            <Search size={21} />
+            Search
+          </Link>
+          <Link
+            href="/sell"
+            aria-current={pathname === "/sell" ? "page" : undefined}
+          >
+            <Plus size={21} />
+            Sell
+          </Link>
+          <Link
+            href="/messages"
+            aria-current={pathname === "/messages" ? "page" : undefined}
+          >
+            <MessageCircle size={21} />
+            Messages
+          </Link>
+          <Link
+            href={user ? "/account" : "/auth"}
+            aria-current={pathname.startsWith("/account") ? "page" : undefined}
+          >
+            <User size={21} />
+            Account
+          </Link>
+        </nav>
         <main id="main-content" tabIndex={-1}>
           {configurationError ? (
             <section className="wrap section">
@@ -359,7 +401,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
             <div>
               <b>Ride with confidence</b>
               <Link href="/policies/rules">Marketplace safety</Link>
-              <Link href="/info/help">Help & getting started</Link>
+              <Link href="/help">Help & support</Link>
               <Link href="/info/contact">Contact</Link>
               <Link href="/policies/privacy">Privacy notice</Link>
               <Link href="/policies/terms">Terms of use</Link>

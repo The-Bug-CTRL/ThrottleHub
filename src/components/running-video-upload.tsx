@@ -11,6 +11,7 @@ export function RunningVideoUpload({
   onChange,
   onBusy,
   petrolRequired = false,
+  required = true,
 }: {
   user: User;
   listingId: string;
@@ -18,11 +19,13 @@ export function RunningVideoUpload({
   onChange: (v: RunningVideo | null) => void;
   onBusy: (b: boolean) => void;
   petrolRequired?: boolean;
+  required?: boolean;
 }) {
   const task = useRef<ReturnType<typeof uploadBytesResumable> | null>(null),
     retry = useRef<File | null>(null);
   const [progress, setProgress] = useState<number | null>(null),
     [notice, setNotice] = useState(""),
+    [filename, setFilename] = useState(""),
     [demonstration, setDemonstration] = useState<"petrol" | "electric">(
       "petrol",
     ),
@@ -48,6 +51,7 @@ export function RunningVideoUpload({
   }
   async function upload(file: File) {
     retry.current = file;
+    setFilename(file.name);
     setNotice("");
     if (file.size > MAX_VIDEO_BYTES || file.size === 0) {
       setNotice("Choose an MP4 up to 100 MiB.");
@@ -103,7 +107,12 @@ export function RunningVideoUpload({
   }
   return (
     <section className="running-video-upload">
-      <h3>Motorcycle Running Video — Required</h3>
+      <h3>{required ? "Running video required" : "Video — optional"}</h3>
+      <p>
+        {required
+          ? "Upload a video of your motorcycle running, with sound, so buyers can assess its condition. For electric bikes, show powered operation."
+          : "This category does not require a video. Your existing video is kept unless you choose to remove it."}
+      </p>
       <p>
         Show the actual bike starting where possible, idling and running
         briefly. Cold starts are welcome when clearly shown. Keep it outdoors or
@@ -163,6 +172,11 @@ export function RunningVideoUpload({
         Your phone may record MOV or HEVC. If validation rejects it, export
         H.264 MP4 at 720p and choose that file instead.
       </small>
+      {filename && (
+        <p className="selected-file" role="status">
+          Selected: {filename}
+        </p>
+      )}
       {progress !== null && (
         <>
           <progress

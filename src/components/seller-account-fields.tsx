@@ -60,8 +60,8 @@ export function BusinessProfileFields({
     <fieldset className="business-profile-fields">
       <legend>Your public business</legend>
       <p>
-        These details are public. Leave contact fields empty if you do not want
-        to share them.
+        Business details are public, but phone and email stay private until you
+        enable sharing in your account settings.
       </p>
       {(
         [
@@ -81,8 +81,8 @@ export function BusinessProfileFields({
               logoURL: "Business logo URL (HTTPS)",
               description: "Business description",
               website: "Website (HTTPS)",
-              phone: "Public business telephone (optional)",
-              email: "Public business email (optional)",
+              phone: "Business telephone (private by default)",
+              email: "Business email (private by default)",
               hours: "Operating hours (optional)",
             }[key]
           }

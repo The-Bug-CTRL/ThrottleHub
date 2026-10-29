@@ -16,13 +16,13 @@ it("offers Personal and Business accounts with a self-declared business explanat
   expect(html).toContain("does not grant verification");
   expect(html).toContain("checked");
 });
-it("labels public business contacts and requires a business name", () => {
+it("labels business contacts private by default and requires a business name", () => {
   const html = renderToStaticMarkup(
     <BusinessProfileFields value={emptyBusiness} onChange={() => {}} />,
   );
   expect(html).toContain("Business name");
   expect(html).toContain("required");
-  expect(html).toContain("Public business email");
+  expect(html).toContain("Business email (private by default)");
   expect(html).toContain("Operating hours");
 });
 it("does not attach or preload video bytes before a buyer chooses playback", () => {

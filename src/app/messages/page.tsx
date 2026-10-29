@@ -1,4 +1,5 @@
 "use client";
+import { fetchPublicProfile } from "@/lib/public-profile-client";
 import { RoostLoader } from "@/components/loading/roost-loader";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
@@ -53,6 +54,29 @@ export default function Messages() {
     [names, setNames] = useState<Record<string, string>>({}),
     [listingUrl, setListingUrl] = useState("");
   const bottom = useRef<HTMLDivElement>(null);
+  const inbox = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const viewport = window.visualViewport;
+    const update = () => {
+      inbox.current?.style.setProperty(
+        "--chat-height",
+        `${viewport?.height ?? window.innerHeight}px`,
+      );
+      inbox.current?.style.setProperty(
+        "--chat-top",
+        `${viewport?.offsetTop ?? 0}px`,
+      );
+    };
+    update();
+    viewport?.addEventListener("resize", update);
+    viewport?.addEventListener("scroll", update);
+    window.addEventListener("resize", update);
+    return () => {
+      viewport?.removeEventListener("resize", update);
+      viewport?.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
+    };
+  }, [selected, loading, user]);
   useEffect(() => {
     setSelected(new URLSearchParams(location.search).get("conversation") || "");
   }, []);
@@ -96,10 +120,10 @@ export default function Messages() {
     for (const uid of new Set(
       active.map((c) => (c.buyerId === user.uid ? c.sellerId : c.buyerId)),
     ))
-      getDoc(doc(db, "profiles", uid))
+      fetchPublicProfile(uid)
         .then((d) => {
-          if (!cancelled && d.exists())
-            setNames((old) => ({ ...old, [uid]: d.data().displayName }));
+          if (!cancelled && d)
+            setNames((old) => ({ ...old, [uid]: typeof d.displayName === "string" ? d.displayName : "Rider" }));
         })
         .catch((error) => {
           if (!cancelled) setNotice(dataError(error));
@@ -178,7 +202,7 @@ export default function Messages() {
       (latest[a.id]?.createdAt || a.createdAt),
   );
   return (
-    <section className="wrap section">
+    <section className="wrap section messages-page">
       <div className="eyebrow">Your riding connections</div>
       <div className="section-heading">
         <h1>Messages</h1>
@@ -191,7 +215,7 @@ export default function Messages() {
           {notice}
         </p>
       )}
-      <div className={`inbox ${selected ? "has-selected" : ""}`}>
+      <div ref={inbox} className={`inbox ${selected ? "has-selected" : ""}`}>
         <aside>
           <h3>
             Conversations <small>({conversations.length})</small>

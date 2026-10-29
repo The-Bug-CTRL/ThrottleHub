@@ -1,11 +1,10 @@
 "use client";
+import { fetchPublicProfile } from "@/lib/public-profile-client";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import {
   collection,
-  doc,
   documentId,
-  getDoc,
   getDocs,
   limit,
   orderBy,
@@ -49,11 +48,10 @@ export function MemberConnections({
       const rows = page.docs.slice(0, 20);
       const profiles = await Promise.all(
         rows.map(async (edge) => {
-          const snapshot = await getDoc(doc(db, "profiles", edge.id));
-          if (!snapshot.exists()) return null;
-          const p = snapshot.data();
+          const p = await fetchPublicProfile(edge.id);
+          if (!p) return null;
           return {
-            id: snapshot.id,
+            id: edge.id,
             displayName: p.displayName || "Rider",
             city: p.city || "",
             region: p.region || "",

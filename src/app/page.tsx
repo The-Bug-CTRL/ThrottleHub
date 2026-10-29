@@ -10,6 +10,10 @@ import {
   CalendarDays,
 } from "lucide-react";
 import { adminDb, getPublicListings } from "@/lib/server";
+import {
+  featuredListings,
+  visibilityEnvironment,
+} from "@/lib/promotion-readers";
 import { categoryHref } from "@/lib/taxonomy";
 import { brand } from "@/lib/config";
 import { Thread, StolenReport, forumCategories } from "@/lib/community-models";
@@ -25,7 +29,7 @@ import type { ImportedVideo } from "@/lib/imported-video";
 import type { ImportedNews, ImportedRace } from "@/lib/imported-content";
 import { StolenCard } from "@/components/stolen";
 import { SectionHeading, LoadingState } from "@/components/ui/primitives";
-import { dataError } from "@/lib/errors";
+import { firestoreQuery } from "@/lib/firestore-diagnostics";
 export const dynamic = "force-dynamic";
 const shortcuts = [
   { title: "Motocross", categoryId: "motorcycles/motocross" },
@@ -41,7 +45,7 @@ const shortcuts = [
   { title: "Workshop", categoryId: "tools" },
 ];
 export default async function Home() {
-  const [listings, threads, articles, reports, events] =
+  const [listings, threads, articles, reports, events, featured] =
     await Promise.allSettled([
       getPublicListings(undefined, 18),
       recent("forumThreads", "lastReplyAt", 8),
@@ -50,7 +54,27 @@ export default async function Home() {
       importedFeed(adminDb(), "races", { country: "za" }).then((p) =>
         p.items.slice(0, 8),
       ),
+      featuredListings(adminDb()),
     ]);
+  for (const [section, result] of [
+    ["Latest Listings", listings],
+    ["Discussions", threads],
+    ["News", articles],
+    ["Stolen reports", reports],
+    ["Race calendar", events],
+    ["Featured Listings", featured],
+  ] as const) {
+    if (result.status === "rejected")
+      console.error(`[Homepage] ${section} failed`, result.reason);
+  }
+  const latest =
+    listings.status === "fulfilled"
+      ? listings.value.filter(
+          (l) =>
+            featured.status !== "fulfilled" ||
+            !featured.value.some((p) => p.id === l.id),
+        )
+      : [];
   return (
     <div className="home-hub">
       <section className="home-intro">
@@ -79,30 +103,38 @@ export default async function Home() {
       <section className="wrap section home-featured">
         <SectionHeading
           eyebrow="In the spotlight"
-          title="Featured listings"
-          description="A selection from the latest bikes, parts and gear in our marketplace."
+          title={
+            visibilityEnvironment() === "test"
+              ? "Test featured placements"
+              : "Featured listings"
+          }
+          description={
+            visibilityEnvironment() === "test"
+              ? "TEST placements only. No live paid placement."
+              : "Paid placements from sellers in our marketplace."
+          }
           href="/browse"
           label="Explore marketplace"
         />
-        {listings.status === "rejected" ? (
-          <LoadError error={listings.reason} />
-        ) : listings.value.length ? (
+        {featured.status === "rejected" ? (
+          <LoadError />
+        ) : featured.value.length ? (
           <div
             className="home-listing-rail"
             tabIndex={0}
             role="region"
             aria-label="Featured listings, scroll for more"
           >
-            {listings.value.slice(0, 6).map((listing) => (
+            {featured.value.map((listing) => (
               <Card key={listing.id} listing={listing} />
             ))}
           </div>
         ) : (
           <Empty
-            title="Your next ride starts here."
-            description="Published bikes, parts and riding gear will appear here. Be the first to share what is in your garage."
-            href="/sell"
-            label="List an item"
+            title="No featured placements right now."
+            description="Browse the latest listings below, or promote an eligible advert from your account."
+            href="/account"
+            label="Your listings"
           />
         )}
       </section>
@@ -115,15 +147,15 @@ export default async function Home() {
           label="Browse all listings"
         />
         {listings.status === "rejected" ? (
-          <LoadError error={listings.reason} />
-        ) : listings.value.length ? (
+          <LoadError />
+        ) : latest.length ? (
           <div
             className="home-listing-rail"
             tabIndex={0}
             role="region"
             aria-label="Latest listings, scroll for more"
           >
-            {listings.value.slice(0, 12).map((l) => (
+            {latest.slice(0, 12).map((l) => (
               <Card key={l.id} listing={l} />
             ))}
           </div>
@@ -144,7 +176,7 @@ export default async function Home() {
           label="All news"
         />
         {articles.status === "rejected" ? (
-          <LoadError error={articles.reason} />
+          <LoadError />
         ) : articles.value.length ? (
           <div className="article-grid">
             {articles.value.map((a) => (
@@ -179,7 +211,7 @@ export default async function Home() {
           </div>
           <div className="home-topics">
             {threads.status === "rejected" ? (
-              <LoadError error={threads.reason} />
+              <LoadError />
             ) : threads.value.length ? (
               threads.value.map((item) => {
                 const t = item as Thread;
@@ -224,7 +256,7 @@ export default async function Home() {
           label="Explore events"
         />
         {events.status === "rejected" ? (
-          <LoadError error={events.reason} />
+          <LoadError />
         ) : events.value.length ? (
           <div className="home-events home-events-compact">
             {events.value.map((e) => (
@@ -327,7 +359,10 @@ export default async function Home() {
 async function recent(name: string, order: string, count: number) {
   let q = adminDb().collection(name).where("status", "==", "published");
   if (name === "stolenReports") q = q.where("country", "==", "ZA");
-  const s = await q.orderBy(order, "desc").limit(count).get();
+  const s = await firestoreQuery(
+    `homepage: ${name} status=published${name === "stolenReports" ? " country=ZA" : ""} order=${order} DESC`,
+    () => q.orderBy(order, "desc").limit(count).get(),
+  );
   return s.docs.map((d) => ({ ...d.data(), id: d.id }));
 }
 async function HomeRacingHighlights() {
@@ -342,13 +377,14 @@ async function HomeRacingHighlights() {
       />
     );
   } catch (error) {
-    return <LoadError error={error} />;
+    console.error("[Homepage] Racing highlights failed", error);
+    return <LoadError />;
   }
 }
-function LoadError({ error }: { error: unknown }) {
+function LoadError() {
   return (
     <div className="notice error" role="alert">
-      <b>We couldn’t load this content.</b> {dataError(error)}
+      <b>We couldn’t load this content.</b> Please try again shortly.
     </div>
   );
 }

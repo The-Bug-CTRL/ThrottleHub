@@ -27,6 +27,10 @@ export const resolveCategoryId = (id: string) =>
   Object.hasOwn(retiredCategoryAliases, id) ? retiredCategoryAliases[id] : id;
 export const taxonomy: Category[] = catalogue as Category[];
 export const categoryById = Object.fromEntries(taxonomy.map((c) => [c.id, c]));
+/** Actual vehicles only; engine/fitment selections never turn a part into a bike. */
+export function requiresRunningVideo(categoryId: string): boolean {
+  return categoryById[resolveCategoryId(categoryId)]?.itemType === "motorcycle";
+}
 export const categoryChildren = (id: string | null = null, engineType = "") =>
   taxonomy.filter(
     (c) =>

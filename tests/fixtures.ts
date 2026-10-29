@@ -21,6 +21,7 @@ export function listing(ownerId = "seller", id = "item"): Listing {
     currency: "ZAR",
     condition: "Good",
     shipping: "Collection only",
+    deliveryMethods: ["collect"],
     specs: "Temporary test specifications",
     slug: "permission-test-motorcycle",
     images: ["/no-photo.svg"],

@@ -43,6 +43,8 @@ export const profileEditSchema = z
     city: z.string().max(80),
     region: z.string().refine((v) => !v || Object.hasOwn(provinces, v)),
     country: z.enum(["ZA", "GB", "US", "AU"]),
+    contactPhonePublic: z.boolean().default(false),
+    businessContactsPublic: z.boolean().default(false),
     contactPhone: z
       .string()
       .max(40)
@@ -64,6 +66,15 @@ export const profileEditSchema = z
       });
   });
 export function publicProfile(data: Record<string, unknown>) {
+  const safe = { ...data };
+  if (safe.contactPhonePublic !== true) delete safe.contactPhone;
+  if (safe.business && typeof safe.business === "object")
+    safe.business = {
+      ...Object.fromEntries(Object.entries(safe.business).filter(([key]) =>
+        ["name", "logoURL", "description", "category", "website", "phone", "email", "hours"].includes(key))),
+      ...(safe.businessContactsPublic === true ? {} : { phone: "", email: "" }),
+    };
+  data = safe;
   return Object.fromEntries(
     [
       "displayName",
@@ -78,6 +89,8 @@ export function publicProfile(data: Record<string, unknown>) {
       "accountType",
       "business",
       "contactPhone",
+      "contactPhonePublic",
+      "businessContactsPublic",
     ]
       .filter((k) => data[k] !== undefined)
       .map((k) => [k, data[k]]),
@@ -93,11 +106,12 @@ export async function ensureProfile(
   return db.runTransaction(async (tx) => {
     const ref = db.doc(`profiles/${uid}`),
       existing = await tx.get(ref);
+    const contacts = (await tx.get(db.doc(`profileContacts/${uid}`))).data();
     if (existing.exists)
       return {
         needsSetup: false,
         created: false,
-        profile: publicProfile(existing.data()!),
+        profile: ownerProfile(existing.data()!, contacts),
       };
     if (!value.accountType)
       return { needsSetup: true, created: false, profile: null };
@@ -116,8 +130,19 @@ export async function ensureProfile(
         createdAt: now,
         updatedAt: now,
       };
-    tx.create(ref, profile);
-    return { needsSetup: false, created: true, profile };
+    const privateContacts = {
+      contactPhone: "",
+      businessPhone: value.business?.phone || "",
+      businessEmail: value.business?.email || "",
+    };
+    const published = publicProfile(profile);
+    tx.create(ref, published);
+    tx.set(db.doc(`profileContacts/${uid}`), privateContacts);
+    return {
+      needsSetup: false,
+      created: true,
+      profile: ownerProfile(published, privateContacts),
+    };
   });
 }
 export async function editProfile(db: Firestore, uid: string, input: unknown) {
@@ -135,8 +160,39 @@ export async function editProfile(db: Firestore, uid: string, input: unknown) {
       updatedAt: Date.now(),
     };
     if (value.accountType === "personal") delete data.business;
-    // Preserve unknown existing metadata; accept only explicit public input fields.
-    tx.set(ref, data);
-    return { profile: publicProfile(data) };
+    const privateContacts = {
+      contactPhone: value.contactPhone,
+      businessPhone: value.business?.phone || "",
+      businessEmail: value.business?.email || "",
+    };
+    // Retain unrelated trusted metadata; change only the explicit contact projection.
+    const published: Record<string, unknown> = {
+      ...data,
+      ...publicProfile(data),
+    };
+    if (!value.contactPhonePublic) delete published.contactPhone;
+    tx.set(ref, published);
+    tx.set(db.doc(`profileContacts/${uid}`), privateContacts);
+    return { profile: ownerProfile(published, privateContacts) };
   });
+}
+
+function ownerProfile(
+  data: Record<string, unknown>,
+  contacts?: Record<string, unknown>,
+) {
+  const business = data.business as Record<string, unknown> | undefined;
+  return {
+    ...publicProfile(data),
+    contactPhone: contacts?.contactPhone ?? data.contactPhone ?? "",
+    ...(business
+      ? {
+          business: {
+            ...business,
+            phone: contacts?.businessPhone ?? business.phone ?? "",
+            email: contacts?.businessEmail ?? business.email ?? "",
+          },
+        }
+      : {}),
+  };
 }

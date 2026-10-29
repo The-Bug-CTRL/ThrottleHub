@@ -89,7 +89,11 @@ it("counts only real available public phone reveals and protects raw metrics and
   ).rejects.toMatchObject({ status: 404 });
   await db
     .doc(`profiles/${uid}`)
-    .set({ accountType: "personal", contactPhone: "+27 82 123 4567" });
+    .set({
+      accountType: "personal",
+      contactPhone: "+27 82 123 4567",
+      contactPhonePublic: true,
+    });
   expect(
     (await recordEngagement(db, id, "phone", "uid:buyer", "buyer")).phone,
   ).toBe("+27821234567");
@@ -160,6 +164,7 @@ it("accepts only the optional explicitly public profile phone field, not arbitra
     accountType: "personal",
     createdAt: Date.now(),
     contactPhone: "+27 82 123 4567",
+    contactPhonePublic: true,
   };
   await assertSucceeds(
     setDoc(
@@ -179,13 +184,17 @@ it("accepts only the optional explicitly public profile phone field, not arbitra
       profile,
     ),
   );
-  expect(publicPhone({ contactPhone: "+27 (82) 123-4567" })).toBe(
-    "+27821234567",
-  );
+  expect(
+    publicPhone({
+      contactPhone: "+27 (82) 123-4567",
+      contactPhonePublic: true,
+    }),
+  ).toBe("+27821234567");
   expect(
     publicPhone({
       accountType: "business",
       business: { phone: "+27831234567" },
+      businessContactsPublic: true,
     }),
   ).toBe("+27831234567");
   expect(publicPhone({ contactPhone: "not a phone" })).toBe("");

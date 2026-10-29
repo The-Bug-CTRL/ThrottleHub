@@ -38,12 +38,20 @@ export function ListingDetailsFields({
               </label>
               <label>
                 Displacement (cc, 0 = unknown)
-                <input type="number" {...register("details.displacement")} />
+                <input
+                  inputMode="numeric"
+                  type="number"
+                  {...register("details.displacement")}
+                />
               </label>
               {itemType === "motorcycle" && (
                 <label>
                   Engine hours (0 = unknown)
-                  <input type="number" {...register("details.hours")} />
+                  <input
+                    inputMode="decimal"
+                    type="number"
+                    {...register("details.hours")}
+                  />
                 </label>
               )}
             </div>
@@ -77,11 +85,19 @@ export function ListingDetailsFields({
             <div className="field-row">
               <label>
                 Compatible from year
-                <input type="number" {...register("details.yearFrom")} />
+                <input
+                  inputMode="numeric"
+                  type="number"
+                  {...register("details.yearFrom")}
+                />
               </label>
               <label>
                 Compatible to year
-                <input type="number" {...register("details.yearTo")} />
+                <input
+                  inputMode="numeric"
+                  type="number"
+                  {...register("details.yearTo")}
+                />
               </label>
             </div>
             <label>
@@ -121,7 +137,10 @@ export function ListingDetailsFields({
             </label>
           </div>
         )}
-        <p>Your seller label comes from your account settings and is saved with the advert.</p>
+        <p>
+          Your seller label comes from your account settings and is saved with
+          the advert.
+        </p>
       </fieldset>
     </details>
   );

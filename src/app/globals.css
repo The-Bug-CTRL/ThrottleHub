@@ -5739,3 +5739,13 @@ select:not([multiple]):not([size]) {
 @media (max-width: 1000px) { .racing-carousel-slide { flex-basis: calc((100% - 20px) / 2); } .home-events.home-events-compact { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 640px) { .racing-carousel-slide { flex-basis: 100%; } .home-events.home-events-compact { grid-template-columns: minmax(0, 1fr); gap: 12px; } .compact-race-card { min-height: 0; padding: 16px; } .content-video-dialog { padding: 16px; } }
 @media (prefers-reduced-motion: reduce) { .racing-carousel-track { scroll-behavior: auto; } }
+.promotion-badge { display: inline-block; padding: 4px 8px; margin-bottom: 8px; background: #eee3d2; color: #68442c; border-radius: 5px; font-size: 12px; }
+.promotion-dialog { width: min(940px, calc(100% - 32px)); max-height: calc(100dvh - 32px); overflow: auto; border: 1px solid var(--line); border-radius: 14px; padding: 24px; background: var(--paper, #fff); }
+.promotion-dialog::backdrop { background: rgba(20,18,15,.75); }
+.promotion-dialog header { display: flex; align-items: start; justify-content: space-between; gap: 20px; }
+.promotion-dialog header h2 { margin: 0; }
+.promotion-products { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 16px; }
+.promotion-products article, .promotion-order { padding: 18px; border: 1px solid var(--line); border-radius: 10px; margin: 12px 0; }
+.promotion-products h3 { margin: 0 0 8px; }.promotion-products strong { font-size: 24px; }
+.promotion-order button { margin: 8px; }.promotion-order code { overflow-wrap: anywhere; }
+@media(max-width:700px) { .promotion-products { grid-template-columns: 1fr; } .promotion-dialog { padding: 16px; } }

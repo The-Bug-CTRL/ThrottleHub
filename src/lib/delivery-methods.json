@@ -1,0 +1,13 @@
+[
+  { "id": "collect", "parcel": "Buyer collects in person", "motorcycle": "Buyer collects motorcycle" },
+  { "id": "meet", "parcel": "Meet at an agreed location", "motorcycle": "Meet at an agreed suitable location" },
+  { "id": "pudo", "parcel": "PUDO locker delivery" },
+  { "id": "courier-guy", "parcel": "The Courier Guy — door-to-door" },
+  { "id": "postnet", "parcel": "PostNet" },
+  { "id": "paxi", "parcel": "PAXI" },
+  { "id": "aramex", "parcel": "Aramex Store-to-Door" },
+  { "id": "other-courier", "parcel": "Other courier — arrange with buyer" },
+  { "id": "buyer-transport", "motorcycle": "Buyer arranges motorcycle transport" },
+  { "id": "seller-transport", "motorcycle": "Seller can arrange specialist motorcycle transport" },
+  { "id": "other-transport", "motorcycle": "Other transport arrangement" }
+]

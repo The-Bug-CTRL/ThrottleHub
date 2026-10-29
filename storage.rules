@@ -48,6 +48,10 @@ service firebase.storage {
    allow read: if owner(uid) || admin() || (firestore.get(/databases/(default)/documents/listings/$(listingId)).data.ownerId == uid && firestore.get(/databases/(default)/documents/listings/$(listingId)).data.runningVideo.path == 'listing-videos/'+uid+'/'+listingId+'/'+filename && firestore.get(/databases/(default)/documents/listings/$(listingId)).data.status in ['published','sold','expired','on-hold'] && firestore.get(/databases/(default)/documents/listings/$(listingId)).data.country == 'ZA' && firestore.get(/databases/(default)/documents/listings/$(listingId)).data.currency == 'ZAR');
    allow write: if false;
   }
+  // No bearer download URLs: screenshots are served by the authorized support API.
+  match /support-images/{path=**} { allow read,write: if false; }
+  // Forum media uses trusted processing and status-aware serving.
+  match /forum-media/{path=**} { allow read,write: if false; }
   match /{allPaths=**} { allow read,write: if false; }
  }
 }

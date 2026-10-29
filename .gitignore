@@ -12,3 +12,6 @@ firebase-export/
 !.env.cloud.example
 .secrets/
 *service-account*.json
+payments-functions/lib/
+payments-functions/.env*
+payments-functions/.secret*

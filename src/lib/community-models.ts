@@ -122,6 +122,7 @@ export const eventSchema = z
   })
   .refine((v) => v.endsAt >= v.startsAt, "Event end must follow start");
 export interface Thread {
+  attachments?: import("./forum-media-model").ForumAttachment[];
   id: string;
   title: string;
   body: string;
@@ -136,6 +137,7 @@ export interface Thread {
   searchTokens: string[];
 }
 export interface Reply {
+  attachments?: import("./forum-media-model").ForumAttachment[];
   id: string;
   body: string;
   ownerId: string;

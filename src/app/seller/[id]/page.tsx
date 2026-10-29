@@ -1,3 +1,5 @@
+import { publicProfile } from "@/lib/profile-service";
+import type { DocumentData } from "firebase-admin/firestore";
 import { publicListing } from "@/lib/public-listing";
 import { accountTypeOf, sellerLabel } from "@/lib/seller-account";
 import { provinces } from "@/lib/marketplace";
@@ -25,6 +27,7 @@ export default async function Seller({
     .select(
       "accountType",
       "business",
+      "businessContactsPublic",
       "displayName",
       "bio",
       "city",
@@ -37,7 +40,7 @@ export default async function Seller({
     .limit(1)
     .get();
   if (p.empty) notFound();
-  const profile = p.docs[0].data();
+  const profile = publicProfile(p.docs[0].data()) as DocumentData;
   const business =
     accountTypeOf(profile) === "business" ? profile.business : null;
   const [listings, threads] = await Promise.all([

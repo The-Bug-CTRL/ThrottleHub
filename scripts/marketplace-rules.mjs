@@ -17,6 +17,7 @@ new Function(
 )(compiled.exports);
 const { motorcycleCatalogue, provinces } = compiled.exports;
 const literal = (value) => JSON.stringify(value).replaceAll('"', "'");
+const delivery = JSON.parse(fs.readFileSync("src/lib/delivery-methods.json", "utf8"));
 let generated =
   "  // BEGIN GENERATED MARKETPLACE CATEGORIES — run node scripts/marketplace-rules.mjs\n";
 const roots = cats.filter((c) => !c.parentId);
@@ -49,6 +50,7 @@ generated += `
     .map(([make, models]) => `d.make == '${make}' ? ${literal(models)} : `)
     .join("")} [])));}
   function validProvince(region){return region in ${literal(Object.keys(provinces))};}
+  function validDelivery(d){return !('deliveryMethods' in d) || (d.deliveryMethods is list && d.deliveryMethods.size() <= 8 && d.deliveryMethods.toSet().size() == d.deliveryMethods.size() && d.deliveryMethods.hasOnly(d.primaryCategoryId == 'motorcycles' ? ${literal(delivery.filter(m => m.motorcycle).map(m => m.id))} : ${literal(delivery.filter(m => m.parcel).map(m => m.id))}));}
   // END GENERATED MARKETPLACE CATEGORIES\n`;
 let rules = fs.readFileSync("firestore.rules", "utf8");
 rules = rules.replace(

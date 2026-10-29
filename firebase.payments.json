@@ -1,0 +1,3 @@
+{
+  "functions": [{"source":"payments-functions","codebase":"throttlehub-payments","runtime":"nodejs22","ignore":["node_modules",".env*",".secret*","*.log"],"predeploy":["npm --prefix \"$RESOURCE_DIR\" run build"]}]
+}

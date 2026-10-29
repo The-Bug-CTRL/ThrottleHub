@@ -1,8 +1,12 @@
 "use client";
+import { deliveryOptions } from "@/lib/listing-guidance";
+import { fetchPublicProfile } from "@/lib/public-profile-client";
 import { trackListing } from "@/lib/listing-engagement-client";
 import { publicPhone } from "@/lib/public-phone";
 import { ListingAge } from "./listing-age";
+import { PromotionManager } from "./promote-listing";
 import { RunningVideoPlayer } from "./running-video-player";
+import { requiresRunningVideo } from "@/lib/taxonomy";
 import { sellerLabel } from "@/lib/seller-account";
 import { RatingBadge } from "./member-reviews";
 import { requestText } from "@/components/ui/dialogs";
@@ -24,7 +28,6 @@ import {
   collection,
   doc,
   runTransaction,
-  getDoc,
 } from "firebase/firestore";
 import { Listing, money, displayDetails } from "@/lib/models";
 import { db } from "@/lib/firebase";
@@ -52,9 +55,9 @@ export function ListingDetail({
     setPhoneAvailable(false);
     setPhone("");
     if (loading || !l.ownerId) return;
-    getDoc(doc(db, "profiles", l.ownerId))
+    fetchPublicProfile(l.ownerId)
       .then((p) => {
-        if (active) setPhoneAvailable(!!publicPhone(p.data()));
+        if (active) setPhoneAvailable(!!publicPhone(p || undefined));
       })
       .catch(() => {});
     return () => {
@@ -154,11 +157,12 @@ export function ListingDetail({
           <span className="seller-kind-badge">
             {sellerLabel(l.sellerAccountType || l.details?.sellerType)}
           </span>
-          {l.primaryCategoryId === "motorcycles" && (
+          {(requiresRunningVideo(l.categoryId) || l.runningVideo) && (
             <RunningVideoPlayer
               listingId={l.id}
               poster={l.images[0]}
               available={!!l.runningVideo}
+              motorcycle={requiresRunningVideo(l.categoryId)}
             />
           )}
           <div className="detail-section">
@@ -220,12 +224,12 @@ export function ListingDetail({
               </p>
             )}
             <h3>
-              <Truck size={18} /> Collection & shipping
+              <Truck size={18} /> Delivery &amp; Collection
             </h3>
             <p>
-              {l.shipping}. Confirm domestic shipping costs, collection and
-              payment arrangements directly with the seller.
+              {l.deliveryMethods?.length ? deliveryOptions(l.categoryId).filter((method) => l.deliveryMethods?.includes(method.id)).map((method) => method.label).join(" · ") : l.shipping}.
             </p>
+            <p>These are seller preferences, not a booking or guaranteed service. Arrange delivery, responsibility for costs and any collection address privately through messages. Courier size, weight and coverage restrictions apply. ThrottleHub does not handle payment for the item.</p>
           </div>
         </div>
         <aside className="detail-aside">
@@ -235,6 +239,9 @@ export function ListingDetail({
             · {l.condition}
           </div>
           <h1>{l.title}</h1>
+          {user?.uid === l.ownerId && l.status === "published" && (
+            <PromotionManager user={user} listingId={l.id} />
+          )}
           <div className="detail-price">
             {money(l)} <small>{l.currency}</small>
           </div>
@@ -245,8 +252,8 @@ export function ListingDetail({
             {l.country}
           </p>
           <small>
-            <ListingAge publishedAt={l.publishedAt || l.createdAt} />{" "}
-            · Ref {l.id}
+            <ListingAge publishedAt={l.publishedAt || l.createdAt} /> · Ref{" "}
+            {l.id}
           </small>
           {isHistorical(l) && (
             <p>

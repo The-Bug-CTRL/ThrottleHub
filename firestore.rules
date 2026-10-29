@@ -411,9 +411,10 @@ service cloud.firestore {
   function validCategory(d){let c=categoryRecord(d);return c.size() == 5 && d.primaryCategoryId == d.categoryPath.l0 && d.category == c[0] && d.subcategory == c[1] && d.categoryAncestorIds == c[2] && d.categoryPath == c[3] && (c[4].size() == 0 || d.details.engineType == '' || d.details.engineType in c[4]);}
   function validMake(d){return (d.make == '' && d.model == '') || (d.make in ['Honda','Yamaha','Kawasaki','Suzuki','KTM','Husqvarna','GasGas','Beta','Sherco','TM Racing','Fantic','Rieju','Montesa','TRS','Scorpa','Vertigo'] && (d.model == '' || d.model in (d.make == 'Honda' ? ['CR80','CR85','CR125','CR250','CR500','CRF150R','CRF250R','CRF250X','CRF450R','CRF450X','CRF250F'] : d.make == 'Yamaha' ? ['YZ65','YZ85','YZ125','YZ250','YZ250F','YZ450F','YZ250X','YZ250FX','WR250F','WR450F','TT-R125','TT-R230'] : d.make == 'Kawasaki' ? ['KX65','KX85','KX100','KX112','KX125','KX250','KX250F','KX450','KX450F','KDX200','KDX220','KLX110','KLX230','KLX300'] : d.make == 'Suzuki' ? ['RM80','RM85','RM125','RM250','RM-Z250','RM-Z450','DR-Z125','DR-Z400'] : d.make == 'KTM' ? ['50 SX','65 SX','85 SX','125 SX','250 SX','250 SX-F','350 SX-F','450 SX-F','250 EXC','300 EXC','250 EXC-F','350 EXC-F','450 EXC-F','500 EXC-F'] : d.make == 'Husqvarna' ? ['TC 65','TC 85','TC 125','TC 250','FC 250','FC 350','FC 450','TE 150','TE 250','TE 300','FE 250','FE 350','FE 450','FE 501'] : d.make == 'GasGas' ? ['MC 65','MC 85','MC 125','MC 250','MC 250F','MC 450F','EC 250','EC 300','EC 250F','EC 350F','TXT Racing 250','TXT Racing 300'] : d.make == 'Beta' ? ['RR 125','RR 200','RR 250','RR 300','RR 350','RR 390','RR 430','RR 480','Xtrainer 250','Xtrainer 300','Evo 250','Evo 300'] : d.make == 'Sherco' ? ['125 SE','250 SE','300 SE','250 SEF','300 SEF','450 SEF','500 SEF','ST 250','ST 300'] : d.make == 'TM Racing' ? ['MX 125','MX 250','MX 250 Fi','MX 450 Fi','EN 125','EN 250','EN 300','EN 250 Fi','EN 450 Fi'] : d.make == 'Fantic' ? ['XX 125','XX 250','XXF 250','XXF 450','XE 125','XE 300','XEF 250','XEF 450'] : d.make == 'Rieju' ? ['MR 250','MR 300','Ranger 200','Ranger 300'] : d.make == 'Montesa' ? ['Cota 4RT','Cota 301RR'] : d.make == 'TRS' ? ['One 125','One 250','One 280','One 300'] : d.make == 'Scorpa' ? ['SC 125','SC 250','SC 300'] : d.make == 'Vertigo' ? ['Combat 250','Combat 300','Nitro 250','Nitro 300'] :  [])));}
   function validProvince(region){return region in ['ZA-GP','ZA-WC','ZA-KZN','ZA-EC','ZA-FS','ZA-LP','ZA-MP','ZA-NW','ZA-NC'];}
+  function validDelivery(d){return !('deliveryMethods' in d) || (d.deliveryMethods is list && d.deliveryMethods.size() <= 8 && d.deliveryMethods.toSet().size() == d.deliveryMethods.size() && d.deliveryMethods.hasOnly(d.primaryCategoryId == 'motorcycles' ? ['collect','meet','buyer-transport','seller-transport','other-transport'] : ['collect','meet','pudo','courier-guy','postnet','paxi','aramex','other-courier']));}
   // END GENERATED MARKETPLACE CATEGORIES
-  function validListing(d){return d.keys().hasOnly(['id','ownerId','slug','title','description','category','subcategory','make','model','year','price','currency','country','region','city','condition','shipping','specs','images','status','createdAt','updatedAt','searchTokens','categoryId','primaryCategoryId','categoryAncestorIds','categoryPath','details'])
-   && validCategory(d) && validMake(d) && validDetails(d)
+  function validListing(d){return d.keys().hasOnly(['id','ownerId','slug','title','description','category','subcategory','make','model','year','price','currency','country','region','city','condition','shipping','deliveryMethods','specs','images','status','createdAt','updatedAt','searchTokens','categoryId','primaryCategoryId','categoryAncestorIds','categoryPath','details'])
+   && validCategory(d) && validMake(d) && validDetails(d) && validDelivery(d)
    && shortText(d.title,100) && shortText(d.description,5000) && shortText(d.slug,120)
    && shortText(d.make,40) && shortText(d.model,80) && shortText(d.subcategory,80)
    && shortText(d.region,80) && shortText(d.city,80) && shortText(d.specs,1500)
@@ -438,13 +439,14 @@ service cloud.firestore {
   }
   function evidencePath(p,id){return p is string && p.size() <= 512 && p.split('/').size() == 4 && p.split('/')[0] == 'stolen-evidence' && p.split('/')[1] == request.auth.uid && p.split('/')[2] == id && p.split('/')[3].size() > 0;}
   function evidencePaths(paths,id){return paths is list && paths.size() <= 4 && (paths.size()<1 || evidencePath(paths[0],id)) && (paths.size()<2 || evidencePath(paths[1],id)) && (paths.size()<3 || evidencePath(paths[2],id)) && (paths.size()<4 || evidencePath(paths[3],id));}
-  // Business contacts here are intentionally public storefront fields. Private
-  // account data, verification flags and authorization roles are not permitted.
+  // Contact values are public only with explicit owner consent. Private values
+  // live in API-only profileContacts; roles remain verified Auth claims.
   function validBusiness(b){return b is map && b.keys().hasOnly(['name','logoURL','description','category','website','phone','email','hours']) && shortText(b.name,120) && b.name.size() >= 2 && shortText(b.logoURL,2048) && (b.logoURL == '' || b.logoURL.matches('https://[^ ]+')) && shortText(b.description,2000) && b.category in ['Motorcycle dealership','Parts retailer','Riding equipment retailer','Workshop','Professional trader','Other business'] && shortText(b.website,500) && (b.website == '' || b.website.matches('https://[^ ]+')) && shortText(b.phone,40) && shortText(b.email,254) && (b.email == '' || b.email.matches('[^ @]+@[^ @]+[.][^ @]+')) && shortText(b.hours,500);}
   function validAccount(d){return (!('accountType' in d) && !('business' in d)) || (d.accountType in ['personal','business'] && ((d.accountType == 'personal' && d.sellerType == 'private' && !('business' in d)) || (d.accountType == 'business' && d.sellerType == 'dealer' && validBusiness(d.business))));}
-  function validProfile(d){return shortText(d.get('contactPhone',''),40) && d.get('contactPhone','').matches('[+0-9 ()-]*') && (!('updatedAt' in d) || d.updatedAt is number) && validAccount(d) && d.keys().hasOnly(['displayName','bio','city','region','country','sellerType','createdAt','photoURL','accountType','business','contactPhone','updatedAt']) && shortText(d.displayName,80) && d.displayName.size() >= 2 && shortText(d.bio,600) && shortText(d.city,80) && (d.get('region','') == '' || validProvince(d.region)) && d.country in ['ZA','GB','US','AU'] && d.sellerType in ['private','dealer'] && shortText(d.get('photoURL',''),2048) && (d.get('photoURL','') == '' || d.photoURL.matches('https://[^ ]+')) && d.createdAt is number;}
+  function safePublicContact(d){return (d.get('contactPhone','') == '' || d.get('contactPhonePublic',false) == true) && (!('business' in d) || (d.business.get('phone','') == '' && d.business.get('email','') == '') || d.get('businessContactsPublic',false) == true);}
+  function validProfile(d){return safePublicContact(d) && d.get('contactPhonePublic',false) is bool && d.get('businessContactsPublic',false) is bool && shortText(d.get('contactPhone',''),40) && d.get('contactPhone','').matches('[+0-9 ()-]*') && (!('updatedAt' in d) || d.updatedAt is number) && validAccount(d) && d.keys().hasOnly(['displayName','bio','city','region','country','sellerType','createdAt','photoURL','accountType','business','contactPhone','updatedAt','contactPhonePublic','businessContactsPublic']) && shortText(d.displayName,80) && d.displayName.size() >= 2 && shortText(d.bio,600) && shortText(d.city,80) && (d.get('region','') == '' || validProvince(d.region)) && d.country in ['ZA','GB','US','AU'] && d.sellerType in ['private','dealer'] && shortText(d.get('photoURL',''),2048) && (d.get('photoURL','') == '' || d.photoURL.matches('https://[^ ]+')) && d.createdAt is number;}
   match /profiles/{uid} {
-   allow read: if true;
+   allow read: if owner(uid) || admin() || safePublicContact(resource.data);
    allow create: if owner(uid) && ('accountType' in request.resource.data) && validProfile(request.resource.data) && request.resource.data.createdAt >= request.time.toMillis()-60000 && request.resource.data.createdAt <= request.time.toMillis()+60000;
    allow update: if owner(uid) && validProfile(request.resource.data) && request.resource.data.createdAt == resource.data.createdAt && (('accountType' in request.resource.data) || (!('accountType' in resource.data) && request.resource.data.sellerType == resource.data.sellerType));
    allow delete: if false;
@@ -598,6 +600,20 @@ service cloud.firestore {
    allow delete: if false;
   }
 
+  // Payment orders, entitlements, limits, receipts, reviews and accounting are
+  // server-only, including nested audit events. Seller access uses verified APIs.
+  // Support payloads, notes, credentials, quotas and audit history are API-only.
+  match /supportSignals/{id} {
+   allow get: if (id == "staff" && admin()) || (signed() && id == "user-" + request.auth.uid);
+   allow list, write: if false;
+  }
+  match /supportTickets/{path=**} { allow read, write: if false; }
+  match /profileContacts/{uid} { allow read, write: if false; }
+  // Forum media and admission records are trusted API-only.
+  match /forumMedia/{id} { allow read,write: if false; }
+  match /forumPostLimits/{id} { allow read,write: if false; }
+  match /forumMediaQuotas/{id} { allow read,write: if false; }
+  match /forumMediaControl/{id} { allow read,write: if false; }
   match /{document=**} {allow read,write: if false;}
  }
 }

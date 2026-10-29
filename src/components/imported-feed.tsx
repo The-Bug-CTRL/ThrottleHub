@@ -124,6 +124,7 @@ export function ImportedArticleCard({ article: a }: { article: ImportedNews }) {
             src={a.imageUrl}
             alt=""
             loading="lazy"
+            decoding="async"
             referrerPolicy="no-referrer"
             onError={() => setFailed(true)}
           />

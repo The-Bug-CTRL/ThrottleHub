@@ -24,6 +24,7 @@ export function publicListing(
     "city",
     "condition",
     "shipping",
+    "deliveryMethods",
     "specs",
     "images",
     "status",

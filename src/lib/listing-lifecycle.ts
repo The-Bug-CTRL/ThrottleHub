@@ -1,6 +1,7 @@
 import type { Firestore } from "firebase-admin/firestore";
 import type { Bucket } from "@google-cloud/storage";
 import { categoryFields } from "./taxonomy";
+import { deliveryShipping } from "./listing-guidance";
 import {
   listingSchema,
   parseListingDraft,
@@ -9,9 +10,10 @@ import {
   type ListingInput,
 } from "./models";
 import { canTransition } from "./listing-history";
-import { categoryById } from "./taxonomy";
+import { requiresRunningVideo } from "./taxonomy";
 import { accountTypeOf } from "./seller-account";
 import { videoIsReady } from "./running-video";
+import { entitlementRef } from "../../payments-functions/src/core/promotions";
 
 export class ListingError extends Error {
   constructor(
@@ -88,6 +90,21 @@ export async function mutateListing(
         403,
       );
     const old = snap.data();
+    const promotions = await Promise.all(
+      ["test", "live"].map((env) =>
+        tx.get(entitlementRef(db, env as "test" | "live", id)),
+      ),
+    );
+    const stopPromotions = () => {
+      for (const promotion of promotions)
+        if (promotion.exists)
+          tx.update(promotion.ref, {
+            featuredActive: false,
+            bumpActive: false,
+            suspendedReason: "listing_unavailable",
+            updatedAt: now,
+          });
+    };
     const profile = await tx.get(
       db.collection("profiles").doc(old?.ownerId || actor.uid),
     );
@@ -182,16 +199,20 @@ export async function mutateListing(
         throw new ListingError("Invalid save status.");
       if (old?.status === "published" && status === "draft")
         throw new ListingError("Use On hold to pause a published advert.");
+      const values = { ...input.values as Record<string, unknown>, ...(old?.deliveryMethods && !(input.values as Record<string, unknown>)?.deliveryMethods ? { deliveryMethods: old.deliveryMethods } : {}) };
       const parsed =
         status === "draft"
-          ? parseListingDraft(input.values as ListingInput)
-          : listingSchema.safeParse(input.values);
+          ? parseListingDraft(values as ListingInput)
+          : listingSchema.safeParse(values);
       if (!parsed.success)
         throw new ListingError(
           parsed.error.issues.map((i) => i.message).join("; "),
         );
       const v = parsed.data;
-      const motorcycle = categoryById[v.categoryId]?.itemType === "motorcycle";
+      if (status === "published" && ((!old || old.status === "draft") && !old?.publishedAt || v.deliveryMethods !== undefined) && !v.deliveryMethods?.length)
+        throw new ListingError("Choose at least one delivery or collection method before publishing.");
+      if (v.deliveryMethods !== undefined) v.shipping = deliveryShipping(v.deliveryMethods);
+      const motorcycle = requiresRunningVideo(v.categoryId);
       if (
         status === "published" &&
         motorcycle &&
@@ -216,8 +237,11 @@ export async function mutateListing(
         (status === "published" && !input.images.length)
       )
         throw new ListingError("Add a photo before publishing.");
-      if (status === "published" && motorcycle)
-        await requireVideoObject(bucket, readyVideo!);
+      if (
+        status === "published" &&
+        videoIsReady(readyVideo, old?.ownerId || actor.uid, id)
+      )
+        await requireVideoObject(bucket, readyVideo);
       if (status === "published")
         for (const photo of acceptedPhotos)
           await requirePhotoObject(bucket, photo);
@@ -237,14 +261,12 @@ export async function mutateListing(
         ownerId: old?.ownerId || actor.uid,
         slug: slugify(v.title) || "item",
         images: input.images,
-        runningVideoId:
-          motorcycle && videoIsReady(readyVideo, old?.ownerId || actor.uid, id)
-            ? requestedVideo
-            : "",
-        runningVideo:
-          motorcycle && videoIsReady(readyVideo, old?.ownerId || actor.uid, id)
-            ? readyVideo
-            : null,
+        runningVideoId: videoIsReady(readyVideo, old?.ownerId || actor.uid, id)
+          ? requestedVideo
+          : "",
+        runningVideo: videoIsReady(readyVideo, old?.ownerId || actor.uid, id)
+          ? readyVideo
+          : null,
         sellerAccountType: sellerAccountType,
         status,
         createdAt: old?.createdAt ?? now,
@@ -270,7 +292,7 @@ export async function mutateListing(
           previousAskingPrice: old?.price ?? null,
           at: now,
         });
-      return { status, slug: next.slug };
+      return { status, slug: next.slug, firstPublish };
     }
     if (!old) throw new ListingError("Listing not found.", 404);
     if (action === "anonymise") {
@@ -279,6 +301,7 @@ export async function mutateListing(
       if (!["sold", "expired", "on-hold"].includes(old.status))
         throw new ListingError("Only historical adverts can be de-identified.");
       if (old.sellerAnonymised) return { status: old.status, slug: old.slug };
+      stopPromotions();
       // Free text and photographs may contain identifying information: remove conservatively.
       tx.update(ref, {
         ownerId: "",
@@ -314,7 +337,7 @@ export async function mutateListing(
       throw new ListingError("This status change is not allowed.", 409);
     if (input.status === "published") {
       if (
-        categoryById[old.categoryId]?.itemType === "motorcycle" &&
+        requiresRunningVideo(old.categoryId) &&
         ["two-stroke", "four-stroke"].includes(old.details?.engineType) &&
         (readyVideo?.demonstration !== "petrol" ||
           readyVideo?.hasAudio !== true)
@@ -323,20 +346,23 @@ export async function mutateListing(
           "Petrol motorcycles need a running video with sound.",
         );
       if (
-        categoryById[old.categoryId]?.itemType === "motorcycle" &&
+        requiresRunningVideo(old.categoryId) &&
         !videoIsReady(readyVideo, old.ownerId, id)
       )
         throw new ListingError(
           "Add a validated running video before relisting. Edit and save the draft first.",
         );
       const valid = listingSchema.safeParse(old);
+      if ((old.status === "draft" && !old.publishedAt || old.deliveryMethods !== undefined) && !old.deliveryMethods?.length)
+        throw new ListingError("Choose at least one delivery or collection method before publishing.");
       if (!valid.success || !old.images?.length)
         throw new ListingError("Complete the advert before publishing.");
-      if (categoryById[old.categoryId]?.itemType === "motorcycle")
+      if (requiresRunningVideo(old.categoryId))
         await requireVideoObject(bucket, readyVideo!);
       for (const photo of acceptedPhotos)
         await requirePhotoObject(bucket, photo);
     }
+    if (input.status !== "published") stopPromotions();
     if (input.status === "removed") {
       // Drop all public content. Retain owner only until media cleanup completes, for safe retry.
       tx.set(ref, {

@@ -1,3 +1,4 @@
+import { pruneForumMedia } from "../src/lib/forum-media-service";
 import { pruneAbandonedPhotos } from "../src/lib/photo-maintenance";
 import {
   initializeApp,
@@ -51,6 +52,11 @@ async function main() {
           ),
           ...(process.argv.includes("--all-media")
             ? {
+                forum: await pruneForumMedia(
+                  getFirestore(app),
+                  getStorage(app).bucket(),
+                  apply,
+                ),
                 photos: await pruneAbandonedPhotos(
                   getFirestore(app),
                   getStorage(app).bucket(),

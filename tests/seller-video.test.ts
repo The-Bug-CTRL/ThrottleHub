@@ -239,6 +239,137 @@ it("does not require a running video for spare parts", async () => {
     ),
   ).resolves.toMatchObject({ status: "published" });
 });
+it.each([
+  "motorcycles/motocross",
+  "motorcycles/enduro",
+  "motorcycles/trials",
+  "motorcycles/trail",
+  "motorcycles/pit-bikes",
+  "motorcycles/kids-bikes",
+])(
+  "requires trusted video for %s and allows incomplete drafts",
+  async (category) => {
+    const id = `category-${category.split("/").at(-1)}`,
+      uid = id;
+    const values = { ...listing(uid, id), ...categoryFields(category) };
+    await mutateListing(
+      store,
+      id,
+      { uid },
+      { action: "save", status: "draft", values, images: [] },
+    );
+    await expect(
+      mutateListing(
+        store,
+        id,
+        { uid },
+        { action: "save", status: "published", values, images: ["photo"] },
+      ),
+    ).rejects.toThrow("running video");
+  },
+);
+it.each([
+  "parts/complete-engines",
+  "parts/engine/top-end/cylinder-heads",
+  "parts/engine/top-end/pistons",
+  "parts/exhaust",
+  "parts/wheels-tyres",
+  "riding-gear",
+  "electronics",
+  "tools",
+  "accessories",
+])("publishes %s without a video", async (category) => {
+  const id = `no-video-${category.replaceAll("/", "-")}`,
+    uid = id;
+  const values = {
+    ...listing(uid, id),
+    ...categoryFields(category),
+    make: "",
+    model: "",
+    year: 0,
+  };
+  await expect(
+    mutateListing(
+      store,
+      id,
+      { uid },
+      { action: "save", status: "published", values, images: ["photo"] },
+    ),
+  ).resolves.toMatchObject({ status: "published" });
+});
+it("keeps trusted footage across bike/parts edits and blocks relisting a part as a bike without footage", async () => {
+  const id = "category-switch",
+    uid = id;
+  await seedReadyVideo(store, id, uid, bucket);
+  const bike = listing(uid, id),
+    part = {
+      ...bike,
+      ...categoryFields("parts/engine/top-end/cylinder-heads"),
+    };
+  await mutateListing(
+    store,
+    id,
+    { uid },
+    {
+      action: "save",
+      status: "published",
+      values: bike,
+      images: ["photo"],
+      runningVideoId: "test-ready",
+    },
+  );
+  const createdAt = (await store.doc(`listings/${id}`).get()).data()!.createdAt;
+  await mutateListing(
+    store,
+    id,
+    { uid },
+    { action: "save", status: "published", values: part, images: ["photo"] },
+  );
+  expect((await store.doc(`listings/${id}`).get()).data()).toMatchObject({
+    runningVideoId: "test-ready",
+    createdAt,
+  });
+  await mutateListing(
+    store,
+    id,
+    { uid },
+    { action: "save", status: "published", values: bike, images: ["photo"] },
+  );
+  await mutateListing(
+    store,
+    id,
+    { uid },
+    {
+      action: "save",
+      status: "published",
+      values: part,
+      images: ["photo"],
+      runningVideoId: "",
+    },
+  );
+  await expect(
+    mutateListing(
+      store,
+      id,
+      { uid },
+      { action: "save", status: "published", values: bike, images: ["photo"] },
+    ),
+  ).rejects.toThrow("running video");
+  await mutateListing(
+    store,
+    id,
+    { uid },
+    { action: "status", status: "on-hold" },
+  );
+  await expect(
+    mutateListing(
+      store,
+      id,
+      { uid },
+      { action: "status", status: "published" },
+    ),
+  ).resolves.toMatchObject({ status: "published" });
+});
 it("does not let a petrol engine use the silent-electric declaration or a parts category bypass", async () => {
   const uid = "sv-petrol",
     id = "sv-petrol";
@@ -664,14 +795,12 @@ it("rejects missing, replaced and metadata-changed accepted videos at publicatio
 });
 it("limits video slots across arbitrary absent listing IDs to twelve per rolling day", async () => {
   const uid = "sv-day-quota";
-  await store
-    .doc(`postingLimits/${uid}/videoQuota/current`)
-    .set({
-      startedAt: Date.now() - 7200000,
-      count: 6,
-      dayStartedAt: Date.now(),
-      dayCount: 11,
-    });
+  await store.doc(`postingLimits/${uid}/videoQuota/current`).set({
+    startedAt: Date.now() - 7200000,
+    count: 6,
+    dayStartedAt: Date.now(),
+    dayCount: 11,
+  });
   await videoAction(store, bucket, uid, "sv-day-new", {
     action: "begin",
     demonstration: "electric",

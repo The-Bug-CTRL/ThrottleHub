@@ -15,13 +15,12 @@ import {
   doc,
   writeBatch,
 } from "firebase/firestore";
-import { useSession } from "@/components/session";
+import { useRole } from "@/components/use-role";
 import { db } from "@/lib/firebase";
 import { changeListing } from "@/lib/listing-client";
 type Report = { id: string; listingId: string; reason: string; status: string };
 export default function Admin() {
-  const { user } = useSession();
-  const [allowed, setAllowed] = useState(false);
+  const { user, admin: allowed, checking, error: roleError } = useRole();
   const [reports, setReports] = useState<Report[]>([]);
   const [reportedListings, setReportedListings] = useState<
     Record<string, Listing>
@@ -30,15 +29,15 @@ export default function Admin() {
   const [listingId, setListingId] = useState("");
   useEffect(() => {
     let active = true;
-    setAllowed(false);
+
     setReports([]);
-    if (user)
+    if (user && allowed)
       user
         .getIdTokenResult(true)
         .then(async (token) => {
           if (!active) return;
           if (token.claims.admin !== true) return;
-          setAllowed(true);
+
           const s = await getDocs(
             query(collection(db, "listingReports"), limit(40)),
           );
@@ -64,15 +63,15 @@ export default function Admin() {
     return () => {
       active = false;
     };
-  }, [user]);
+  }, [user, allowed]);
   return (
     <section className="wrap section">
       <div className="eyebrow">MODERATION</div>
       <h1>Keep the community riding.</h1>
       <AdminNavigation />
-      {!allowed || !user ? (
+      {checking ? <p role="status">Checking administrator access?</p> : !user ? <Link href="/auth">Sign in to access administrator tools</Link> : !allowed ? (
         <p>
-          Access requires a server-issued administrator claim. No public
+          {roleError || "You are signed in but this account does not have administrator access."} No public
           self-promotion is available.
         </p>
       ) : (

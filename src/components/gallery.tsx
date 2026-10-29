@@ -11,32 +11,47 @@ export function Gallery({
   const [selected, setSelected] = useState(0),
     [zoom, setZoom] = useState(false);
   const dialog = useRef<HTMLDialogElement>(null);
-  const start = useRef(0);
+  const start = useRef({ x: 0, y: 0 });
   const items = images.length ? images : ["/no-photo.svg"];
   useEffect(() => setSelected(0), [images]);
   function move(step: number) {
     setSelected((i) => (i + step + items.length) % items.length);
   }
   useEffect(() => {
-    if (zoom) dialog.current?.showModal();
-    else dialog.current?.close();
+    if (!zoom) {
+      dialog.current?.close();
+      return;
+    }
+    const previous = document.activeElement as HTMLElement | null;
+    const overflow = document.body.style.overflow;
+    const element = dialog.current;
+    element?.showModal();
+    document.body.style.overflow = "hidden";
+    return () => {
+      element?.close();
+      document.body.style.overflow = overflow;
+      previous?.focus();
+    };
   }, [zoom]);
   return (
     <div className="gallery">
       <div
         className="detail-photo"
         onTouchStart={(e) => {
-          start.current = e.touches[0].clientX;
+          start.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
         }}
         onTouchEnd={(e) => {
-          const delta = e.changedTouches[0].clientX - start.current;
-          if (Math.abs(delta) > 45) move(delta > 0 ? -1 : 1);
+          const delta = e.changedTouches[0].clientX - start.current.x;
+          const vertical = e.changedTouches[0].clientY - start.current.y;
+          if (Math.abs(delta) > 45 && Math.abs(delta) > Math.abs(vertical))
+            move(delta > 0 ? -1 : 1);
         }}
       >
         <img
           src={items[selected]}
           alt={`${title} — photograph ${selected + 1}`}
           fetchPriority="high"
+          decoding="async"
         />
         {images.length > 0 && (
           <button

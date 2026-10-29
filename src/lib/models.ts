@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { categoryById, categoryFields } from "./taxonomy";
 import { motorcycleCatalogue, provinces } from "./marketplace";
+import { validDelivery } from "./listing-guidance";
 const listingBaseSchema = z.object({
   title: z.string().min(8).max(100),
   description: z.string().min(20).max(5000),
@@ -38,6 +39,7 @@ const listingBaseSchema = z.object({
     ),
   condition: z.enum(["New", "Excellent", "Good", "Used"]),
   shipping: z.enum(["Collection only", "Domestic shipping"]),
+  deliveryMethods: z.array(z.string().max(40)).max(8).optional(),
   specs: z.string().max(1500),
   details: z
     .object({
@@ -71,6 +73,8 @@ function validateListingValues(
 ) {
   const c = categoryById[v.categoryId];
   if (!c) return;
+  if (v.deliveryMethods !== undefined && !validDelivery(v.categoryId, v.deliveryMethods))
+    ctx.addIssue({ code: "custom", path: ["deliveryMethods"], message: "Choose delivery methods appropriate for this category." });
   const expected = categoryFields(c.id);
   if (
     v.category !== expected.category ||
@@ -184,6 +188,7 @@ const listingDraftSchema = listingBaseSchema
 export const parseListingDraft = (value: ListingInput) =>
   listingDraftSchema.safeParse(value);
 export type Listing = ListingInput & {
+  promotion?: { featured: boolean; test: boolean; expiresAt: number };
   sellerAccountType?: "personal" | "business";
   runningVideoId?: string;
   runningVideo?: import("./running-video").RunningVideo | null;
